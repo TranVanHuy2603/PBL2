@@ -1,0 +1,21 @@
+# Thư mục build / file object
+*.o
+*.obj
+*.exe
+*.out
+*.log
+
+# Makefile (khác máy sẽ khác nhau)
+Makefile
+**/Makefile
+
+# File tạm của IDE
+*.user
+*.suo
+*.vcxproj*
+*.vscode/
+*.code-workspace
+
+# Thư mục tạm
+*.tmp
+*.bak
