@@ -20,7 +20,7 @@ int main()
         window.draw(shape);
         window.display();
     }
-//hehe
+    //hehe
     //heheheheeeheeh 
     return 0;
 }
