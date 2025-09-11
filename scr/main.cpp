@@ -106,11 +106,10 @@ int main()
         {
             sf::Text gameOver;
             gameOver.setFont(font);
-            gameOver.setString("GAME OVER");
-            gameOver.setCharacterSize(120); // kích thước chữ
+            gameOver.setString("THUA ROI LIU LIU");
+            gameOver.setCharacterSize(100); 
             gameOver.setFillColor(sf::Color::Red);
 
-            // Căn giữa cửa sổ
             float x = (WEIGHT - gameOver.getLocalBounds().width) / 2;
             float y = (HEIGHT - gameOver.getLocalBounds().height) / 2;
             gameOver.setPosition(x, y);
