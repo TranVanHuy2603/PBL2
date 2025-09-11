@@ -1,0 +1,103 @@
+NHÂN VẬT TRONG GAME:
+Có các thuộc tính
+-Tọa độ 
+-Lượng máu (hp)
+-Lượng máu tối đa
+-Trang thai
+-Sát thương
+-Tầm đánh
+-Tốc độ đánh
+-Level
+-EXP
+-EXP để tới lever tiếp theo
+-hình ảnh 
+
+Có các phương thức
+-Tấn công
+-Mất máu
+-Update
+-Tăng lever
+-Tăng exp
+-Tăng vàng
+
+QUÁI:
+Có các thuộc tính
+-id
+-Tọa độ 
+-Lượng máu (hp)
+-Lượng máu tối đa
+-Trang thai
+-Sát thương
+-Tầm đánh
+-Tốc độ đánh
+-Hình ảnh 
+
+Có các phương thức
+-Tấn công
+-Mất máu
+
+CÂY, ĐÁ, CON THÚ,...
+Có các thuộc tính
+-id
+-Tọa độ
+-Bán kính va chạm
+-Lượng vàng và EXP nhận được khi thu thập
+-Có đi qua dược hay không
+-Trạng thái
+-Hình ảnh 
+
+NHÀ/THÀNH TRÌ/THÁP BẮN
+Có các thuộc tính
+-Tọa độ
+-Lượng máu
+-Lượng máu tối đa
+-Sát thương
+-Tầm bắn
+-Lever (Tương ứng mỗi lever sẽ có lượng máu tối đa khác nhau)
+-Trạng  thái (nếu là false thì sẽ thua vì mất thành trì)
+-Hình ảnh (Mỗi lever có các hình ảnh khác nhau)
+
+Có các phương thức
+-Nâng cấp lever
+-Mất máu
+-Sủa chữa
+-Tấn công
+
+LOGIC GAME
+-Ban đầu là trời sáng
+-Khi game bắt đầu thì hệ thống cho random một tập các tọa độ để thêm vào bản đồ các tài nguyên
+-Nhân vật đi ăn các tài nguyên đó để tích lũy tiền và kinh nghiệm
+-Người chơi có thể điều khiển nhân vật bằng các nút trên bàn phím hoặc kick chọn vào mục tiêu 
+ và thuật toán A* tự tìm đường đi nhanh nhất đến mục tiêu
+-Dùng tiền để xây dựng thành trì và tháp bắn
+-EXP khi đạt giá trị nào đó thì sẽ lên lever->Tăng lượng máu tối đa
+-Sau một thời gian thì trời tối, lúc này hệ thống random một tập các tọa độ và cho quái xuất hiện
+-Quái sẽ tìm đường đi để đến thành trì và đập phá nó, thành trì có thể gây xác thương lên quái
+-Người chơi phải tìm cách tiêu diệt quái để bảo vệ thành trì, người chơi có thể dùng số tiền mình có để sửa chữa thành trì
+-Người chơi đứng ở vùng hồi máu xung quanh thành trì thì sẽ được hồi lại lượng máu đã mất
+-Nếu thành trì bị đánh sập thì người chơi thua, nếu tiêu diệt được hết quái mà thành trì vẫn còn thì người chơi thắng
+
+TỔ CHỨC HƯỚNG ĐỐI TƯỢNG
+class Entity: có các thuộc tính x, y, tầm ảnh hưởng và có thể đi qua được không
+
+class LivingEntity: kế thừa từ class Entity và có thêm các thuộc tính chung của Nhân vật và Quái
+-Lượng máu (hp)
+-Lượng máu tối đa
+-Trang thai
+-Sát thương
+-Tầm đánh
+-Tốc độ đánh
+
+class Soldier: Kế thừa từ class LivingEntity và có thêm thuộc tính riêng của quái
+-id
+
+class Character: Kế thừa từ class LivingEntity và có thêm các thuộ tính riêng của nhân vật
+-Số vàng hiện có
+-EXP
+-Kinh nghiệm
+
+class StaticEntity: kế thừa từ lớp Entity và có thêm các thuộc tính riêng của cây, đá, con thú
+-Lượng vàng và EXP nhận được khi thu thập
+-id
+
+
