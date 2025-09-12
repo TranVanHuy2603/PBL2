@@ -13,8 +13,8 @@ class Priorityqueue
 private:
     vector<T> heap;
     Compare comp;
-    void heapify_up(int);//day phan thu moi len dnung vi tri
-    void minheapify(int);//tao lai heap
+    void heapify_up(double);//day phan thu moi len dnung vi tri
+    void minheapify(double);//tao lai heap
 
 public:
     void push(const T& value);
@@ -26,10 +26,10 @@ public:
 
 
 template <typename T, typename Compare>
-void Priorityqueue<T, Compare>::heapify_up(int index) 
+void Priorityqueue<T, Compare>::heapify_up(double index) 
 {
     if (index == 0) return;
-    int parent = (index - 1) / 2;
+    double parent = (index - 1) / 2;
     if (comp(heap[index], heap[parent])) 
     {
         swap(heap[index], heap[parent]);
@@ -38,11 +38,11 @@ void Priorityqueue<T, Compare>::heapify_up(int index)
 }
 
 template <typename T, typename Compare>
-void Priorityqueue<T, Compare>::minheapify(int index) 
+void Priorityqueue<T, Compare>::minheapify(double index) 
 {
-    int l = 2 * index + 1;
-    int r = 2 * index + 2;
-    int smallest = index;
+    double l = 2 * index + 1;
+    double r = 2 * index + 2;
+    double smallest = index;
     if (l < heap.size() && comp(heap[l], heap[smallest])) smallest = l;
     if (r < heap.size() && comp(heap[r], heap[smallest])) smallest = r;
     if (smallest != index) 

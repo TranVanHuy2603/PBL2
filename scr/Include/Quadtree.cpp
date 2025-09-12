@@ -4,7 +4,7 @@
 
 using namespace std;
 
-Quadtree::Quadtree(Rect _area, int _capacity)
+Quadtree::Quadtree(Rect _area, double _capacity)
          :area(_area), capacity(_capacity), divided(false),
           NW(nullptr), NE(nullptr), SW(nullptr), SE(nullptr){}
 
@@ -12,10 +12,10 @@ Quadtree::~Quadtree() { delete NW; delete NE; delete SW; delete SE; }
 
 void Quadtree::subdivide()
 {
-    int x = area.get_x();
-    int y = area.get_y();
-    int w = area.get_w() / 2;
-    int h = area.get_h() / 2;
+    double x = area.get_x();
+    double y = area.get_y();
+    double w = area.get_w() / 2;
+    double h = area.get_h() / 2;
 
     NE = new Quadtree(Rect(x + w, y - h, w, h), capacity);
     NW = new Quadtree(Rect(x - w, y - h, w, h), capacity);
@@ -45,7 +45,7 @@ bool Quadtree::insert(Entity* e)
 
 void Quadtree::query(Rect r, vector<Entity*>& found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
 {
-    if (area.intersects(r)) return;
+    if (area.doubleersects(r)) return;
 
     for (auto& e : entities) //duyet tat ca
     {
@@ -80,14 +80,14 @@ bool Quadtree::remove(Entity* e)
     return false;
 }
 
-bool Quadtree::update(Entity* e, int newx, int newy)
+bool Quadtree::update(Entity* e, double newx, double newy)
 {
     remove(e);
     e->set_position(newx, newy);
     return insert(e);
 }
 
-int Quadtree::count(Rect r)
+double Quadtree::count(Rect r)
 {
     vector<Entity*> res;
     query(r, res);
