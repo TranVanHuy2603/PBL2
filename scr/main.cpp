@@ -89,6 +89,7 @@ int main()
         border.setOutlineColor(sf::Color::Red);
         border.setPosition(thickness / 2, thickness / 2);
         window.draw(border);
+        
 
             sf::RectangleShape rect(sf::Vector2f(size - 1, size - 1));
             rect.setFillColor(sf::Color::Green);
