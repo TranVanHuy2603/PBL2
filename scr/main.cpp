@@ -34,10 +34,10 @@ int main()
             }
             if (event.type == sf::Event::KeyPressed)
             {
-                if ((event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) && dir != Left) dir = Left;
-                else if ((event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) && dir != Right) dir = Right;
-                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && dir != Up) dir = Up;
-                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && dir != Down) dir = Down;
+                if ((event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) && dir != Left && dir != Right) dir = Left;
+                else if ((event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) && dir != Right && dir != Left) dir = Right;
+                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && dir != Up && dir != Down) dir = Up;
+                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && dir != Down && dir != Up) dir = Down;
             }
         }
 
@@ -89,7 +89,7 @@ int main()
         border.setOutlineColor(sf::Color::Red);
         border.setPosition(thickness / 2, thickness / 2);
         window.draw(border);
-        
+
 
             sf::RectangleShape rect(sf::Vector2f(size - 1, size - 1));
             rect.setFillColor(sf::Color::Green);
