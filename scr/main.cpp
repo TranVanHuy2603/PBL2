@@ -49,6 +49,7 @@ int main()
                 case Up: newHead.y--; break;
                 case Down: newHead.y++; break;
                 case Left: newHead.x--; break;
+                
                 case Right: newHead.x++; break;
             }
 
