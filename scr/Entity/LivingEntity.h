@@ -15,6 +15,7 @@ class LivingEntity : public Entity
         int get_damage();
         double get_damage_range();
         double get_attack_speed();
+        
         void set_hp(int);
         void set_hp_max(int);
         void set_damage(int);

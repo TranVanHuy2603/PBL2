@@ -1,8 +1,15 @@
 #include "ASNode.h"
 #include <limits>
 
-ASNode::ASNode(double _x, double _y)
-    : x(_x), y(_y), walkable(true), parent(nullptr), g(std::numeric_limits<double>::infinity()), h(0) {}
+ASNode::ASNode(double x, double y)
+    {
+        this->x = x;
+        this->y = y;
+        this->walkable = true;
+        this->parent = nullptr;
+        this->g = std::numeric_limits<double>::infinity();//INT_MAX
+        this->h = 0;
+    }
 
 double ASNode::f() const { return g + h; }
 

@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include <SFML/Graphics.hpp>
 
 Entity::Entity(int _x, int _y, double _radius)
        :x(_x), y(_y), radius(_radius) {};
@@ -12,3 +13,8 @@ void Entity::set_position(int newx, int newy)
        y = newy;
 } 
 bool Entity::is_walkable() const { return walkable; } 
+
+void Entity::draw(sf::RenderWindow& window) //tham chieu toi cua so game dang thuc thi
+{
+       window.draw(sprite);
+}

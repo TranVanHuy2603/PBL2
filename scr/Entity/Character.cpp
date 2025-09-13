@@ -9,6 +9,8 @@ Character::Character(int x, int y, double radius, bool walkable,
           {
               this->gold = gold;
               this->exp = exp;
+              this->sprite.setTexture(texture); //gan hinh anh nha vat cho sprite de ive ra cua so game
+              this->sprite.setPosition(this->x, this->y); //set vi tri cua hinh anh la toa  do cua nhan vat
           }
 int Character::get_gold() { return gold; }
 int Character::get_exp() { return exp; }
