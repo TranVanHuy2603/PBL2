@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(int _x, int _y, int _radius)
+Entity::Entity(int _x, int _y, double _radius)
        :x(_x), y(_y), radius(_radius) {};
 
 int Entity::get_x() const { return x; }
