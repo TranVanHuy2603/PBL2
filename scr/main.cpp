@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-
+//ran san moi
 int HEIGHT = 900;
 int WEIGHT = 1300;
 const int size = 50;

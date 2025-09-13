@@ -4,4 +4,4 @@ class LivingEntity : public Entity
 {
     protected:
 
-}
+};
