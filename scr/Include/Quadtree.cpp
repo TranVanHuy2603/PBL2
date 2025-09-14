@@ -4,12 +4,9 @@
 
 using namespace std;
 
-Quadtree::Quadtree(Rect area, double capacity)
-         :area(area), capacity(capacity), divided(false),
-          NW(nullptr), NE(nullptr), SW(nullptr), SE(nullptr)
-        {
-
-        }
+Quadtree::Quadtree(Rect _area, double _capacity)
+         :area(_area), capacity(_capacity), divided(false),
+          NW(nullptr), NE(nullptr), SW(nullptr), SE(nullptr) { }
 
 Quadtree::~Quadtree() { delete NW; delete NE; delete SW; delete SE; }
 

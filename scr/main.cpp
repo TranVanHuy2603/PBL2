@@ -1,19 +1,20 @@
 #include <SFML/Graphics.hpp>
-//ran san moi
-int HEIGHT = 900;
-int WEIGHT = 1300;
+
+int HEIGHT = 700;
+int WEIGHT = 1000;
 const int size = 50;
 struct SnakeSegment
 {
     int x, y;
-};
+}; 
+//ghtuhgtght
 
 enum Direction {Up, Down, Left, Right};
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(WEIGHT, HEIGHT), "Ran san moi");
-    window.setFramerateLimit(8);
+    window.setFramerateLimit(4);
     sf::Event event;
 
     std::vector<SnakeSegment> snake = {{WEIGHT / 2 / size, HEIGHT / 2 / size}};
@@ -49,7 +50,7 @@ int main()
                 case Up: newHead.y--; break;
                 case Down: newHead.y++; break;
                 case Left: newHead.x--; break;
-                
+
                 case Right: newHead.x++; break;
             }
 
