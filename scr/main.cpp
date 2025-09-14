@@ -6,7 +6,8 @@ const int size = 50;
 struct SnakeSegment
 {
     int x, y;
-};
+}; 
+//ghtuhgtght
 
 enum Direction {Up, Down, Left, Right};
 
