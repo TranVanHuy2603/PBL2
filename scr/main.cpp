@@ -1,123 +1,47 @@
 #include <SFML/Graphics.hpp>
+#include "Character.h"
+#include <vector>
 
-int HEIGHT = 700;
-int WEIGHT = 1000;
-const int size = 50;
-struct SnakeSegment
-{
-    int x, y;
-}; 
+int main() {
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Character Test");
+    sf::Clock clock;
 
-enum Direction {Up, Down, Left, Right};
+    // Load texture cho nhân vật
+    sf::Texture tex;
+    tex.loadFromFile("assets/f34637b89c0617584e17.jpg"); // đường dẫn tới hình nhân vật
+    Character::texture = tex;
 
-int main()
-{
-    sf::RenderWindow window(sf::VideoMode(WEIGHT, HEIGHT), "Ran san moi");
-    window.setFramerateLimit(8);
-    sf::Event event;
+    // Tạo nhân vật
+    Character player(100, 100, 16, true, 100, 100, 10, 32, 1.0, 1, 0, 0);
 
-    std::vector<SnakeSegment> snake = {{WEIGHT / 2 / size, HEIGHT / 2 / size}};
-    SnakeSegment food = {rand() % (WEIGHT / size), rand() % (HEIGHT / size)};
-    Direction dir = Right;
-    bool check = true;
+    // --- Test Auto mode ---
+    std::vector<sf::Vector2f> path = { {100,100}, {300,100}, {300,300}, {500,300} };
+    player.setPath(path);
+    player.set_Mode(ControlMode::Auto);
+    player.setScale(0.2f, 0.2f);
 
-    sf::Font font;
-    if (!font.loadFromFile("assets/arial.ttf")) return -1;
-
-    while (window.isOpen())
-    {
-        while (window.pollEvent(event))
-        {
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-            {
                 window.close();
-            }
-            if (event.type == sf::Event::KeyPressed)
-            {
-                if ((event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) && dir != Left && dir != Right) dir = Left;
-                else if ((event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) && dir != Right && dir != Left) dir = Right;
-                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && dir != Up && dir != Down) dir = Up;
-                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && dir != Down && dir != Up) dir = Down;
+
+            // Chuyển qua Manual mode nếu nhấn M
+            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
+                player.set_Mode(ControlMode::Manual);
             }
         }
 
-        if (check)
-        {
-            SnakeSegment newHead = snake.front();
-            switch (dir)
-            {
-                case Up: newHead.y--; break;
-                case Down: newHead.y++; break;
-                case Left: newHead.x--; break;
+        float deltaTime = clock.restart().asSeconds();
 
-                case Right: newHead.x++; break;
-            }
+        // Update nhân vật
+        player.update(deltaTime);
 
-            if (newHead.x < 0 || newHead.x >= WEIGHT / size || newHead.y < 0 || newHead.y >= HEIGHT / size)
-            {
-                check = false;
-            }
-
-            for (auto &segmennt : snake) 
-            {
-                if (newHead.x == segmennt.x && newHead.y == segmennt.y)
-                {
-                    check = false;
-                }
-            }
-
-            snake.insert(snake.begin(), newHead);
-
-            if (newHead.x == food.x && newHead.y == food.y) 
-            {
-                int border_thickness = 2; 
-                food.x = border_thickness + rand() % ((WEIGHT / size) - 2 * border_thickness);
-                food.y = border_thickness + rand() % ((HEIGHT / size) - 2 * border_thickness);
-
-            }
-            else 
-            {
-                snake.pop_back();
-            }
-        }
-
-        window.clear(sf::Color::Cyan);
-
-        float thickness = 20.f;
-        sf::RectangleShape border(sf::Vector2f(WEIGHT - thickness, HEIGHT - thickness));
-        border.setFillColor(sf::Color::Transparent);
-        border.setOutlineThickness(thickness);
-        border.setOutlineColor(sf::Color::Red);
-        border.setPosition(thickness / 2, thickness / 2);
-        window.draw(border);
-
-
-            sf::RectangleShape rect(sf::Vector2f(size - 1, size - 1));
-            rect.setFillColor(sf::Color::Green);
-            for (auto &seg : snake)
-            {
-                rect.setPosition(seg.x * size, seg.y * size);
-                window.draw(rect);
-            }
-
-            sf::CircleShape cir(size / 2);
-            cir.setFillColor(sf::Color::Red);
-            cir.setPosition(food.x * size, food.y * size);
-            window.draw(cir);
-        if (!check)
-        {
-            sf::Text gameOver;
-            gameOver.setFont(font);
-            gameOver.setString("THUA ROI LIU LIU");
-            gameOver.setCharacterSize(100); 
-            gameOver.setFillColor(sf::Color::Red);
-
-            float x = (WEIGHT - gameOver.getLocalBounds().width) / 2;
-            float y = (HEIGHT - gameOver.getLocalBounds().height) / 2;
-            gameOver.setPosition(x, y);
-            window.draw(gameOver);
-        }
+        // Vẽ
+        window.clear(sf::Color::Black);
+        player.draw(window);
         window.display();
     }
+
     return 0;
 }

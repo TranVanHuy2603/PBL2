@@ -22,5 +22,4 @@ class LivingEntity : public Entity
         void set_damage_range(double);
         void set_attack_speed(double);
 
-        virtual void take_damage(int damage) = 0;
 };
