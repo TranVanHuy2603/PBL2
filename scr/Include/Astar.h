@@ -29,12 +29,12 @@ vector<ASNode*> return_path(ASNode* node) //tra ve duong di
 vector<ASNode*> get_neighbors(ASNode* node, vector<vector<ASNode>>& grid)
 {
     vector<ASNode*> neighbors;
-    double dx[4] = {-1,1,0,0};
-    double dy[4] = {0,0,-1,1};
+    double dx[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
+    double dy[8] = {0, 0, -1, 1, 1, -1, -1, 1};
     double w = grid.size();
     double h = grid[0].size();
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < 8; i++)
     {
         double nx = node->get_x() + dx[i];
         double ny = node->get_y() + dy[i];

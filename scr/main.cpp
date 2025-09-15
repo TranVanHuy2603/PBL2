@@ -7,14 +7,13 @@ struct SnakeSegment
 {
     int x, y;
 }; 
-//ghtuhgtght
 
 enum Direction {Up, Down, Left, Right};
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(WEIGHT, HEIGHT), "Ran san moi");
-    window.setFramerateLimit(4);
+    window.setFramerateLimit(8);
     sf::Event event;
 
     std::vector<SnakeSegment> snake = {{WEIGHT / 2 / size, HEIGHT / 2 / size}};
