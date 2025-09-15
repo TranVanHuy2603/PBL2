@@ -43,28 +43,31 @@ void Character::levelUp()
     }
 }
 
-void Character::setPath(const std::vector<sf::Vector2f>& newPath) {
+void Character::setPath(const std::vector<sf::Vector2f>& newPath) 
+{
     path = newPath;
     currentTarget = 0;
 }
 
-void Character::handleInput(double deltaTime) {
-    sf::Vector2f movement(0.f, 0.f);
+void Character::handleInput(double deltaTime) 
+{
+    sf::Vector2f move(0.f, 0.f);
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) movement.y -= 100.f * deltaTime;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) movement.y += 100.f * deltaTime;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) movement.x -= 100.f * deltaTime;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) movement.x += 100.f * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) move.y -= 100.f * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) move.y += 100.f * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) move.x -= 100.f * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) move.x += 100.f * deltaTime;
 
-    sprite.move(movement);
+    sprite.move(move);
 }
 
-void Character::moveAlongPath(float deltaTime) {
+void Character::movePath(float deltaTime) 
+{
     if (currentTarget < path.size()) {
-        sf::Vector2f target = path[currentTarget];
-        sf::Vector2f pos = sprite.getPosition();
+        sf::Vector2f target = path[currentTarget];//lay toa do tiep theo
+        sf::Vector2f pos = sprite.getPosition();//vi tri cua vat
 
-        sf::Vector2f dir = target - pos;
+        sf::Vector2f dir = target - pos;//duong di
         float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
 
         if (length > 1.f) {
@@ -77,10 +80,11 @@ void Character::moveAlongPath(float deltaTime) {
     }
 }
 
-void Character::update(float deltaTime) {
+void Character::update(float deltaTime) 
+{
     if (mode == ControlMode::Manual) {
         handleInput(deltaTime);
     } else if (mode == ControlMode::Auto) {
-        moveAlongPath(deltaTime);
+        movePath(deltaTime);
     }
 }
