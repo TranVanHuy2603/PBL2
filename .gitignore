@@ -19,3 +19,5 @@ Makefile
 # Thư mục tạm
 *.tmp
 *.bak
+
+/linux
