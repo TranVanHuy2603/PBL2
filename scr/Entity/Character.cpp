@@ -7,6 +7,8 @@
 
 sf::Texture Character::texture;
 
+Character::Character() {}
+
 Character::Character(int x, int y, double radius, bool walkable,
                      int hp, int hp_max, int damage, double damage_range, 
                      double attack_speed, int level, int gold, int exp, int exp_max)
@@ -16,6 +18,7 @@ Character::Character(int x, int y, double radius, bool walkable,
     this->gold = gold;
     this->exp = exp;
     this->exp_max = exp_max;
+    this->type = "Character";
     this->sprite.setTexture(texture);           // gan hinh anh nha vat cho sprite de ive ra cua so game
     this->sprite.setPosition(this->x, this->y); // set vi tri cua hinh anh la toa  do cua nhan vat
 }
@@ -115,7 +118,7 @@ void Character::attack(Quadtree& qt)
     //dung quadtree de lay ra nhung vat the xung quanh nhan vat
     Rect range(center.x, center.y, damage_range, damage_range); //tao mot hinh chu nhat bao quanh vung gay sat thuong
     std::vector<Entity*> found;//vecto luu cac vat the xung quanh nhan vat
-    qt.query(range, found);
+    qt.query(range, found);//lay ra at hte nam gan nhan vat 
 
     for (auto e : found)
     {
@@ -147,3 +150,39 @@ void Character::attack(Quadtree& qt)
         }
     }
 }
+
+string Character::serialize() const {
+    std::ostringstream ss;
+    ss  << x << "," 
+        << y << "," 
+        << radius << "," 
+        << walkable << ","
+        << hp << ","
+        << hp_max << "," 
+        << damage << "," 
+        << damage_range << ","
+        << attack_speed << "," 
+        << level << "," 
+        << gold << ","
+        << exp << "," 
+        << exp_max;
+    return ss.str();
+    }
+
+void Character::deserialize(std::istream& in) {
+        char comma;
+        in  >> x >> comma
+            >> y >> comma
+            >> radius >> comma
+            >> walkable >> comma
+            >> hp >> comma
+            >> hp_max >> comma
+            >> damage >> comma
+            >> damage_range >> comma
+            >> attack_speed >> comma
+            >> level >> comma
+            >> gold >> comma
+            >> exp >> comma
+            >> exp_max;
+    }
+

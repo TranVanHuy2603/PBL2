@@ -3,6 +3,7 @@
 #include "Monster.h"
 #include "Quadtree.h"
 #include <SFML/Graphics.hpp>
+#include <sstream>
 #pragma once
 
 enum class ControlMode
@@ -21,6 +22,7 @@ private:
     ControlMode mode = ControlMode::Manual; // che do di chuyen bang A* hay la bang ban phim
 public:
     static sf::Texture texture;
+    Character();
     Character(int, int, double, bool, int, int, int, double, double, int, int, int, int);
     int get_gold(); // lay so vang hien co
     int get_exp();  // lay kinh nghiem hien co
@@ -47,4 +49,7 @@ public:
 
     bool isColliding(const sf::Sprite &); // dung de xu li va cham voi cac vat the khac
     void attack(Quadtree&); //tan cong.....tham so dau vao la mot vecto cac Monster
+
+    std::string serialize() const override;
+    void deserialize(std::istream&) override;
 };

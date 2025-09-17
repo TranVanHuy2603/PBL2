@@ -1,6 +1,8 @@
 #include "LivingEntity.h"
 #include "Entity.h"
 
+LivingEntity::LivingEntity() {}
+
 LivingEntity::LivingEntity(int x, int y, double radius, bool walkable,
                            int hp, int hp_max, int damage,
                            double damage_range, double attack_speed)

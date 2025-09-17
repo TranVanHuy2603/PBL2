@@ -11,6 +11,7 @@ protected:
     double attack_speed; // toc do gay sat thuong
     bool status;
 public:
+    LivingEntity();
     LivingEntity(int, int, double, bool, int, int, int, double, double);
     int get_hp();
     int get_hp_max();
