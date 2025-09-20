@@ -51,7 +51,7 @@ void Map::draw(sf::RenderWindow& window) {
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             if (grid[y][x] == 0) {//neu di duoc
-                tile.setFillColor(sf::Color::Green); // walkable
+                tile.setFillColor(sf::Color::Black); // walkable
             } else { //neu khong di duoc
                 tile.setFillColor(sf::Color::Black); // blocked
             }

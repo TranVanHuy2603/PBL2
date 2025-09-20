@@ -49,7 +49,7 @@ void Character::levelUp() // tang level
     }
 }
 
-void Character::setPath(const std::vector<sf::Vector2f> &newPath) // cap nhat duong di cho nhan vat tu A*
+void Character::setPath(const Vector<sf::Vector2f> &newPath) // cap nhat duong di cho nhan vat tu A*
 {
     path = newPath;
     currentTarget = 0;
@@ -76,7 +76,7 @@ void Character::handleInput(double deltaTime) // di chuyen bang tay
 
 void Character::movePath(float deltaTime)
 {
-    if (currentTarget < static_cast<int>(path.size()))
+    if (currentTarget < static_cast<int>(path.get_size()))
     {
         sf::Vector2f target = path[currentTarget]; // lay toa do tiep theo
         sf::Vector2f pos = sprite.getPosition();   // vi tri cua vat
@@ -117,7 +117,7 @@ void Character::attack(Quadtree& qt)
     sf::Vector2f center(bound.left + bound.width / 2.f, bound.top + bound.height / 2);//lay ra tam
     //dung quadtree de lay ra nhung vat the xung quanh nhan vat
     Rect range(center.x, center.y, damage_range, damage_range); //tao mot hinh chu nhat bao quanh vung gay sat thuong
-    std::vector<Entity*> found;//vecto luu cac vat the xung quanh nhan vat
+    Vector<Entity*> found;//vecto luu cac vat the xung quanh nhan vat
     qt.query(range, found);//lay ra at hte nam gan nhan vat 
 
     for (auto e : found)

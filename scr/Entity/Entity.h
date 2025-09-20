@@ -1,5 +1,6 @@
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "Vector.h"
 #pragma once
 using namespace std;
 
@@ -11,7 +12,7 @@ protected:
     bool walkable;     // di qua duoc hay khong
     string type;
     sf::Sprite sprite; // Hinh anh duoc hien thi tren game
-    vector<sf::Vector2f> path;
+    Vector<sf::Vector2f> path;
     int currentTarget = 0;
 
 public:

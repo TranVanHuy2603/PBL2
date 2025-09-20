@@ -41,7 +41,7 @@ public:
     int get_level(); // lay ra level
     void levelUp();  // tang level
 
-    void setPath(const std::vector<sf::Vector2f> &); // gan duong di cho nhan vat
+    void setPath(const Vector<sf::Vector2f> &); // gan duong di cho nhan vat
     void handleInput(double);                        // di chuyen bang tay
     void movePath(float);                            // di chuyen theo a*
 

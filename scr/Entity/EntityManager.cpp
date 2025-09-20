@@ -20,7 +20,7 @@ void EntityManager::add(Entity *e)
 
 void EntityManager::remove(Entity *e)
 {
-    entities.erase(std::remove(entities.begin(), entities.end(), e), entities.end()); // xoa
+    entities.remove(e);
     delete e;
 }
 
@@ -37,7 +37,7 @@ Character *EntityManager::getPlayer()
     return nullptr; // eu khong thi tra ve con tro trong
 }
 
-vector<Entity *> &EntityManager::getEntities()
+Vector<Entity*>& EntityManager::getEntities()
 {
     return entities; // tra ve danh sach vat the
 }
@@ -58,7 +58,7 @@ void EntityManager::drawAll(sf::RenderWindow &window)
     }
 }
 
-void EntityManager::saveToFile(const string &filename)
+void EntityManager::save(const string &filename)
 {
     ofstream out(filename); // mo file
     if (!out.is_open())
@@ -75,7 +75,7 @@ void EntityManager::saveToFile(const string &filename)
     out.close();
 }
 
-void EntityManager::loadFile(const string &filename)
+void EntityManager::load(const string &filename)
 {
     ifstream in(filename);
     if (!in.is_open())

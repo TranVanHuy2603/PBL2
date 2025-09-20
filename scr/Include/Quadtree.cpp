@@ -1,8 +1,5 @@
 #include "Quadtree.h"
-#include <vector>
 #include <algorithm>
-
-using namespace std;
 
 Quadtree::Quadtree(Rect _area, double _capacity)
     : area(_area), capacity(_capacity), divided(false),
@@ -37,7 +34,7 @@ bool Quadtree::insert(Entity *e)
         return false;
     else
     {
-        if (entities.size() < capacity)
+        if (entities.get_size() < capacity)
             entities.push_back(e);
         else
         {
@@ -56,7 +53,7 @@ bool Quadtree::insert(Entity *e)
     return false;
 }
 
-void Quadtree::query(Rect r, vector<Entity*> &found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
+void Quadtree::query(Rect r, Vector<Entity*> &found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
 {
     if (area.doubleersects(r))
         return;
@@ -109,9 +106,9 @@ bool Quadtree::update(Entity *e, double newx, double newy)
 
 double Quadtree::count(Rect r)
 {
-    vector<Entity *> res;
+    Vector<Entity *> res;
     query(r, res);
-    return res.size();
+    return res.get_size();
 }
 
 void Quadtree::clear()
@@ -135,7 +132,7 @@ void Quadtree::clear()
     }
 }
 
-void Quadtree::getAllEntities(std::vector<Entity *> &all)
+void Quadtree::getAllEntities(Vector<Entity *> &all)
 {
     for (auto e : entities)
         all.push_back(e);
