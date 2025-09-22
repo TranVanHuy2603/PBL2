@@ -61,7 +61,7 @@ void Character::handleInput(double deltaTime)
     sprite.move(move);
 }
 
-void Character::movePath(float deltaTime) 
+void Character::moveAlongPath(float deltaTime) 
 {
     if (currentTarget < path.size()) {
         sf::Vector2f target = path[currentTarget];//lay toa do tiep theo
@@ -85,6 +85,6 @@ void Character::update(float deltaTime)
     if (mode == ControlMode::Manual) {
         handleInput(deltaTime);
     } else if (mode == ControlMode::Auto) {
-        movePath(deltaTime);
+        moveAlongPath(deltaTime);
     }
 }

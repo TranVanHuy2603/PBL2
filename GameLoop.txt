@@ -1,0 +1,134 @@
+===============================================TỔNG QUÁT=========================================================    
+1. Gameplay Loop chi tiết (Core Loop)
+Đây là chu kỳ người chơi lặp lại liên tục, bạn có thể trình bày bằng sơ đồ hoặc bullet:
+
+Thu thập tài nguyên → Chế tạo công cụ → Xây dựng công trình →
+Chiêu mộ & quản lý dân cư → Phòng thủ trước kẻ thù →
+Mở rộng lãnh thổ → Quay lại (Thu thập tài nguyên nâng cấp hơn)
+👉 Ví dụ chi tiết:
+
+Thu thập: gỗ, đá, sắt, thức ăn.
+
+Chế tạo: rìu, cuốc, vũ khí cơ bản.
+
+Xây dựng: nhà ở, farm, trại lính, tháp canh.
+
+Chiêu mộ & Quản lý: tuyển dân → phân việc (nông dân, thợ mỏ, lính).
+
+Phòng thủ: chống zombie/quái/băng cướp (AI waves).
+
+Mở rộng: chiếm đất mới, tìm tàn tích công nghệ, unlock map.
+
+🔹 2. Tech Tree (Cây công nghệ / nâng cấp)
+Bạn có thể vẽ dạng cây tiến hóa, bắt đầu từ công cụ & công trình cơ bản → nâng cấp dần.
+
+Ví dụ (cắt gọn cho PBL2, không quá phức tạp):
+
+Công cụ cơ bản
+   ├─> Rìu đá (chặt gỗ nhanh hơn)
+   ├─> Cuốc đá (đào đá/sắt)
+   └─> Cung gỗ (vũ khí tầm xa cơ bản)
+
+Công trình cơ bản
+   ├─> Nhà ở (tăng dân số tối đa)
+   ├─> Farm (tạo thức ăn)
+   └─> Xưởng thủ công (craft tool nâng cao)
+
+Công nghệ nâng cao
+   ├─> Lò luyện kim (sắt, thép → công cụ/vũ khí mạnh)
+   ├─> Tháp canh (phòng thủ tự động)
+   └─> Barrack (huấn luyện lính)
+
+Công nghệ cao cấp (late game)
+   ├─> Nhà máy (tự động hóa, máy móc)
+   ├─> Năng lượng (điện, pin, năng lượng mặt trời)
+   └─> Công nghệ quân sự (xe cơ giới, vũ khí hiện đại)
+
+=============================================CHI TIẾT=======================================
+Gameplay Loop (Vòng lặp chơi)
+Thu thập tài nguyên (Gathering)
+
+Gỗ từ rừng đột biến 🌲
+
+Đá & sắt từ mỏ đá ⛏️
+
+Tàn tích công nghệ để thu hồi linh kiện ⚙️
+
+Thực phẩm từ săn bắn, trồng trọt 🍖🌾
+
+Xây dựng (Building)
+
+Nhà ở 🏠
+
+Kho chứa 📦
+
+Trại lính 🪖
+
+Công trình phòng thủ (tường rào, tháp canh) 🛡️
+
+Xưởng chế tạo (công cụ, vũ khí, máy móc) 🔧
+
+Phát triển dân cư (Population growth)
+
+Cứu dân lành -> trở thành dân thường 👨‍👩‍👧‍👦
+
+Dân thường có thể được phân công việc (nông dân, thợ mỏ, lính, thợ rèn, …).
+
+Chế tạo (Crafting/Tech Upgrade)
+
+Công cụ nông nghiệp: liềm, cuốc, xẻng
+
+Vũ khí: giáo, cung, súng cơ bản → hiện đại
+
+Máy móc: máy phát điện, trạm năng lượng mặt trời, máy bơm nước
+
+Chiến đấu & Phòng thủ (Combat & Defense)
+
+Chống lại zombie 🧟, quái vật đột biến 🐲, hoặc kẻ cướp 🤺
+
+Xây dựng quân đội, luyện binh lính
+
+Quản lý tài nguyên giữa chiến đấu và xây dựng
+
+Mở rộng (Expansion)
+
+Khám phá bản đồ, chiếm giữ vùng đất mới
+
+Mở map/ server → PvP giữa các người chơi khác
+
+🌳 Tech Tree (Cây công nghệ mẫu)
+1. Cơ bản (Basic Survival)
+🔨 Thu thập tài nguyên
+
+🍞 Nông nghiệp cơ bản (trồng lúa, khoai, ngô)
+
+🔧 Chế tạo công cụ gỗ/đá
+
+2. Trung cấp (Intermediate Development)
+🏠 Xây dựng nhà nâng cấp (gạch, đá)
+
+⚔️ Vũ khí sắt: kiếm, cung, nỏ
+
+⚡ Máy phát điện thủ công (quay tay, than)
+
+🛡️ Phòng thủ cơ bản: hàng rào gỗ, bẫy
+
+3. Cao cấp (Advanced Tech)
+⚙️ Công cụ thép (cuốc thép, rìu thép)
+
+🔋 Máy móc cơ bản (máy bơm, tua-bin gió)
+
+🚜 Cơ giới hóa nông nghiệp (máy cày nhỏ)
+
+🏹 Quân đội nâng cao (lính bắn súng, lính giáp nhẹ)
+
+🏯 Công trình kiên cố (tháp canh, tường đá)
+
+4. Hậu tận thế công nghệ (Post-apocalyptic Tech)
+⚡ Năng lượng mặt trời, điện hạt nhân mini
+
+🤖 Máy móc tự động (robot khai thác, máy in 3D công nghiệp)
+
+🔫 Vũ khí hiện đại (súng trường, pháo)
+
+🛰️ Radar & hệ thống phòng thủ thông minh
