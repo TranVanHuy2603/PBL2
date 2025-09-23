@@ -2,7 +2,7 @@
 #include "Priorityqueue.h"
 #include "Entity.h"
 #include "Quadtree.h"
-#include <vector>
+#include "Vector.h"
 #include <set>
 #include <utility>
 #include <cmath>
@@ -15,9 +15,9 @@ double heuristic(ASNode *a, ASNode *b) // uoc luong khoang cach
     return abs(a->get_x() - b->get_x()) + abs(a->get_y() - b->get_y());
 }
 
-vector<ASNode *> return_path(ASNode *node) // tra ve duong di
+Vector<ASNode *> return_path(ASNode *node) // tra ve duong di
 {
-    vector<ASNode *> path;
+    Vector<ASNode *> path;
     while (node)
     {
         path.push_back(node);
@@ -27,13 +27,13 @@ vector<ASNode *> return_path(ASNode *node) // tra ve duong di
     return path;
 }
 
-vector<ASNode *> get_neighbors(ASNode *node, vector<vector<ASNode>> &grid)
+Vector<ASNode *> get_neighbors(ASNode *node, Vector<Vector<ASNode>> &grid)
 {
-    vector<ASNode *> neighbors;
+    Vector<ASNode *> neighbors;
     double dx[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
     double dy[8] = {0, 0, -1, 1, 1, -1, -1, 1};
-    double w = grid.size();
-    double h = grid[0].size();
+    double w = grid.get_size();
+    double h = grid[0].get_size();
 
     for (int i = 0; i < 8; i++)
     {
@@ -53,10 +53,10 @@ struct CompareASNode
     }
 };
 
-void updateGridWalkable(vector<vector<ASNode>> &grid, Quadtree *qt, double cellSize)
+void updateGridWalkable(Vector<Vector<ASNode>> &grid, Quadtree *qt, double cellSize)
 {
     Vector<Entity *> entities;
-    qt->query(Rect(0, 0, grid.size() * cellSize, grid[0].size() * cellSize), entities);
+    qt->query(Rect(0, 0, grid.get_size() * cellSize, grid[0].get_size() * cellSize), entities);
 
     for (Entity *e : entities)
     {
@@ -65,14 +65,14 @@ void updateGridWalkable(vector<vector<ASNode>> &grid, Quadtree *qt, double cellS
             double gx = e->get_x() / cellSize;
             double gy = e->get_y() / cellSize;
 
-            if (gx >= 0 && gy >= 0 && gx < grid.size() && gy < grid[0].size())
+            if (gx >= 0 && gy >= 0 && gx < grid.get_size() && gy < grid[0].get_size())
                 grid[gx][gy].set_walkable(false);
         }
     }
 }
 
-vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
-                       vector<vector<ASNode>> &grid, double cellSize = 1.0)
+Vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
+                       Vector<Vector<ASNode>> &grid, double cellSize = 1.0)
 {
     updateGridWalkable(grid, qt, cellSize);
 
@@ -94,7 +94,7 @@ vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
         closeSet.insert(cur); // them node vao danh sach da xet
 
         // lay cac node hang xom
-        vector<ASNode *> neighbors = get_neighbors(cur, grid);
+        Vector<ASNode *> neighbors = get_neighbors(cur, grid);
 
         for (ASNode *n : neighbors)
         {
