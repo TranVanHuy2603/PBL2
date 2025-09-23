@@ -21,7 +21,7 @@ public:
 
     void subdivide();                          // chia nho o
     bool insert(Entity *);                     // them vat the
-    void query(Rect, Vector<Entity *> &); // truy van
+    void query(Rect, Vector<Entity*> &); // truy van
     bool remove(Entity *);
     bool update(Entity *, double, double);
     double count(Rect r);

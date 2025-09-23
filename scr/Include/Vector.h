@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include <algorithm> 
+#include <algorithm>
 
 template <typename T>
 class Vector
@@ -17,15 +17,15 @@ public:
     void push_back(const T &);
     void pop_back();
     void erase(int);
-    T* erase(T* pos);                 
-    T* insert(T* pos, const T &val);
+    T *erase(T *pos);
+    T *insert(T *pos, const T &val);
     void clear();
     void reverse();
-    bool remove(const T&);
+    bool remove(const T &);
     int get_size() const;
     int get_capacity() const;
     T &operator[](int);
-    Vector& operator=(const Vector& other);
+    Vector &operator=(const Vector &other);
     T *begin();
     T *end();
     const T *begin() const;
@@ -97,7 +97,7 @@ void Vector<T>::erase(int index)
 }
 
 template <typename T>
-T* Vector<T>::erase(T* pos)
+T *Vector<T>::erase(T *pos)
 {
     if (pos < array || pos >= array + size)
         return end();
@@ -112,7 +112,7 @@ T* Vector<T>::erase(T* pos)
 }
 
 template <typename T>
-T* Vector<T>::insert(T* pos, const T &val)
+T *Vector<T>::insert(T *pos, const T &val)
 {
     if (pos < array || pos > array + size)
         return end();
@@ -176,13 +176,16 @@ T &Vector<T>::operator[](int index)
 }
 
 template <typename T>
-Vector<T>& Vector<T>::operator=(const Vector<T>& other) {
-    if (this == &other) return *this; 
-    delete[] array; 
+Vector<T> &Vector<T>::operator=(const Vector<T> &other)
+{
+    if (this == &other)
+        return *this;
+    delete[] array;
     capacity = other.capacity;
     size = other.size;
     array = new T[capacity];
-    for (int i = 0; i < size; i++) {
+    for (int i = 0; i < size; i++)
+    {
         array[i] = other.array[i];
     }
     return *this;
