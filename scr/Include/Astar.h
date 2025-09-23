@@ -55,7 +55,7 @@ struct CompareASNode
 
 void updateGridWalkable(vector<vector<ASNode>> &grid, Quadtree *qt, double cellSize)
 {
-    vector<Entity *> entities;
+    Vector<Entity *> entities;
     qt->query(Rect(0, 0, grid.size() * cellSize, grid[0].size() * cellSize), entities);
 
     for (Entity *e : entities)
