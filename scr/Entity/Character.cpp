@@ -24,6 +24,9 @@ Character::Character(int x, int y, bool walkable,
 int Character::get_gold() { return gold; }
 int Character::get_exp() { return exp; }
 int Character::get_exp_max() { return exp_max; }
+Bag& Character::get_bag() { return bag; }
+int Character::get_indexWeapon() const { return indexWeapon; }
+void Character::set_indexWeapon(int value) { indexWeapon = value; }
 
 void Character::incr_gold(int value) { this->gold += value; }
 void Character::incr_exp(int value) { this->exp += value; }
@@ -112,10 +115,11 @@ bool Character::isColliding(const sf::Sprite &other)
 
 void Character::attack(Quadtree & qt)
 {
-    weapons->attack(qt, this);
+    weapons[indexWeapon]->attack(qt, this);
 }
 
-string Character::serialize() const {
+string Character::serialize() const 
+{
     std::ostringstream ss;
     ss  << x << "," 
         << y << "," 
@@ -129,7 +133,8 @@ string Character::serialize() const {
     return ss.str();
     }
 
-void Character::deserialize(std::istream& in) {
+void Character::deserialize(std::istream& in) 
+{
         char comma;
         in  >> x >> comma
             >> y >> comma
@@ -140,5 +145,22 @@ void Character::deserialize(std::istream& in) {
             >> gold >> comma
             >> exp >> comma
             >> exp_max;
+}
+
+void Character::add_weapon(Weapons* newWeapon)
+{
+    weapons.push_back(newWeapon);
+    if (indexWeapon == -1)
+    {
+        indexWeapon = 0;
     }
+}
+
+void Character::switch_weapon(int index)
+{
+    if (index >= 0 && index < weapons.get_size())
+    {
+        set_indexWeapon(index);
+    }
+}
 
