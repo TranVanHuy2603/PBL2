@@ -1,12 +1,11 @@
 #include "Entity.h"
 
 Entity::Entity() {}
-Entity::Entity(int _x, int _y, double _radius)
-    : x(_x), y(_y), radius(_radius) {};
+Entity::Entity(int _x, int _y)
+    : x(_x), y(_y) {};
 
 int Entity::get_x() const { return x; }
 int Entity::get_y() const { return y; }
-int Entity::get_radius() const { return radius; }
 string Entity::get_type() const { return type; }
 void Entity::set_position(int newx, int newy)
 {

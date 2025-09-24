@@ -6,13 +6,11 @@ class LivingEntity : public Entity
 protected:
     int hp;              // luong mau con lai
     int hp_max;          // luong mau toi da
-    int damage;          // sat thuong co the gay ra
-    double damage_range; // ban kinh gay sat thuong
-    double attack_speed; // toc do gay sat thuong
     bool status;
+    int currentTarget = 0;
 public:
     LivingEntity();
-    LivingEntity(int, int, double, bool, int, int, int, double, double);
+    LivingEntity(int, int, bool, int, int);
     int get_hp();
     int get_hp_max();
     int get_damage();

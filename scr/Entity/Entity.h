@@ -1,26 +1,24 @@
+#pragma once
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "Vector.h"
-#pragma once
+
 using namespace std;
 
 class Entity // class dai dien cho mot vat the
 {
 protected:
     int x, y;          // toa do
-    double radius;     // ban kinh tac dong
     bool walkable;     // di qua duoc hay khong
     string type;
     sf::Sprite sprite; // Hinh anh duoc hien thi tren game
     Vector<sf::Vector2f> path;
-    int currentTarget = 0;
 
 public:
     Entity();
-    Entity(int, int, double);
+    Entity(int, int);
     int get_x() const;
     int get_y() const;
-    int get_radius() const;
     string get_type() const;
 
     void set_position(int, int);

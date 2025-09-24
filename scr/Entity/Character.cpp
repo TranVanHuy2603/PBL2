@@ -9,10 +9,9 @@ sf::Texture Character::texture;
 
 Character::Character() {}
 
-Character::Character(int x, int y, double radius, bool walkable,
-                     int hp, int hp_max, int damage, double damage_range, 
-                     double attack_speed, int level, int gold, int exp, int exp_max)
-    : LivingEntity(x, y, radius, walkable, hp, hp_max, damage, damage_range, attack_speed)
+Character::Character(int x, int y, bool walkable,
+                     int hp, int hp_max, int level, int gold, int exp, int exp_max)
+    : LivingEntity(x, y, walkable, hp, hp_max)
 {
     this->level = level;
     this->gold = gold;
@@ -24,6 +23,7 @@ Character::Character(int x, int y, double radius, bool walkable,
 }
 int Character::get_gold() { return gold; }
 int Character::get_exp() { return exp; }
+int Character::get_exp_max() { return exp_max; }
 
 void Character::incr_gold(int value) { this->gold += value; }
 void Character::incr_exp(int value) { this->exp += value; }
@@ -45,7 +45,6 @@ void Character::levelUp() // tang level
         exp = 0;
         hp_max += 50;
         hp = hp_max;
-        damage += 5;
     }
 }
 
@@ -111,57 +110,18 @@ bool Character::isColliding(const sf::Sprite &other)
     return sprite.getGlobalBounds().intersects(other.getGlobalBounds());//neu vung chu nhat chua nhan vat chong ven vung chu nhat cua vat the thi la va cham
 }
 
-void Character::attack(Quadtree& qt)
+void Character::attack(Quadtree & qt)
 {
-    sf::FloatRect bound = sprite.getGlobalBounds(); //lay ra hinh chu nhat chua nhan vat
-    sf::Vector2f center(bound.left + bound.width / 2.f, bound.top + bound.height / 2);//lay ra tam
-    //dung quadtree de lay ra nhung vat the xung quanh nhan vat
-    Rect range(center.x, center.y, damage_range, damage_range); //tao mot hinh chu nhat bao quanh vung gay sat thuong
-    Vector<Entity*> found;//vecto luu cac vat the xung quanh nhan vat
-    qt.query(range, found);//lay ra at hte nam gan nhan vat 
-
-    for (auto e : found)
-    {
-        sf::FloatRect eBound = e->get_sprite().getGlobalBounds();
-        sf::Vector2f eCenter(eBound.left + eBound.width / 2.f, eBound.top + eBound.height / 2);//lay ra tam cua tung vat the
-
-        float dx = center.x - eCenter.x;//lay khoang cach truc x
-        float dy = center.y - eCenter.y;//lay khoang cach truc y
-        float d = std::sqrt(dx*dx + dy*dy);//khoang cach thuc te
-
-        if (d > damage_range) continue;
-
-        if (Monster* m = dynamic_cast<Monster*>(e))
-        {
-            m->take_damage(damage);
-            if (!m->get_status()) //neu nhu quai chet
-            {
-                incr_gold(m->get_gold()); //tang vang
-                incr_exp(m->get_exp()); //tang exp
-                if (exp >= exp_max) 
-                {
-                    levelUp();//tang level
-                }
-            }
-        }
-        else 
-        {
-            //Them xu li neu la cac vat the khac
-        }
-    }
+    weapons->attack(qt, this);
 }
 
 string Character::serialize() const {
     std::ostringstream ss;
     ss  << x << "," 
         << y << "," 
-        << radius << "," 
         << walkable << ","
         << hp << ","
         << hp_max << "," 
-        << damage << "," 
-        << damage_range << ","
-        << attack_speed << "," 
         << level << "," 
         << gold << ","
         << exp << "," 
@@ -173,13 +133,9 @@ void Character::deserialize(std::istream& in) {
         char comma;
         in  >> x >> comma
             >> y >> comma
-            >> radius >> comma
             >> walkable >> comma
             >> hp >> comma
             >> hp_max >> comma
-            >> damage >> comma
-            >> damage_range >> comma
-            >> attack_speed >> comma
             >> level >> comma
             >> gold >> comma
             >> exp >> comma
