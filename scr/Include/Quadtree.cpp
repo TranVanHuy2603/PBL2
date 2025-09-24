@@ -1,14 +1,17 @@
 #include "Quadtree.h"
-#include <vector>
 #include <algorithm>
 
-using namespace std;
-
 Quadtree::Quadtree(Rect _area, double _capacity)
-         :area(_area), capacity(_capacity), divided(false),
-          NW(nullptr), NE(nullptr), SW(nullptr), SE(nullptr) { }
+    : area(_area), capacity(_capacity), divided(false),
+      NW(nullptr), NE(nullptr), SW(nullptr), SE(nullptr) {}
 
-Quadtree::~Quadtree() { delete NW; delete NE; delete SW; delete SE; }
+Quadtree::~Quadtree()
+{
+    delete NW;
+    delete NE;
+    delete SW;
+    delete SE;
+}
 
 void Quadtree::subdivide()
 {
@@ -25,33 +28,42 @@ void Quadtree::subdivide()
     divided = true;
 }
 
-bool Quadtree::insert(Entity* e)
+bool Quadtree::insert(Entity *e)
 {
-    if (!area.contains(e)) return false;
-    else 
+    if (!area.contains(e))
+        return false;
+    else
     {
-        if (entities.size() < capacity) entities.push_back(e);
-        else 
+        if (entities.get_size() < capacity)
+            entities.push_back(e);
+        else
         {
-            if (!divided) subdivide();
-            if (NE->insert(e)) return true;
-            if (NW->insert(e)) return true;
-            if (SW->insert(e)) return true;
-            if (SE->insert(e)) return true;
+            if (!divided)
+                subdivide();
+            if (NE->insert(e))
+                return true;
+            if (NW->insert(e))
+                return true;
+            if (SW->insert(e))
+                return true;
+            if (SE->insert(e))
+                return true;
         }
     }
     return false;
 }
 
-void Quadtree::query(Rect r, vector<Entity*>& found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
+void Quadtree::query(Rect r, Vector<Entity*> &found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
 {
-    if (area.doubleersects(r)) return;
+    if (area.doubleersects(r))
+        return;
 
-    for (auto& e : entities) //duyet tat ca
+    for (auto &e : entities) // duyet tat ca
     {
-        if (r.contains(e)) found.push_back(e); //neu nhu r chua e thi them vao found
+        if (r.contains(e))
+            found.push_back(e); // neu nhu r chua e thi them vao found
     }
-    if (divided) //neu nhu cay tree da duoc chia nho thi tim kiem trong cac cay con
+    if (divided) // neu nhu cay tree da duoc chia nho thi tim kiem trong cac cay con
     {
         NW->query(r, found);
         NE->query(r, found);
@@ -60,11 +72,12 @@ void Quadtree::query(Rect r, vector<Entity*>& found) // chuc nang tim tat ca cac
     }
 }
 
-bool Quadtree::remove(Entity* e)
+bool Quadtree::remove(Entity *e)
 {
-    if (!area.contains(e)) return false;
-    auto it= find(entities.begin(), entities.end(), e);
-    if (it != entities.end()) 
+    if (!area.contains(e))
+        return false;
+    auto it = find(entities.begin(), entities.end(), e);
+    if (it != entities.end())
     {
         entities.erase(it);
         return true;
@@ -72,15 +85,19 @@ bool Quadtree::remove(Entity* e)
 
     if (divided)
     {
-        if (SW->remove(e)) return true;
-        if (SE->remove(e)) return true;
-        if (NW->remove(e)) return true;
-        if (NE->remove(e)) return true;
+        if (SW->remove(e))
+            return true;
+        if (SE->remove(e))
+            return true;
+        if (NW->remove(e))
+            return true;
+        if (NE->remove(e))
+            return true;
     }
     return false;
 }
 
-bool Quadtree::update(Entity* e, double newx, double newy)
+bool Quadtree::update(Entity *e, double newx, double newy)
 {
     remove(e);
     e->set_position(newx, newy);
@@ -89,33 +106,41 @@ bool Quadtree::update(Entity* e, double newx, double newy)
 
 double Quadtree::count(Rect r)
 {
-    vector<Entity*> res;
+    Vector<Entity *> res;
     query(r, res);
-    return res.size();
+    return res.get_size();
 }
 
 void Quadtree::clear()
 {
     entities.clear();
-    if (divided) {
-        NW->clear(); delete NW; NW = nullptr;
-        NE->clear(); delete NE; NE = nullptr;
-        SW->clear(); delete SW; SW = nullptr;
-        SE->clear(); delete SE; SE = nullptr;
+    if (divided)
+    {
+        NW->clear();
+        delete NW;
+        NW = nullptr;
+        NE->clear();
+        delete NE;
+        NE = nullptr;
+        SW->clear();
+        delete SW;
+        SW = nullptr;
+        SE->clear();
+        delete SE;
+        SE = nullptr;
         divided = false;
     }
 }
 
-void Quadtree::getAllEntities(std::vector<Entity*>& all)
+void Quadtree::getAllEntities(Vector<Entity *> &all)
 {
-    for(auto e : entities) all.push_back(e);
-    if(divided) {
+    for (auto e : entities)
+        all.push_back(e);
+    if (divided)
+    {
         NW->getAllEntities(all);
         NE->getAllEntities(all);
         SW->getAllEntities(all);
         SE->getAllEntities(all);
     }
 }
-
-
-
