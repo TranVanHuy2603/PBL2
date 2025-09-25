@@ -21,7 +21,7 @@ private:
     int exp;
     int exp_max;
     Bag bag;
-    Vector<Weapons*> weapons;
+    Vector<Weapons> weapons;
     int indexWeapon;
     ControlMode mode = ControlMode::Manual; // che do di chuyen bang A* hay la bang ban phim
 public:
@@ -33,6 +33,7 @@ public:
     int get_exp_max();
     Bag& get_bag();
     int get_indexWeapon() const;
+    Vector<Weapons> get_weapons() const;
     void set_indexWeapon(int);
 
     void incr_gold(int); // tang vang len
@@ -61,6 +62,7 @@ public:
     std::string serialize() const override;
     void deserialize(std::istream &) override;
 
-    void add_weapon(Weapons*);
+    void add_weapon(Weapons);
     void switch_weapon(int index);
+    bool craft_weapon(WeaponType);
 };

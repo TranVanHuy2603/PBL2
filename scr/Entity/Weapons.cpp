@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed, string &texture)
+Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed,const string &texture)
     : damage(damage), damage_range(damage_range), attack_speed(attack_speed)
 {
     this->texture.loadFromFile(texture);

@@ -29,4 +29,13 @@ public:
     int getGold() const;
     int getDiamond() const;
     int getEmerald() const;
+
+    int decr_Wood(int);
+    int decr_Stone(int);
+    int decr_Sand(int);
+    int decr_Coal(int);
+    int decr_Iron(int);
+    int decr_Gold(int);
+    int decr_Diamond(int);
+    int decr_Emerald(int);
 };
