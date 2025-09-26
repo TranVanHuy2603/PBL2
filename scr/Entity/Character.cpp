@@ -175,7 +175,7 @@ bool Character::craft_weapon(WeaponType type)
             {
                 bag.decr_Wood(3);
                 bag.decr_Coal(1);
-                Weapons sword(WeaponType::WoodenSword, 8, 50.0, 1.5, "assets/woodensword.png");
+                Weapons sword(WeaponType::WoodenSword, 8, 50.0, 1.5, "assets/Woodensword.png");
                 weapons.push_back(sword);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -190,7 +190,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Iron(4);
                 bag.decr_Coal(2);
                 bag.decr_Wood(1);
-                Weapons sword(WeaponType::IronSwood, 15, 55.0, 1.3, "assets/ironsword.png");
+                Weapons sword(WeaponType::IronSwood, 15, 55.0, 1.3, "assets/Ironsword.png");
                 weapons.push_back(sword);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -205,7 +205,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Iron(3);
                 bag.decr_Coal(1);
                 bag.decr_Wood(3);
-                Weapons ax(WeaponType::Ax, 20, 45.0, 0.9, "assets/ax.png");
+                Weapons ax(WeaponType::Ax, 20, 45.0, 0.9, "assets/Ax.png");
                 weapons.push_back(ax);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -221,7 +221,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Coal(1);
                 bag.decr_Wood(2);
                 bag.decr_Gold(2);
-                Weapons bow(WeaponType::Bow, 12, 120.0, 1.0, "assets/bow.png");
+                Weapons bow(WeaponType::Bow, 12, 120.0, 1.0, "assets/Bow.png");
                 weapons.push_back(bow);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -240,7 +240,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Gold(4);
                 bag.decr_Diamond(3);
                 bag.decr_Emerald(1);
-                Weapons gun(WeaponType::Gun, 25, 200.0, 1, "assets/gun.png");
+                Weapons gun(WeaponType::Gun, 25, 200.0, 1, "assets/Gun.png");
                 weapons.push_back(gun);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
