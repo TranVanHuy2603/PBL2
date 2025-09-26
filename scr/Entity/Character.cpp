@@ -1,22 +1,257 @@
 #include "Character.h"
 #include "Entity.h"
+#include "Quadtree.h"
+#include "Rect.h"
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
-Character::Character(int x, int y, double radius, bool walkable, 
-          int hp, int hp_max, int damage, 
-          double damage_range, double attack_speed, int gold, int exp)
-          :LivingEntity(x, y, radius, walkable, hp, hp_max, damage, damage_range, attack_speed) 
-          {
-              this->gold = gold;
-              this->exp = exp;
-              this->sprite.setTexture(texture); //gan hinh anh nha vat cho sprite de ive ra cua so game
-              this->sprite.setPosition(this->x, this->y); //set vi tri cua hinh anh la toa  do cua nhan vat
-          }
+sf::Texture Character::texture;
+
+Character::Character() {}
+
+Character::Character(int x, int y, bool walkable,
+                     int hp, int hp_max, int level, int gold, int exp, int exp_max)
+    : LivingEntity(x, y, walkable, hp, hp_max)
+{
+    this->level = level;
+    this->gold = gold;
+    this->exp = exp;
+    this->exp_max = exp_max;
+    this->type = "Character";
+    this->sprite.setTexture(texture);           // gan hinh anh nha vat cho sprite de ive ra cua so game
+    this->sprite.setPosition(this->x, this->y); // set vi tri cua hinh anh la toa  do cua nhan vat
+}
 int Character::get_gold() { return gold; }
 int Character::get_exp() { return exp; }
+int Character::get_exp_max() { return exp_max; }
+Bag& Character::get_bag() { return bag; }
+int Character::get_indexWeapon() const { return indexWeapon; }
+Vector<Weapons> Character::get_weapons() const { return weapons; }
+void Character::set_indexWeapon(int value) { indexWeapon = value; }
 
 void Character::incr_gold(int value) { this->gold += value; }
 void Character::incr_exp(int value) { this->exp += value; }
 
 void Character::decr_gold(int value) { this->gold -= value; }
 void Character::decr_exp(int value) { this->exp -= value; }
+void Character::setScale(float x, float y) { sprite.setScale(x, y); }
+
+ControlMode Character::get_Mode() { return mode; }
+void Character::set_Mode(ControlMode mode) { this->mode = mode; }
+
+int Character::get_level() { return level; }
+
+void Character::levelUp() // tang level
+{
+    if (level < 5)
+    {
+        level++;
+        exp = 0;
+        hp_max += 50;
+        hp = hp_max;
+    }
+}
+
+void Character::setPath(const Vector<sf::Vector2f> &newPath) // cap nhat duong di cho nhan vat tu A*
+{
+    path = newPath;
+    currentTarget = 0;
+}
+
+void Character::handleInput(double deltaTime) // di chuyen bang tay
+{
+    sf::Vector2f move(0.f, 0.f); // toa do di chuyen
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        move.y -= 100.f * deltaTime; // di len
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        move.y += 100.f * deltaTime; // di xuong
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        move.x -= 100.f * deltaTime; // qua trai
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        move.x += 100.f * deltaTime; // qua phai
+
+    sprite.move(move);
+}
+
+void Character::movePath(float deltaTime)
+{
+    if (currentTarget < static_cast<int>(path.get_size()))
+    {
+        sf::Vector2f target = path[currentTarget]; // lay toa do tiep theo
+        sf::Vector2f pos = sprite.getPosition();   // vi tri cua vat
+
+        sf::Vector2f dir = target - pos; // duong di
+        float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+
+        if (length > 1.f)
+        {
+            dir /= length;
+            pos += dir * deltaTime * 100.f;
+            sprite.setPosition(pos);
+        }
+        else
+        {
+            currentTarget++;
+        }
+    }
+}
+
+void Character::update(float deltaTime)
+{
+    if (mode == ControlMode::Manual)// di chuyen bang tay
+        handleInput(deltaTime);
+        
+    else if (mode == ControlMode::Auto)
+        movePath(deltaTime); // di chuyen tu dong bang A*
+}
+
+bool Character::isColliding(const sf::Sprite &other)
+{
+    return sprite.getGlobalBounds().intersects(other.getGlobalBounds());//neu vung chu nhat chua nhan vat chong ven vung chu nhat cua vat the thi la va cham
+}
+
+void Character::attack(Quadtree & qt)
+{
+    weapons[indexWeapon].attack(qt, this);
+}
+
+string Character::serialize() const 
+{
+    std::ostringstream ss;
+    ss  << x << "," 
+        << y << "," 
+        << walkable << ","
+        << hp << ","
+        << hp_max << "," 
+        << level << "," 
+        << gold << ","
+        << exp << "," 
+        << exp_max;
+    return ss.str();
+    }
+
+void Character::deserialize(std::istream& in) 
+{
+        char comma;
+        in  >> x >> comma
+            >> y >> comma
+            >> walkable >> comma
+            >> hp >> comma
+            >> hp_max >> comma
+            >> level >> comma
+            >> gold >> comma
+            >> exp >> comma
+            >> exp_max;
+}
+
+void Character::add_weapon(Weapons newWeapon)
+{
+    weapons.push_back(newWeapon);
+    if (indexWeapon == -1)
+    {
+        indexWeapon = 0;
+    }
+}
+
+void Character::switch_weapon(int index)
+{
+    if (index >= 0 && index < weapons.get_size())
+    {
+        set_indexWeapon(index);
+    }
+}
+
+bool Character::craft_weapon(WeaponType type)
+{
+    switch (type)
+    {
+        case WeaponType::WoodenSword:
+        {
+            if (bag.getWood() >= 3 && bag.getCoal() >= 1)
+            {
+                bag.decr_Wood(3);
+                bag.decr_Coal(1);
+                Weapons sword(WeaponType::WoodenSword, 8, 50.0, 1.5, "assets/Woodensword.png");
+                weapons.push_back(sword);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::IronSwood:
+        {
+            if (bag.getIron() >= 4 && bag.getCoal() >= 2 && bag.getWood() >= 1)
+            {
+                bag.decr_Iron(4);
+                bag.decr_Coal(2);
+                bag.decr_Wood(1);
+                Weapons sword(WeaponType::IronSwood, 15, 55.0, 1.3, "assets/Ironsword.png");
+                weapons.push_back(sword);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::Ax:
+        {
+            if (bag.getIron() >= 3 && bag.getCoal() >= 1 && bag.getWood() >= 3)
+            {
+                bag.decr_Iron(3);
+                bag.decr_Coal(1);
+                bag.decr_Wood(3);
+                Weapons ax(WeaponType::Ax, 20, 45.0, 0.9, "assets/Ax.png");
+                weapons.push_back(ax);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::Bow:
+        {
+            if (bag.getIron() >= 2 && bag.getCoal() >= 1 && bag.getWood() >= 2 && bag.getGold() >= 2)
+            {
+                bag.decr_Iron(2);
+                bag.decr_Coal(1);
+                bag.decr_Wood(2);
+                bag.decr_Gold(2);
+                Weapons bow(WeaponType::Bow, 12, 120.0, 1.0, "assets/Bow.png");
+                weapons.push_back(bow);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::Gun:
+        {
+            if (bag.getIron() >= 3 && bag.getCoal() >= 1 && bag.getWood() >= 1 
+             && bag.getGold() >= 4 && bag.getDiamond() >= 3 && bag.getEmerald() >= 1)
+            {
+                bag.decr_Iron(3);
+                bag.decr_Coal(1);
+                bag.decr_Wood(1);
+                bag.decr_Gold(4);
+                bag.decr_Diamond(3);
+                bag.decr_Emerald(1);
+                Weapons gun(WeaponType::Gun, 25, 200.0, 1, "assets/Gun.png");
+                weapons.push_back(gun);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
+void Character::level_up_castle(Castle* castle)
+{
+    if (cost)
+}

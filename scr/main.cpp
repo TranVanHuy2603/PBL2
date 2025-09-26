@@ -1,124 +1,87 @@
 #include <SFML/Graphics.hpp>
-//ran san moi
-int HEIGHT = 900;
-int WEIGHT = 1300;
-const int size = 50;
-struct SnakeSegment
-{
-    int x, y;
-}; 
-//ghtuhgtght
+#include <vector>
+#include <iostream>
+#include <string>
 
-enum Direction {Up, Down, Left, Right};
+struct Weapon {
+    std::string name;
+    int price;
+    std::string imagePath;
+};
+
+struct WeaponButton {
+    bool hasWeapon = false;
+    Weapon weapon;
+    sf::RectangleShape rect;
+    sf::Text label;
+};
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(WEIGHT, HEIGHT), "Ran san moi");
-    window.setFramerateLimit(8);
-    sf::Event event;
+    // Tạo cửa sổ
+    sf::RenderWindow window(sf::VideoMode(1024, 768), "RTS Weapon Shop Menu");
 
-    std::vector<SnakeSegment> snake = {{WEIGHT / 2 / size, HEIGHT / 2 / size}};
-    SnakeSegment food = {rand() % (WEIGHT / size), rand() % (HEIGHT / size)};
-    Direction dir = Right;
-    bool check = true;
-
+    // Font chữ
     sf::Font font;
-    if (!font.loadFromFile("assets/arial.ttf")) return -1;
+    if (!font.loadFromFile("arial.ttf")) {
+        std::cout << "Cannot load font!\n";
+        return -1;
+    }
 
-    while (window.isOpen())
-    {
-        while (window.pollEvent(event))
-        {
+    // Tạo menu 3 ô trống
+    std::vector<WeaponButton> menuButtons;
+    int startX = 800;
+    int startY = 50;
+    int buttonWidth = 150;
+    int buttonHeight = 100;
+    int gap = 20;
+
+    for (int i = 0; i < 3; i++) {
+        WeaponButton wb;
+        wb.rect.setPosition(startX, startY + i * (buttonHeight + gap));
+        wb.rect.setSize(sf::Vector2f(buttonWidth, buttonHeight));
+        wb.rect.setFillColor(sf::Color(50, 50, 50));      // màu nền ô
+        wb.rect.setOutlineColor(sf::Color::White);         // viền trắng
+        wb.rect.setOutlineThickness(3);
+
+        wb.label.setFont(font);
+        wb.label.setString("Empty");
+        wb.label.setCharacterSize(20);
+        wb.label.setFillColor(sf::Color::White);
+        wb.label.setPosition(startX + 20, startY + i * (buttonHeight + gap) + buttonHeight / 2 - 10);
+
+        menuButtons.push_back(wb);
+    }
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
-            {
                 window.close();
-            }
-            if (event.type == sf::Event::KeyPressed)
-            {
-                if ((event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left) && dir != Left && dir != Right) dir = Left;
-                else if ((event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right) && dir != Right && dir != Left) dir = Right;
-                else if ((event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up) && dir != Up && dir != Down) dir = Up;
-                else if ((event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down) && dir != Down && dir != Up) dir = Down;
-            }
-        }
 
-        if (check)
-        {
-            SnakeSegment newHead = snake.front();
-            switch (dir)
-            {
-                case Up: newHead.y--; break;
-                case Down: newHead.y++; break;
-                case Left: newHead.x--; break;
-                
-                case Right: newHead.x++; break;
-            }
+            // Click chuột
+            if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                int mouseX = event.mouseButton.x;
+                int mouseY = event.mouseButton.y;
 
-            if (newHead.x < 0 || newHead.x >= WEIGHT / size || newHead.y < 0 || newHead.y >= HEIGHT / size)
-            {
-                check = false;
-            }
-
-            for (auto &segmennt : snake) 
-            {
-                if (newHead.x == segmennt.x && newHead.y == segmennt.y)
-                {
-                    check = false;
+                for (auto& wb : menuButtons) {
+                    if (wb.rect.getGlobalBounds().contains(mouseX, mouseY)) {
+                        if (wb.hasWeapon)
+                            std::cout << "Buy weapon: " << wb.weapon.name << "\n";
+                        else
+                            std::cout << "This slot is empty!\n";
+                    }
                 }
             }
-
-            snake.insert(snake.begin(), newHead);
-
-            if (newHead.x == food.x && newHead.y == food.y) 
-            {
-                int border_thickness = 2; 
-                food.x = border_thickness + rand() % ((WEIGHT / size) - 2 * border_thickness);
-                food.y = border_thickness + rand() % ((HEIGHT / size) - 2 * border_thickness);
-
-            }
-            else 
-            {
-                snake.pop_back();
-            }
         }
 
-        window.clear(sf::Color::Cyan);
-
-        float thickness = 20.f;
-        sf::RectangleShape border(sf::Vector2f(WEIGHT - thickness, HEIGHT - thickness));
-        border.setFillColor(sf::Color::Transparent);
-        border.setOutlineThickness(thickness);
-        border.setOutlineColor(sf::Color::Red);
-        border.setPosition(thickness / 2, thickness / 2);
-        window.draw(border);
-
-
-            sf::RectangleShape rect(sf::Vector2f(size - 1, size - 1));
-            rect.setFillColor(sf::Color::Green);
-            for (auto &seg : snake)
-            {
-                rect.setPosition(seg.x * size, seg.y * size);
-                window.draw(rect);
-            }
-
-            sf::CircleShape cir(size / 2);
-            cir.setFillColor(sf::Color::Red);
-            cir.setPosition(food.x * size, food.y * size);
-            window.draw(cir);
-        if (!check)
-        {
-            sf::Text gameOver;
-            gameOver.setFont(font);
-            gameOver.setString("THUA ROI LIU LIU");
-            gameOver.setCharacterSize(100); 
-            gameOver.setFillColor(sf::Color::Red);
-
-            float x = (WEIGHT - gameOver.getLocalBounds().width) / 2;
-            float y = (HEIGHT - gameOver.getLocalBounds().height) / 2;
-            gameOver.setPosition(x, y);
-            window.draw(gameOver);
+        window.clear(sf::Color(20, 20, 20)); // nền tổng thể
+        for (auto& wb : menuButtons) {
+            window.draw(wb.rect);
+            window.draw(wb.label);
         }
         window.display();
     }
+
     return 0;
 }
