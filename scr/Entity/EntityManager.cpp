@@ -46,7 +46,7 @@ void EntityManager::updateAll(float dt)
 {
     for (auto *e : entities)
     {
-        e->update(dt); // update tat ca
+         // update tat ca
     }
 }
 
@@ -56,55 +56,4 @@ void EntityManager::drawAll(sf::RenderWindow &window)
     {
         e->draw(window); // duyet tat ca vat the va ve ra
     }
-}
-
-void EntityManager::save(const string &filename)
-{
-    ofstream out(filename); // mo file
-    if (!out.is_open())
-    {
-        cerr << "ERROR\n";
-        return;
-    }
-
-    for (auto *e : entities)
-    {
-        out << e->serialize() << "\n"; // in vao file chuoi thong tin duoc lay tu vat the, serialize duoc dinh nghia rieng cho moi vat the
-    }
-
-    out.close();
-}
-
-void EntityManager::load(const string &filename)
-{
-    ifstream in(filename);
-    if (!in.is_open())
-    {
-        cerr << "ERROR\n";
-        return;
-    }
-
-    for (auto *e : entities)
-        delete e;
-    entities.clear(); // xao tat ca cac vat the cu
-
-    string type;
-    while (in >> type)
-    {
-        if (type == "Character")
-        {
-            Character *c = new Character();
-            c->deserialize(in);
-            entities.push_back(c);
-        }
-        else if (type == "Monster")
-        {
-            Monster *m = new Monster();
-            m->deserialize(in);
-            entities.push_back(m);
-        }
-        // them cac entity con thieu
-    }
-
-    in.close();
 }

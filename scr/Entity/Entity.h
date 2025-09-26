@@ -1,7 +1,7 @@
 #pragma once
-#include <string>
 #include <SFML/Graphics.hpp>
 #include "Vector.h"
+#include "String.h"
 
 using namespace std;
 
@@ -25,7 +25,4 @@ public:
     bool is_walkable() const;
     sf::Sprite get_sprite() const;
     virtual void draw(sf::RenderWindow &); // ve hinh anh ra cua so game
-    virtual void update(float) = 0;
-    virtual string serialize() const = 0;
-    virtual void deserialize(std::istream&) = 0;
 };

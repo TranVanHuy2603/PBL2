@@ -6,11 +6,13 @@
 
 using namespace std;
 
-Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed,const string &texture)
+Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed,const String &texture)
     : damage(damage), damage_range(damage_range), attack_speed(attack_speed)
 {
-    this->texture.loadFromFile(texture);
+    this->texture.loadFromFile(texture.c_str()); //load texture tu file hinh anh
     this->sprite.setTexture(this->texture);
+
+    this->attackCooldown = 1 / attack_speed; //thoi gian giua cac lan danh
 }
 
 int Weapons::get_damage() { return damage; }
@@ -19,6 +21,10 @@ double Weapons::get_attack_speed() { return attack_speed; }
 
 void Weapons::attack(Quadtree &qt, Character *nv)
 {
+
+    if (attackClock.getElapsedTime().asSeconds() < attackCooldown) //neu chua hoi chieu thi bo qua
+        return;
+
     sf::FloatRect bound = nv->get_sprite().getGlobalBounds();                          // lay ra hinh chu nhat chua nhan vat
     sf::Vector2f center(bound.left + bound.width / 2.f, bound.top + bound.height / 2); // lay ra tam
     // dung quadtree de lay ra nhung vat the xung quanh nhan vat
@@ -62,6 +68,7 @@ void Weapons::attack(Quadtree &qt, Character *nv)
 
         }
     }
+    attackClock.restart(); //reset sau khi tan cong
 }
 
 void Weapons::draw(sf::RenderWindow &window)

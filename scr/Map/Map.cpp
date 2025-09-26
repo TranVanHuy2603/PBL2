@@ -37,8 +37,8 @@ void Map::load_File(const std::string &filename)
         {
             grid.push_back(row); // them hang vao do thi
         }
-        height = grid.size();
-        width = (height > 0) ? grid[0].size() : 0;
+        height = grid.get_size();
+        width = (height > 0) ? grid[0].get_size() : 0;
     }
     file.close();
 }
