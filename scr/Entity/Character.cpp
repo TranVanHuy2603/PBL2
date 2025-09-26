@@ -24,6 +24,10 @@ Character::Character(int x, int y, bool walkable,
 int Character::get_gold() { return gold; }
 int Character::get_exp() { return exp; }
 int Character::get_exp_max() { return exp_max; }
+Bag& Character::get_bag() { return bag; }
+int Character::get_indexWeapon() const { return indexWeapon; }
+Vector<Weapons> Character::get_weapons() const { return weapons; }
+void Character::set_indexWeapon(int value) { indexWeapon = value; }
 
 void Character::incr_gold(int value) { this->gold += value; }
 void Character::incr_exp(int value) { this->exp += value; }
@@ -112,10 +116,11 @@ bool Character::isColliding(const sf::Sprite &other)
 
 void Character::attack(Quadtree & qt)
 {
-    weapons->attack(qt, this);
+    weapons[indexWeapon].attack(qt, this);
 }
 
-string Character::serialize() const {
+string Character::serialize() const 
+{
     std::ostringstream ss;
     ss  << x << "," 
         << y << "," 
@@ -129,7 +134,8 @@ string Character::serialize() const {
     return ss.str();
     }
 
-void Character::deserialize(std::istream& in) {
+void Character::deserialize(std::istream& in) 
+{
         char comma;
         in  >> x >> comma
             >> y >> comma
@@ -140,5 +146,112 @@ void Character::deserialize(std::istream& in) {
             >> gold >> comma
             >> exp >> comma
             >> exp_max;
-    }
+}
 
+void Character::add_weapon(Weapons newWeapon)
+{
+    weapons.push_back(newWeapon);
+    if (indexWeapon == -1)
+    {
+        indexWeapon = 0;
+    }
+}
+
+void Character::switch_weapon(int index)
+{
+    if (index >= 0 && index < weapons.get_size())
+    {
+        set_indexWeapon(index);
+    }
+}
+
+bool Character::craft_weapon(WeaponType type)
+{
+    switch (type)
+    {
+        case WeaponType::WoodenSword:
+        {
+            if (bag.getWood() >= 3 && bag.getCoal() >= 1)
+            {
+                bag.decr_Wood(3);
+                bag.decr_Coal(1);
+                Weapons sword(WeaponType::WoodenSword, 8, 50.0, 1.5, "assets/Woodensword.png");
+                weapons.push_back(sword);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::IronSwood:
+        {
+            if (bag.getIron() >= 4 && bag.getCoal() >= 2 && bag.getWood() >= 1)
+            {
+                bag.decr_Iron(4);
+                bag.decr_Coal(2);
+                bag.decr_Wood(1);
+                Weapons sword(WeaponType::IronSwood, 15, 55.0, 1.3, "assets/Ironsword.png");
+                weapons.push_back(sword);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::Ax:
+        {
+            if (bag.getIron() >= 3 && bag.getCoal() >= 1 && bag.getWood() >= 3)
+            {
+                bag.decr_Iron(3);
+                bag.decr_Coal(1);
+                bag.decr_Wood(3);
+                Weapons ax(WeaponType::Ax, 20, 45.0, 0.9, "assets/Ax.png");
+                weapons.push_back(ax);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::Bow:
+        {
+            if (bag.getIron() >= 2 && bag.getCoal() >= 1 && bag.getWood() >= 2 && bag.getGold() >= 2)
+            {
+                bag.decr_Iron(2);
+                bag.decr_Coal(1);
+                bag.decr_Wood(2);
+                bag.decr_Gold(2);
+                Weapons bow(WeaponType::Bow, 12, 120.0, 1.0, "assets/Bow.png");
+                weapons.push_back(bow);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+
+        case WeaponType::Gun:
+        {
+            if (bag.getIron() >= 3 && bag.getCoal() >= 1 && bag.getWood() >= 1 
+             && bag.getGold() >= 4 && bag.getDiamond() >= 3 && bag.getEmerald() >= 1)
+            {
+                bag.decr_Iron(3);
+                bag.decr_Coal(1);
+                bag.decr_Wood(1);
+                bag.decr_Gold(4);
+                bag.decr_Diamond(3);
+                bag.decr_Emerald(1);
+                Weapons gun(WeaponType::Gun, 25, 200.0, 1, "assets/Gun.png");
+                weapons.push_back(gun);
+                indexWeapon = weapons.get_size() - 1;
+                return true;
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
+void Character::level_up_castle(Castle* castle)
+{
+    if (cost)
+}

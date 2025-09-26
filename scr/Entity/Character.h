@@ -3,6 +3,8 @@
 #include "Monster.h"
 #include "Quadtree.h"
 #include "Weapons.h"
+#include "Bag.h"
+#include "Castle.h"
 #include <SFML/Graphics.hpp>
 #include <sstream>
 
@@ -19,7 +21,9 @@ private:
     int gold;
     int exp;
     int exp_max;
-    Weapons *weapons;
+    Bag bag;
+    Vector<Weapons> weapons;
+    int indexWeapon;
     ControlMode mode = ControlMode::Manual; // che do di chuyen bang A* hay la bang ban phim
 public:
     static sf::Texture texture;
@@ -28,6 +32,10 @@ public:
     int get_gold(); // lay so vang hien co
     int get_exp();  // lay kinh nghiem hien co
     int get_exp_max();
+    Bag& get_bag();
+    int get_indexWeapon() const;
+    Vector<Weapons> get_weapons() const;
+    void set_indexWeapon(int);
 
     void incr_gold(int); // tang vang len
     void incr_exp(int);  // tang kinh nghiem len
@@ -54,4 +62,9 @@ public:
 
     std::string serialize() const override;
     void deserialize(std::istream &) override;
+
+    void add_weapon(Weapons);
+    void switch_weapon(int index);
+    bool craft_weapon(WeaponType);
+    void level_up_castle(Castel*);
 };

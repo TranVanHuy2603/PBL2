@@ -7,9 +7,11 @@ class Character;
 enum WeaponType
 {
     BareHand,
-    Sword,
+    WoodenSword,
+    IronSwood,
     Ax,
-    Bow
+    Bow,
+    Gun
 };
 
 class Weapons //vu khi
@@ -23,7 +25,7 @@ protected:
     sf::Texture texture;
 
 public:
-    Weapons(WeaponType, int, double, double, string&);
+    Weapons(WeaponType, int, double, double, const string&);
     int get_damage();
     double get_damage_range();
     double get_attack_speed();
