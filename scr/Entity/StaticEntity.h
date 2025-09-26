@@ -1,5 +1,5 @@
-#include "Entity.h"
 #pragma once
+#include "Entity.h"
 
 class StaticEntity : public Entity
 {
@@ -7,7 +7,7 @@ protected:
     int gold; // luong vang ma nhan vat nhan duoc khi an
     int exp;  // luong exp ma nhan vat nhan duoc khi an
 public:
-    StaticEntity(int, int, double, bool, int, int);
+    StaticEntity(int, int, bool, int, int);
     int get_gold();
     int get_exp();
 

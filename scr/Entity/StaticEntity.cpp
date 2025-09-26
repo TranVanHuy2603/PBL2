@@ -1,8 +1,8 @@
 #include "StaticEntity.h"
 #include "Entity.h"
 
-StaticEntity::StaticEntity(int x, int y, double radius, bool walkable, int gold, int exp)
-    : Entity(x, y, radius)
+StaticEntity::StaticEntity(int x, int y, bool walkable, int gold, int exp)
+    : Entity(x, y)
 {
     this->walkable = walkable;
     this->gold = gold;
