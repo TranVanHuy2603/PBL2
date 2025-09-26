@@ -250,3 +250,8 @@ bool Character::craft_weapon(WeaponType type)
     }
     return false;
 }
+
+void Character::level_up_castle(Castle* castle)
+{
+    if (cost)
+}

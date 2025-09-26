@@ -4,6 +4,7 @@
 #include "Quadtree.h"
 #include "Weapons.h"
 #include "Bag.h"
+#include "Castle.h"
 #include <SFML/Graphics.hpp>
 #include <sstream>
 
@@ -65,4 +66,5 @@ public:
     void add_weapon(Weapons);
     void switch_weapon(int index);
     bool craft_weapon(WeaponType);
+    void level_up_castle(Castel*);
 };
