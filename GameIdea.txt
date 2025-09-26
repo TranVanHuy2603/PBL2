@@ -77,6 +77,70 @@ LOGIC GAME
 -Người chơi đứng ở vùng hồi máu xung quanh thành trì thì sẽ được hồi lại lượng máu đã mất
 -Nếu thành trì bị đánh sập thì người chơi thua, nếu tiêu diệt được hết quái mà thành trì vẫn còn thì người chơi thắng
 
+===================================================BỔ SUNG THÊM LOGIC GAME=========================================================
+1. Khởi đầu (Daytime – giai đoạn sinh tồn ban đầu)
+Trời sáng 🌞, bản đồ được random tài nguyên (gỗ, đá, sắt, thực phẩm, linh kiện từ tàn tích).
+
+Người chơi điều khiển nhân vật chính:
+
+Di chuyển bằng WASD hoặc click chuột → A* tìm đường.
+
+Thu thập tài nguyên để có tiền + EXP.
+
+EXP lên level → tăng máu tối đa + tốc độ thu thập.
+
+2. Xây dựng căn cứ (Base building)
+Người chơi dùng tiền/tài nguyên để xây:
+
+Thành trì (căn cứ chính – nếu sập thì thua).
+
+Tháp bắn (tự động tấn công quái).
+
+Kho tài nguyên (lưu trữ nhiều hơn).
+
+Farm / trại chăn nuôi (sinh thực phẩm định kỳ).
+
+Căn cứ có vùng hồi máu xung quanh (giúp nhân vật và lính hồi máu).
+
+3. Đêm đến (Nighttime – giai đoạn nguy hiểm)
+Khi trời tối 🌑, hệ thống spawn quái (zombie, sinh vật đột biến) ở các tọa độ random xa căn cứ.
+
+Quái sẽ dùng A* tìm đường đến thành trì để phá hủy.
+
+Người chơi có thể:
+
+Chiến đấu trực tiếp (tấn công bằng vũ khí).
+
+Xây thêm/sửa chữa công trình phòng thủ bằng tiền/tài nguyên.
+
+Chiêu mộ lính (nếu đủ tài nguyên) để hỗ trợ bảo vệ căn cứ.
+
+4. Chiến đấu & phòng thủ
+Quái tấn công thành trì 🏯.
+
+Tháp bắn và lính sẽ tự động chiến đấu.
+
+Người chơi phải vừa đánh quái, vừa quản lý tài nguyên, vừa sửa chữa công trình.
+
+Nếu thành trì sập → thua.
+
+Nếu diệt hết quái và căn cứ còn → qua vòng / thắng đêm đó.
+
+5. Vòng lặp dài hạn (Day/Night Cycle)
+Ban ngày → thu thập, xây dựng, mở rộng, chiêu mộ dân.
+
+Ban đêm → chiến đấu, phòng thủ căn cứ.
+
+Càng về sau:
+
+Quái xuất hiện nhiều hơn, mạnh hơn.
+
+Người chơi cần nâng cấp công nghệ (tech tree) để sống sót.
+
+Khi căn cứ đủ mạnh → mở map mới hoặc PvP giữa người chơi.
+
+=======================================================================================================================================
+
 TỔ CHỨC HƯỚNG ĐỐI TƯỢNG
 class Entity: có các thuộc tính x, y, tầm ảnh hưởng và có thể đi qua được không
 
