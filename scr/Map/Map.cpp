@@ -13,9 +13,9 @@ int Map::get_height() { return height; }
 int Map::get_width() { return width; }
 Vector<Vector<int>> Map::get_grid() { return grid; }
 
-void Map::load_File(const std::string &filename)
+void Map::load_File(const String &filename)
 {
-    ifstream file(filename);
+    ifstream file(filename.c_str());
     if (!file.is_open())
     {
         cerr << "ERROR" << filename << endl;
@@ -38,7 +38,7 @@ void Map::load_File(const std::string &filename)
             grid.push_back(row); // them hang vao do thi
         }
         height = grid.size();
-        width = (height > 0) ? grid[0].size() : 0;
+        width = (height > 0) ? grid[0].get_size() : 0;
     }
     file.close();
 }

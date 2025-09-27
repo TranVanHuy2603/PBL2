@@ -1,5 +1,5 @@
 #include "Vector.h"
-#include <string>
+#include "String.h"
 #include <SFML\Graphics.hpp>
 
 class Map
@@ -14,7 +14,7 @@ public:
     int get_width(); //lay chieu rong
     Vector<Vector<int>> get_grid(); //lay ma tran
 
-    void load_File(const std::string&); //load tu file
+    void load_File(const String&); //load tu file
     void draw(sf::RenderWindow&); //ve ban do
     bool isWalkable(int, int) const; //xem diem co di duoc hay khong
 };

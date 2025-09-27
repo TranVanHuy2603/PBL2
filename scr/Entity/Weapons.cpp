@@ -20,7 +20,7 @@ double Weapons::get_attack_speed() { return attack_speed; }
 void Weapons::attack(Quadtree &qt, Character *nv)
 {
     sf::FloatRect bound = nv->get_sprite().getGlobalBounds();                          // lay ra hinh chu nhat chua nhan vat
-    sf::Vector2f center(bound.left + bound.width / 2.f, bound.top + bound.height / 2); // lay ra tam
+    sf::Vector2f center(bound.left + bound.width / 2.f, bound.top + bound.height / 2.f); // lay ra tam
     // dung quadtree de lay ra nhung vat the xung quanh nhan vat
     Rect range(center.x, center.y, damage_range, damage_range); // tao mot hinh chu nhat bao quanh vung gay sat thuong
     Vector<Entity *> found;                                     // vecto luu cac vat the xung quanh nhan vat

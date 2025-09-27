@@ -25,7 +25,6 @@ private:
     sf::Texture texture;
     std::string name; // ten hien thi khi che tao
     bool status;
-
 public:
     Resource(int, int, ResourceType, const string &, const string &);
     ResourceType get_type() const;
