@@ -33,4 +33,5 @@ public:
     string get_name() const;
     void set_status();
     sf::Sprite &get_sprite();
+    void draw(sf::RenderWindow&) override;
 };

@@ -1,5 +1,5 @@
 #pragma once
-#include "Entity.h"
+#include "LivingEntity.h"
 #include "Character.h"
 #include <string>
 #include <SFML/Graphics.hpp>
@@ -22,4 +22,5 @@ public:
     void set_hp(int);
     void set_texture(string);
     void level_up();
+    void update(float);
 };

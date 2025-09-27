@@ -1,6 +1,6 @@
 #include "Castle.h"
 
-Castle::Castle() {};
+Castle::Castle() {}
 Castle::Castle(int x, int y, bool status,  int hp, int hp_max, int lv, int cost)
        :LivingEntity(x, y, status, hp, hp_max), level(lv), cost(cost) 
 {
@@ -24,3 +24,5 @@ void Castle::level_up()
         cost += 50;
     }
 }
+
+void Castle::update(float deltatime) { }

@@ -1,28 +1,35 @@
 #pragma once
-#include <Vector.h>
-#include <fstream>
+#include "Vector.h"
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
 #include "Character.h"
-#include "Monster.h"
+#include "Castle.h"
+#include "Quadtree.h"
 
 class EntityManager {
 private:
-    Vector<Entity*> entities; //danh sach cac vat the  (con tro)
+    Vector<Entity*> entities; //tat ca cac vat the
+    Quadtree quadtree; //cay quadtree
+
+    Character* player = nullptr;
+    Castle* castle = nullptr;
 
 public:
-    EntityManager() = default;
+    EntityManager(const Rect&);
     ~EntityManager();
 
-    void add(Entity*); //them vat the
-    void remove(Entity*); //xoa vat the
+    void add(Entity*);
+    void remove(Entity*);
 
-    Character* getPlayer(); //tra ve nguoi choi
-    Vector<Entity*>& getEntities(); //tra ve vat the
+    Character* getPlayer();
+    Castle* getCastle();
+    Vector<Entity*>& getEntities();
+    
+    void set_player(Character*);
+    void set_castle(Castle*);
 
-    void updateAll(float); //cap nhat tat ca
-    void drawAll(sf::RenderWindow&); //ve
+    void updateAll(float, Quadtree*, Vector<Vector<ASNode>>&, double);
+    void drawAll(sf::RenderWindow&);
 
-    void save(const std::string&); //luu
-    void load(const std::string&); //doc du lieu tu file
+    Vector<Entity*> queryRange(const Rect&);
 };

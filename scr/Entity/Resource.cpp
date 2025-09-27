@@ -12,3 +12,11 @@ ResourceType Resource::get_type() const { return resourcetype; }
 string Resource::get_name() const { return name; }
 void Resource::set_status() { status = false; }
 sf::Sprite& Resource::get_sprite() { return sprite; }
+
+void Resource::draw(sf::RenderWindow& window)
+{
+    if (status)
+    {
+        draw(window);
+    }
+}

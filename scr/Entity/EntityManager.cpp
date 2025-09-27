@@ -1,11 +1,13 @@
 #include "EntityManager.h"
+#include "Monster.h"
+#include "Castle.h"
+#include "Character.h"
 #include <iostream>
-#include <algorithm>
 
 using namespace std;
 
 EntityManager::~EntityManager()
-{ // ham huy
+{
     for (auto *e : entities)
     {
         delete e;
@@ -15,7 +17,7 @@ EntityManager::~EntityManager()
 
 void EntityManager::add(Entity *e)
 {
-    entities.push_back(e); // them mot vst the vao
+    entities.push_back(e);
 }
 
 void EntityManager::remove(Entity *e)
@@ -24,36 +26,38 @@ void EntityManager::remove(Entity *e)
     delete e;
 }
 
-Character *EntityManager::getPlayer()
-{
-    for (auto *e : entities)
-    {                                                     // duyet tat ca cac vat the
-        Character *player = dynamic_cast<Character *>(e); // ep kieu neu la character
-        if (player && player->get_type() == "Character")
-        { // xem lai cho chac chan co phai la nguoic hoi khong
-            return player;
-        }
-    }
-    return nullptr; // eu khong thi tra ve con tro trong
-}
+Character* EntityManager::getPlayer() { return player; }
+
+Castle* EntityManager::getCastle() { return castle; }
 
 Vector<Entity*>& EntityManager::getEntities()
 {
-    return entities; // tra ve danh sach vat the
+    return entities;
 }
 
-void EntityManager::updateAll(float dt)
+void EntityManager::set_player(Character* value) { player = value; }
+void EntityManager::set_castle(Castle* value) { castle = value; }
+
+void EntityManager::updateAll(float dt, Quadtree* qt, Vector<Vector<ASNode>>& grid, double cellSize)
 {
-    for (auto *e : entities)
+    Castle* castle   = getCastle();
+    Character* player = getPlayer();
+
+    for (auto *e : entities)//duyet tat ca vat the
     {
-         // update tat ca
+        if (Monster* m = dynamic_cast<Monster*>(e))
+        {
+            //quai tim duong tan cong bang A*
+            m->update(dt, castle, player, qt, grid, cellSize);
+        }
+
     }
+    castle->update(dt);
+    player->update(dt);
 }
 
 void EntityManager::drawAll(sf::RenderWindow &window)
 {
     for (auto *e : entities)
-    {
-        e->draw(window); // duyet tat ca vat the va ve ra
-    }
+        e->draw(window);
 }

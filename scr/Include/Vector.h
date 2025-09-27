@@ -46,6 +46,11 @@ public:
     T *end();
     const T *begin() const;
     const T *end() const;
+
+    const T& front() const;
+    const T& back() const;
+    T& front();
+    T& back();
 };
 
 template <typename T>
@@ -282,6 +287,30 @@ const T *Vector<T>::begin() const { return array; }
 
 template <typename T>
 const T *Vector<T>::end() const { return array + size; }
+
+template <typename T>
+T& Vector<T>::front() {
+    if (size == 0) throw std::out_of_range("Vector is empty");
+    return array[0];
+}
+
+template <typename T>
+T& Vector<T>::back() {
+    if (size == 0) throw std::out_of_range("Vector is empty");
+    return array[size - 1];
+}
+
+template <typename T>
+const T& Vector<T>::front() const {
+    if (size == 0) throw std::out_of_range("Vector is empty");
+    return array[0];
+}
+
+template <typename T>
+const T& Vector<T>::back() const {
+    if (size == 0) throw std::out_of_range("Vector is empty");
+    return array[size - 1];
+}
 
 template class Vector<int>;
 template class Vector<String>;

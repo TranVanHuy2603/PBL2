@@ -8,6 +8,10 @@
 #include <SFML/Graphics.hpp>
 using namespace std;
 
+class Character;
+class Castle;
+class Quadtree;
+
 class Monster : public LivingEntity
 {
 private:
@@ -28,6 +32,5 @@ public:
     void set_path(const Vector<sf::Vector2f>&);
     void movePath(float);
     void attack(LivingEntity*, float);
-    void find_target_path(Castle*, Character*);
     void update(float, Castle*, Character*, Quadtree*, Vector<Vector<ASNode>>&, double);
 };
