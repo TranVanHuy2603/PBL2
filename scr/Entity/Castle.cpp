@@ -1,8 +1,8 @@
 #include "Castle.h"
 
 Castle::Castle() {};
-Castle::Castle(int x, int y, int lv, int cost)
-       :Entity(x, y), level(lv), cost(cost) 
+Castle::Castle(int x, int y, bool status,  int hp, int hp_max, int lv, int cost)
+       :LivingEntity(x, y, status, hp, hp_max), level(lv), cost(cost) 
 {
     this->walkable = false;
 };

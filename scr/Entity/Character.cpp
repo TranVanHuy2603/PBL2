@@ -36,8 +36,8 @@ void Character::decr_gold(int value) { this->gold -= value; }
 void Character::decr_exp(int value) { this->exp -= value; }
 void Character::setScale(float x, float y) { sprite.setScale(x, y); }
 
-ControlMode Character::get_Mode() { return mode; }
-void Character::set_Mode(ControlMode mode) { this->mode = mode; }
+// ControlMode Character::get_Mode() { return mode; }
+// void Character::set_Mode(ControlMode mode) { this->mode = mode; }
 
 int Character::get_level() { return level; }
 
@@ -52,11 +52,11 @@ void Character::levelUp() // tang level
     }
 }
 
-void Character::setPath(const Vector<sf::Vector2f> &newPath) // cap nhat duong di cho nhan vat tu A*
-{
-    path = newPath;
-    currentTarget = 0;
-}
+// void Character::setPath(const Vector<sf::Vector2f> &newPath) // cap nhat duong di cho nhan vat tu A*
+// {
+//     path = newPath;
+//     currentTarget = 0;
+// }
 
 void Character::handleInput(double deltaTime) // di chuyen bang tay
 {
@@ -77,36 +77,40 @@ void Character::handleInput(double deltaTime) // di chuyen bang tay
     sprite.move(move);
 }
 
-void Character::movePath(float deltaTime)
-{
-    if (currentTarget < static_cast<int>(path.get_size()))
-    {
-        sf::Vector2f target = path[currentTarget]; // lay toa do tiep theo
-        sf::Vector2f pos = sprite.getPosition();   // vi tri cua vat
+// void Character::movePath(float deltaTime)
+// {
+//     if (currentTarget < static_cast<int>(path.get_size()))
+//     {
+//         sf::Vector2f target = path[currentTarget]; // lay toa do tiep theo
+//         sf::Vector2f pos = sprite.getPosition();   // vi tri cua vat
 
-        sf::Vector2f dir = target - pos; // duong di
-        float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+//         sf::Vector2f dir = target - pos; // duong di
+//         float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
 
-        if (length > 1.f)
-        {
-            dir /= length;
-            pos += dir * deltaTime * 100.f;
-            sprite.setPosition(pos);
-        }
-        else
-        {
-            currentTarget++;
-        }
-    }
-}
+//         if (length > 1.f)
+//         {
+//             dir /= length;
+//             pos += dir * deltaTime * 100.f;
+//             sprite.setPosition(pos);
+//         }
+//         else
+//         {
+//             currentTarget++;
+//         }
+//     }
+// }
 
-void Character::update(float deltaTime)
-{
-    if (mode == ControlMode::Manual)// di chuyen bang tay
-        handleInput(deltaTime);
+// void Character::update(float deltaTime)
+// {
+//     if (mode == ControlMode::Manual)// di chuyen bang tay
+//         handleInput(deltaTime);
         
-    else if (mode == ControlMode::Auto)
-        movePath(deltaTime); // di chuyen tu dong bang A*
+//     else if (mode == ControlMode::Auto)
+//         movePath(deltaTime); // di chuyen tu dong bang A*
+// }
+void Character::update(float deltatime)
+{
+    handleInput(deltatime);
 }
 
 bool Character::isColliding(const sf::Sprite &other)
@@ -116,10 +120,10 @@ bool Character::isColliding(const sf::Sprite &other)
 
 void Character::attack(Quadtree & qt)
 {
-    weapons[indexWeapon]->attack(qt, this);
+    weapons[indexWeapon]->attack(qt, this); //tan cong bang vu khi
 }
 
-void Character::add_weapon(Weapons* newWeapon)
+void Character::add_weapon(Weapons* newWeapon) //them vu khi moi
 {
     weapons.push_back(newWeapon);
     if (indexWeapon == -1)
@@ -128,7 +132,7 @@ void Character::add_weapon(Weapons* newWeapon)
     }
 }
 
-void Character::switch_weapon(int index)
+void Character::switch_weapon(int index) //doi vu khi
 {
     if (index >= 0 && index < weapons.get_size())
     {
@@ -136,18 +140,21 @@ void Character::switch_weapon(int index)
     }
 }
 
-bool Character::craft_weapon(WeaponType type)
+bool Character::craft_weapon(WeaponType type) //truyen vao tham so la loai vu kkhi (enum)
 {
     switch (type)
     {
         case WeaponType::WoodenSword:
         {
-            if (bag.getWood() >= 3 && bag.getCoal() >= 1)
+            if (bag.getWood() >= 3 && bag.getCoal() >= 1) //kiem tra co du tai nguyen khong
             {
+                //neu du thi tru tai nguyen xuong
                 bag.decr_Wood(3);
                 bag.decr_Coal(1);
+                //tao ra vu khi moi va them vao cho nguoi choi
                 Weapons* sword = new Weapons(WeaponType::WoodenSword, 8, 50.0, 1.5, "assets/Woodensword.png");
                 weapons.push_back(sword);
+                //cho nguoi choi su dung ngay vu khi moi vua che tao
                 indexWeapon = weapons.get_size() - 1;
                 return true;
             }
@@ -224,9 +231,9 @@ bool Character::craft_weapon(WeaponType type)
 
 void Character::level_up_castle(Castle* castle)
 {
-    if (gold >= castle->get_cost())
+    if (gold >= castle->get_cost()) //kiem tra vang co du de nang cap khong
     {
-        castle->level_up();
-        decr_gold(castle->get_cost());
+        castle->level_up(); //nang level
+        decr_gold(castle->get_cost()); //tru vang ngoi choi hien co
     }
 }

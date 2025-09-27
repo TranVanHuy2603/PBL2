@@ -4,7 +4,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
-class Castle : public Entity
+class Castle : public LivingEntity
 {
 private:
     int level;
@@ -13,7 +13,7 @@ private:
 
 public:
     Castle();
-    Castle(int, int, int, int);
+    Castle(int, int, bool, int, int, int, int);
     int get_level() const;
     int get_cost() const;
     int get_hp() const;
