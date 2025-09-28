@@ -37,7 +37,7 @@ void Map::load_File(const String &filename)
         {
             grid.push_back(row); // them hang vao do thi
         }
-        height = grid.size();
+        height = grid.get_size();
         width = (height > 0) ? grid[0].get_size() : 0;
     }
     file.close();
@@ -55,7 +55,7 @@ void Map::draw(sf::RenderWindow &window)
         {
             if (grid[y][x] == 0)
             {                                        // neu di duoc
-                tile.setFillColor(sf::Color::Black); // walkable
+                tile.setFillColor(sf::Color::White); // walkable
             }
             else
             {                                        // neu khong di duoc

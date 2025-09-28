@@ -106,11 +106,11 @@ int Bag::getGold() const { return Gold; }
 int Bag::getDiamond() const { return Diamond; }
 int Bag::getEmerald() const { return Emerald; }
 
-int Bag::decr_Wood(int value) { Wood -= value ;}
-int Bag::decr_Stone(int value) { Stone -= value; }
-int Bag::decr_Sand(int value) { Sand -= value; }
-int Bag::decr_Coal(int value) { Coal -= value; }
-int Bag::decr_Iron(int value) { Iron -= value; }
-int Bag::decr_Gold(int value) { Gold -= value; }
-int Bag::decr_Diamond(int value) { Diamond -= value; }
-int Bag::decr_Emerald(int value) { Emerald -= value; }
+void Bag::decr_Wood(int value) { Wood -= value ;}
+void Bag::decr_Stone(int value) { Stone -= value; }
+void Bag::decr_Sand(int value) { Sand -= value; }
+void Bag::decr_Coal(int value) { Coal -= value; }
+void Bag::decr_Iron(int value) { Iron -= value; }
+void Bag::decr_Gold(int value) { Gold -= value; }
+void Bag::decr_Diamond(int value) { Diamond -= value; }
+void Bag::decr_Emerald(int value) { Emerald -= value; }

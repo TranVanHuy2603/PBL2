@@ -11,7 +11,7 @@ private:
     llu length; // Do dai cua chuoi
 
     // Cac ham tien ich noi bo
-    llu strlen(const char *) const;               // Ham tiinh do dai cua chuoi
+    llu strlen(const char *) const;               // Ham tinh do dai cua chuoi
     void strcpy(char *, const char *) const;      // Ham copy chuoi
     int strcmp(const char *, const char *) const; // Ham so sanh chuoi
 public:

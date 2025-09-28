@@ -22,34 +22,3 @@ void Monster::draw(sf::RenderWindow & window)
 {
     window.draw(sprite);
 }
-
-std::string Monster::serialize() const {
-    std::ostringstream ss;
-    ss << x << "," 
-       << y << ","
-       << walkable << ","
-       << hp << "," 
-       << hp_max << ","
-       << damage << "," 
-       << damage_range << ","
-       << attack_speed << ","
-       << gold << ","
-       << exp;
-    return ss.str();
-}
-
-
-void Monster::deserialize(std::istream& in) {
-    char comma;
-
-    in >> x >> comma
-       >> y >> comma
-       >> walkable >> comma
-       >> hp >> comma
-       >> hp_max >> comma
-       >> damage >> comma
-       >> damage_range >> comma
-       >> attack_speed >> comma
-       >> gold >> comma
-       >> exp;
-}

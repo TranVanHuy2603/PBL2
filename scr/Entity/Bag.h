@@ -30,12 +30,12 @@ public:
     int getDiamond() const;
     int getEmerald() const;
 
-    int decr_Wood(int);
-    int decr_Stone(int);
-    int decr_Sand(int);
-    int decr_Coal(int);
-    int decr_Iron(int);
-    int decr_Gold(int);
-    int decr_Diamond(int);
-    int decr_Emerald(int);
+    void decr_Wood(int);
+    void decr_Stone(int);
+    void decr_Sand(int);
+    void decr_Coal(int);
+    void decr_Iron(int);
+    void decr_Gold(int);
+    void decr_Diamond(int);
+    void decr_Emerald(int);
 };

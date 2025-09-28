@@ -18,8 +18,6 @@ public:
     Monster(int, int, double, bool, int, int, int, double, double, int, int);
     int get_gold() const;
     int get_exp() const;
-    void update(float) override;
+    void update(float);
     void draw(sf::RenderWindow &) override;
-    string serialize() const override;
-    void deserialize(std::istream &) override;
 };

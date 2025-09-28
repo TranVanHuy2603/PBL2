@@ -26,7 +26,7 @@ int Character::get_exp() { return exp; }
 int Character::get_exp_max() { return exp_max; }
 Bag& Character::get_bag() { return bag; }
 int Character::get_indexWeapon() const { return indexWeapon; }
-Vector<Weapons> Character::get_weapons() const { return weapons; }
+Vector<Weapons*>& Character::get_weapons() { return weapons; }
 void Character::set_indexWeapon(int value) { indexWeapon = value; }
 
 void Character::incr_gold(int value) { this->gold += value; }
@@ -116,39 +116,10 @@ bool Character::isColliding(const sf::Sprite &other)
 
 void Character::attack(Quadtree & qt)
 {
-    weapons[indexWeapon].attack(qt, this);
+    weapons[indexWeapon]->attack(qt, this);
 }
 
-string Character::serialize() const 
-{
-    std::ostringstream ss;
-    ss  << x << "," 
-        << y << "," 
-        << walkable << ","
-        << hp << ","
-        << hp_max << "," 
-        << level << "," 
-        << gold << ","
-        << exp << "," 
-        << exp_max;
-    return ss.str();
-    }
-
-void Character::deserialize(std::istream& in) 
-{
-        char comma;
-        in  >> x >> comma
-            >> y >> comma
-            >> walkable >> comma
-            >> hp >> comma
-            >> hp_max >> comma
-            >> level >> comma
-            >> gold >> comma
-            >> exp >> comma
-            >> exp_max;
-}
-
-void Character::add_weapon(Weapons newWeapon)
+void Character::add_weapon(Weapons* newWeapon)
 {
     weapons.push_back(newWeapon);
     if (indexWeapon == -1)
@@ -175,7 +146,7 @@ bool Character::craft_weapon(WeaponType type)
             {
                 bag.decr_Wood(3);
                 bag.decr_Coal(1);
-                Weapons sword(WeaponType::WoodenSword, 8, 50.0, 1.5, "assets/Woodensword.png");
+                Weapons* sword = new Weapons(WeaponType::WoodenSword, 8, 50.0, 1.5, "assets/Woodensword.png");
                 weapons.push_back(sword);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -190,7 +161,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Iron(4);
                 bag.decr_Coal(2);
                 bag.decr_Wood(1);
-                Weapons sword(WeaponType::IronSwood, 15, 55.0, 1.3, "assets/Ironsword.png");
+                Weapons* sword = new Weapons(WeaponType::IronSwood, 15, 55.0, 1.3, "assets/Ironsword.png");
                 weapons.push_back(sword);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -205,7 +176,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Iron(3);
                 bag.decr_Coal(1);
                 bag.decr_Wood(3);
-                Weapons ax(WeaponType::Ax, 20, 45.0, 0.9, "assets/Ax.png");
+                Weapons* ax = new Weapons(WeaponType::Ax, 20, 45.0, 0.9, "assets/Ax.png");
                 weapons.push_back(ax);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -221,7 +192,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Coal(1);
                 bag.decr_Wood(2);
                 bag.decr_Gold(2);
-                Weapons bow(WeaponType::Bow, 12, 120.0, 1.0, "assets/Bow.png");
+                Weapons* bow = new Weapons(WeaponType::Bow, 12, 120.0, 1.0, "assets/Bow.png");
                 weapons.push_back(bow);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -240,7 +211,7 @@ bool Character::craft_weapon(WeaponType type)
                 bag.decr_Gold(4);
                 bag.decr_Diamond(3);
                 bag.decr_Emerald(1);
-                Weapons gun(WeaponType::Gun, 25, 200.0, 1, "assets/Gun.png");
+                Weapons* gun = new Weapons(WeaponType::Gun, 25, 200.0, 1, "assets/Gun.png");
                 weapons.push_back(gun);
                 indexWeapon = weapons.get_size() - 1;
                 return true;
@@ -253,5 +224,9 @@ bool Character::craft_weapon(WeaponType type)
 
 void Character::level_up_castle(Castle* castle)
 {
-    if (cost)
+    if (gold >= castle->get_cost())
+    {
+        castle->level_up();
+        decr_gold(castle->get_cost());
+    }
 }

@@ -4,22 +4,25 @@
 
 struct WeaponButton {
     sf::RectangleShape rect;        // hình chữ nhật làm nền ô
-    sf::Texture texture;
+    sf::Texture texture;            // anh icon
     sf::Text label;                 // tên hoặc thông tin vũ khí
-    sf::Sprite icon;
+    sf::Sprite icon;                //anh
+    WeaponType type;                //loai vu khi
 };
 
 class Character;
 
 class WeaponMenu {
 private:
-    Vector<WeaponButton> buttons;
-    bool visible = false;
+    Vector<WeaponButton> buttons; //danh sach cac button
+    bool visible = false; //co duoc hien thi khong
+    sf::Font font; //font chu
 
 public:
-    void create(int startX, int startY, Vector<std::string>& icon);
-    void draw(sf::RenderWindow& window);
-    void handleClick(int mouseX, int mouseY, Character* player);
-    void toggle() { visible = !visible; }
-    bool isVisible() const { return visible; }
+    WeaponMenu();
+    void create(int, int, Vector<String>&, Vector<WeaponType>&); //tao menu
+    void draw(sf::RenderWindow&); //ve
+    void handleClick(int, int, Character*); //xu li chon bang click chuot
+    void toggle(); //bat tat menu 
+    bool isVisible() const; //kiem tra menu co duoc hien thi khong
 };
