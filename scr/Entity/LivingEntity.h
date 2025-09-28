@@ -9,7 +9,7 @@ protected:
     bool status;
 public:
     LivingEntity();
-    LivingEntity(int, int, bool, int, int);
+    LivingEntity(int, int, int);
     int get_hp();
     int get_hp_max();
     int get_damage();

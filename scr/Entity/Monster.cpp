@@ -3,14 +3,15 @@
 #include <cmath>
 
 Monster::Monster() {}
-Monster::Monster(int x, int y, double radius, bool walkable,
-                 int hp, int hp_max, int damage,
-                 double damage_range, double attack_speed, int gold, int exp)
-    : LivingEntity(x, y, walkable, hp, hp_max)
+Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
+                 double attack_speed, int gold, int exp)
+    : LivingEntity(x, y, hp_max), damage(damage), damage_range(damage_range),
+    attack_speed(attack_speed), gold(gold), exp(exp)
 {
-    this->gold = gold;
-    this->exp = exp;
-    this->type = "Monster";
+    type = "Monster";
+    texture.loadFromFile("assets/monster.png");
+    sprite.setTexture(texture);
+    sprite.setPosition(x, y);
 }
 
 int Monster::get_gold() const { return gold; }

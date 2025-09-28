@@ -1,6 +1,9 @@
 #include "Bag.h"
 
-Bag::Bag() {};
+Bag::Bag()
+    : Wood(0), Stone(0), Sand(0), Coal(0),
+      Iron(0), Gold(0), Diamond(0), Emerald(0)
+{};
 void Bag::add(ResourceType type)
 {
     switch (type)

@@ -23,11 +23,13 @@ private:
     float attackcooldown; //thoi gian sau moi cu danh
     Vector<sf::Vector2f> path; //duong di
     int currentTarget = 0; //chi so toa do trong duong di
+    sf::Texture texture;
 public:
     Monster();
-    Monster(int, int, double, bool, int, int, int, double, double, int, int);
+    Monster(int, int, int, int, double, double, int, int);
     int get_gold() const;
     int get_exp() const;
+
     void draw(sf::RenderWindow &) override;
     void set_path(const Vector<sf::Vector2f>&);
     void movePath(float);

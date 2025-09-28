@@ -12,7 +12,8 @@ enum WeaponType
     IronSwood, //kiem sat
     Ax, //riu
     Bow, //cung ten
-    Gun //sung
+    Gun, //sung
+    Count
 };
 
 class Weapons //vu khi
