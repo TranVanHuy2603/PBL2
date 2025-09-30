@@ -23,6 +23,7 @@ int main()
     manager.add(castle);
 
     manager.create_monster(15);
+    manager.create_resource(20);
 
     while (window.isOpen())
     {

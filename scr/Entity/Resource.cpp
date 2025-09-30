@@ -1,15 +1,14 @@
 #include "Resource.h"
 
-Resource::Resource(int x, int y, ResourceType type, const string &filename, const string &name)
-    : Entity(x, y), resourcetype(type), name(name)
+Resource::Resource(int x, int y, ResourceType type, const string &filename, int gold, int exp)
+    : Entity(x, y), resourcetype(type), gold(gold), exp(exp)
 {
-    texture.loadFromFile(filename);
+    if (!texture.loadFromFile(filename)) cout << "Loi khi doc tai nguyen\n";
     sprite.setTexture(texture);
     status = true;
 }
 
 ResourceType Resource::get_type() const { return resourcetype; }
-string Resource::get_name() const { return name; }
 void Resource::set_status() { status = false; }
 sf::Sprite& Resource::get_sprite() { return sprite; }
 
@@ -17,6 +16,9 @@ void Resource::draw(sf::RenderWindow& window)
 {
     if (status)
     {
-        draw(window);
+        window.draw(sprite);
     }
 }
+
+int Resource::get_gold() const { return gold; }
+int Resource::get_exp() const { return exp; }

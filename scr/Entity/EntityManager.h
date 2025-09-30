@@ -36,4 +36,5 @@ public:
     Quadtree& getQuadtree();
 
     void create_monster(int);
+    void create_resource(int);
 };
