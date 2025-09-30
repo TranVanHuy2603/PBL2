@@ -22,11 +22,7 @@ int main()
     manager.set_castle(castle);
     manager.add(castle);
 
-    for (int i = 0; i < 15; i++)
-    {
-        Monster* m = new Monster(50 + rand() % 800, 50 + rand() % 600, 20, 10, 5, rand()*10, 10, 20); 
-        manager.add(m);
-    }
+    manager.create_monster(15);
 
     while (window.isOpen())
     {

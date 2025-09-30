@@ -34,4 +34,6 @@ public:
     Vector<Entity*> queryRange(const Rect&);
 
     Quadtree& getQuadtree();
+
+    void create_monster(int);
 };
