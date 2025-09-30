@@ -9,9 +9,10 @@ Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
     attack_speed(attack_speed), gold(gold), exp(exp)
 {
     type = "Monster";
-    texture.loadFromFile("assets/monster.png");
+    if (!texture.loadFromFile("assets/Monster.png")) cout << "Error load Monster\n";
     sprite.setTexture(texture);
     sprite.setPosition(x, y);
+    sprite.setScale(0.1, 0.1);
 }
 
 int Monster::get_gold() const { return gold; }
@@ -19,6 +20,7 @@ int Monster::get_exp() const { return exp; }
 
 void Monster::draw(sf::RenderWindow &window)
 {
+    if (!status) return;
     window.draw(sprite);
 }
 
@@ -68,6 +70,7 @@ void Monster::attack(LivingEntity *target, float deltaTime)
 void Monster::update(float deltaTime, Castle *castle, Character *player,
                      Quadtree *qt, Vector<Vector<ASNode>> &grid, double cellSize)
 {
+    if (!status) return;
     // 1.Xac dinh muc tieu gan nhat
     LivingEntity *targetEntity;                             // muc tieu
     sf::Vector2f targetpos;                                 // toa do muc tieu

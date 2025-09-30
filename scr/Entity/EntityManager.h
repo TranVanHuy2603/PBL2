@@ -9,13 +9,13 @@
 class EntityManager {
 private:
     Vector<Entity*> entities; //tat ca cac vat the
-    Quadtree quadtree; //cay quadtree
+    Quadtree qt; //cay quadtree
 
     Character* player = nullptr;
     Castle* castle = nullptr;
 
 public:
-    EntityManager(const Rect&);
+    EntityManager(const Rect&, double);
     ~EntityManager();
 
     void add(Entity*);
@@ -28,8 +28,10 @@ public:
     void set_player(Character*);
     void set_castle(Castle*);
 
-    void updateAll(float, Quadtree*, Vector<Vector<ASNode>>&, double);
+    void updateAll(float, Vector<Vector<ASNode>>&, double);
     void drawAll(sf::RenderWindow&);
 
     Vector<Entity*> queryRange(const Rect&);
+
+    Quadtree& getQuadtree();
 };

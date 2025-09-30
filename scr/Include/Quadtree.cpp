@@ -23,7 +23,7 @@ void Quadtree::subdivide()
     NE = new Quadtree(Rect(x + w, y - h, w, h), capacity);
     NW = new Quadtree(Rect(x - w, y - h, w, h), capacity);
     SE = new Quadtree(Rect(x + w, y + h, w, h), capacity);
-    SW = new Quadtree(Rect(x - w, y + h, x, h), capacity);
+    SW = new Quadtree(Rect(x - w, y + h, w, h), capacity);
 
     divided = true;
 }
@@ -31,23 +31,40 @@ void Quadtree::subdivide()
 bool Quadtree::insert(Entity *e)
 {
     if (!area.contains(e))
+    {
         return false;
+    }
     else
     {
         if (entities.get_size() < capacity)
+        {
             entities.push_back(e);
+            cout << "Da them vat the vao quadtree\n";
+        }
         else
         {
             if (!divided)
                 subdivide();
             if (NE->insert(e))
+            {
+                cout << "Da them vat the vao quadtree\n";
                 return true;
+            }
             if (NW->insert(e))
+            {
+                cout << "Da them vat the vao quadtree\n";
                 return true;
+            }
             if (SW->insert(e))
+            {
+                cout << "Da them vat the vao quadtree\n";
                 return true;
+            }
             if (SE->insert(e))
+            {
+                cout << "Da them vat the vao quadtree\n";
                 return true;
+            }
         }
     }
     return false;
@@ -55,13 +72,16 @@ bool Quadtree::insert(Entity *e)
 
 void Quadtree::query(Rect r, Vector<Entity*> &found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
 {
-    if (area.doubleersects(r))
+    if (!area.doubleersects(r))
         return;
 
     for (auto &e : entities) // duyet tat ca
     {
         if (r.contains(e))
+        {
             found.push_back(e); // neu nhu r chua e thi them vao found
+            cout << "Da query duoc vat the\n";
+        }
     }
     if (divided) // neu nhu cay tree da duoc chia nho thi tim kiem trong cac cay con
     {

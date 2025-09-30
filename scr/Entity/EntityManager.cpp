@@ -6,6 +6,10 @@
 
 using namespace std;
 
+EntityManager::EntityManager(const Rect& area, double cap)
+    : qt(area, cap) 
+{}
+
 EntityManager::~EntityManager()
 {
     for (auto *e : entities)
@@ -18,6 +22,7 @@ EntityManager::~EntityManager()
 void EntityManager::add(Entity *e)
 {
     entities.push_back(e);
+    qt.insert(e);
 }
 
 void EntityManager::remove(Entity *e)
@@ -38,7 +43,7 @@ Vector<Entity*>& EntityManager::getEntities()
 void EntityManager::set_player(Character* value) { player = value; }
 void EntityManager::set_castle(Castle* value) { castle = value; }
 
-void EntityManager::updateAll(float dt, Quadtree* qt, Vector<Vector<ASNode>>& grid, double cellSize)
+void EntityManager::updateAll(float dt, Vector<Vector<ASNode>>& grid, double cellSize)
 {
     Castle* castle   = getCastle();
     Character* player = getPlayer();
@@ -48,7 +53,7 @@ void EntityManager::updateAll(float dt, Quadtree* qt, Vector<Vector<ASNode>>& gr
         if (Monster* m = dynamic_cast<Monster*>(e))
         {
             //quai tim duong tan cong bang A*
-            m->update(dt, castle, player, qt, grid, cellSize);
+            m->update(dt, castle, player, &qt, grid, cellSize);
         }
 
     }
@@ -60,4 +65,11 @@ void EntityManager::drawAll(sf::RenderWindow &window)
 {
     for (auto *e : entities)
         e->draw(window);
+
+}
+
+Quadtree& EntityManager::getQuadtree()
+{
+    cout << "Tra ve quadtree de thuc hien query tan cong\n";
+    return qt;
 }

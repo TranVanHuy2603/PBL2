@@ -23,7 +23,7 @@ private:
     Vector<Weapons*> weapons;
     int indexWeapon; //chi so cua vu khi trong vector
 public:
-    sf::Texture texture;
+
     Character();
     Character(int, int, int, int);
     ~Character();

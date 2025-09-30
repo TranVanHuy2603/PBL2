@@ -35,11 +35,11 @@ Recipe recipes[(int)WeaponType::Count]
 //theo thu tu la Damage, Damage_range, Attack_speed, texture
 WeaponInfo weaponInfos[(int)WeaponType::Count] 
 ={
-        {5, 10.0, 1.3, "assets/Barehand.png"},    //HareHand
-        {8, 50.0, 1.5, "assets/Woodensword.png"}, // WoodenSword
-        {15, 55.0, 1.3, "assets/Ironsword.png"},  // IronSwood
-        {20, 45.0, 0.9, "assets/Ax.png"},         // Ax
-        {12, 120.0, 1.0, "assets/Bow.png"},       // Bow
+        {5, 70.0, 1.3, "assets/Barehand.png"},    //HareHand
+        {8, 110.0, 1.5, "assets/Woodensword.png"}, // WoodenSword
+        {15, 125.0, 1.3, "assets/Ironsword.png"},  // IronSwood
+        {20, 80.0, 0.9, "assets/Ax.png"},         // Ax
+        {12, 150.0, 1.0, "assets/Bow.png"},       // Bow
         {25, 200.0, 1.0, "assets/Gun.png"}        // Gun
 };
 //--------------------------------------------------------------------
@@ -49,9 +49,11 @@ Character::Character() {}
 Character::Character(int x, int y, int hp_max, int exp_max)
     : LivingEntity(x, y, hp_max), level(1), gold(0), exp(0), exp_max(exp_max)
 {
-    this->type = "Character";
-    this->sprite.setTexture(texture);           // gan hinh anh nha vat cho sprite de ive ra cua so game
-    this->sprite.setPosition(this->x, this->y); // set vi tri cua hinh anh la toa  do cua nhan vat
+    type = "Character";
+    if (!texture.loadFromFile("assets/Character.png")) cout << "error load character\n";
+    sprite.setTexture(texture);           // gan hinh anh nha vat cho sprite de ive ra cua so game
+    sprite.setPosition(this->x, this->y); // set vi tri cua hinh anh la toa  do cua nhan vat
+    sprite.setScale(0.2, 0.2);
     craft_weapon(WeaponType::BareHand);
 }
 
@@ -129,6 +131,7 @@ bool Character::isColliding(const sf::Sprite &other)
 void Character::attack(Quadtree &qt)
 {
     weapons[indexWeapon]->attack(qt, this); // tan cong bang vu khi
+    cout << "Nhan vat tan cong\n";
 }
 
 void Character::add_weapon(Weapons *newWeapon) // them vu khi moi
@@ -166,7 +169,8 @@ bool Character::craft_weapon(WeaponType type)
     const WeaponInfo& info = weaponInfos[index]; //thuoc tinh cus vu khi
     Weapons *w = new Weapons(type, info.damage, info.damage_range, info.attack_speed, info.texture);
     
-    weapons.push_back(w);                 // them vu khi vao cho nhan vat
+    weapons.push_back(w);
+    if (!weapons.empty()) cout << "Da tao vu khi\n";         // them vu khi vao cho nhan vat
     indexWeapon = weapons.get_size() - 1; // cho nhan vat su dung vu khi ngay
     return true;
 }
