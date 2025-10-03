@@ -1,15 +1,15 @@
 #pragma once
-#include "Entity.h"
+#include "LivingEntity.h"
 #include "Character.h"
 #include <string>
 #include <SFML/Graphics.hpp>
 
-class Castle : public Entity
+class Castle : public LivingEntity
 {
 private:
     int level;
     int cost;
-    sf::Sprite spite;
+    sf::Texture texture;
 
 public:
     Castle();
@@ -22,4 +22,5 @@ public:
     void set_hp(int);
     void set_texture(string);
     void level_up();
+    void update(float);
 };

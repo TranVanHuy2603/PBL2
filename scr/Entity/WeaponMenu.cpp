@@ -24,17 +24,21 @@ WeaponMenu::WeaponMenu() {
 // tao cac button trong menu
 void WeaponMenu::create(int startX, int startY, Vector<String>& icons, Vector<WeaponType>& types) {
     const int size = 60;   // kich thuoc button
-    const int space = 10;  // khoang cach giua cac button
+    const int space = 30;  // khoang cach giua cac button
+
+    std::cout << "icons size = " << icons.get_size() << "\n";
 
     for (int i = 0; i < icons.get_size(); i++) {
         WeaponButton btn;
         btn.rect.setSize(sf::Vector2f(size, size));
-        btn.rect.setFillColor(sf::Color(200, 200, 200, 180));
+        btn.rect.setFillColor(sf::Color::Red); // màu nổi bật để test
         btn.rect.setPosition(startX, startY + i * (size + space));
 
-        // load texture vao button
+        std::cout << "Load icon " << icons[i] << "...\n";
         if (!btn.texture.loadFromFile(icons[i].c_str())) {
-            std::cerr << "ERROR: Khong load duoc icon " << icons[i] << "\n";
+            std::cerr << "Khong load duoc icon " << icons[i] << "\n";
+        } else {
+            std::cout << "Loaded " << icons[i] << "\n";
         }
 
         btn.icon.setTexture(btn.texture);
@@ -44,24 +48,33 @@ void WeaponMenu::create(int startX, int startY, Vector<String>& icons, Vector<We
 
         btn.label.setFont(font);
         btn.label.setCharacterSize(12);
-        btn.label.setFillColor(sf::Color::Black);
+        btn.rect.setFillColor(sf::Color::Red);
         btn.label.setString(weaponTypeToCStr(types[i]));
         btn.label.setPosition(startX + size + 5, startY + i * (size + space) + 20);
 
         buttons.push_back(btn);
     }
+
+    std::cout << "Da tao " << buttons.get_size() << " buttons\n";
 }
 
 // ve menu
 void WeaponMenu::draw(sf::RenderWindow& window) {
-    if (!visible) return;
+    std::cout << "Goi draw() - visible = " << (visible ? "true" : "false") 
+              << ", buttons = " << buttons.get_size() << "\n";
+
+    if (!visible) {
+        std::cout << "⚠️ Menu khong hien thi do visible = false\n";
+        return;
+    }
 
     for (int i = 0; i < buttons.get_size(); i++) {
         window.draw(buttons[i].rect);
-        window.draw(buttons[i].label);
         window.draw(buttons[i].icon);
+        window.draw(buttons[i].label);
     }
 }
+
 
 // xu li click chuot
 void WeaponMenu::handleClick(int mouseX, int mouseY, Character* player) {

@@ -21,15 +21,19 @@ class Resource : public Entity
 {
 private:
     ResourceType resourcetype; // loai tai nguyen
-    sf::Sprite sprite;
     sf::Texture texture;
-    std::string name; // ten hien thi khi che tao
     bool status;
+    int gold;
+    int exp;
+
 public:
-    Resource(int, int, ResourceType, const string &, const string &);
+    Resource(int, int, ResourceType, const string &, int, int);
     ResourceType get_type() const;
     int get_quantity() const;
-    string get_name() const;
-    void set_status();
     sf::Sprite &get_sprite();
+    int get_gold() const;
+    int get_exp() const;
+
+    void set_status();
+    void draw(sf::RenderWindow&) override;
 };

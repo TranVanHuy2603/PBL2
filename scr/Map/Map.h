@@ -1,20 +1,21 @@
-#include "Vector.h"
-#include "String.h"
-#include <SFML\Graphics.hpp>
+#pragma once
+#include <vector>
+#include <string>
+#include "Tile.h"
 
-class Map
-{
+class Map {
 private:
-    int height, width; //chieu cao va chieu rong cua ban do
-    Vector<Vector<int>> grid;//ma tran chua thong tin cac diem dung cho A*
+    int width, height;
+    std::vector<std::vector<Tile>> grid;  // dùng Tile thay vì int
+
 public:
-    Map(int, int);
+    Map(int w = 0, int h = 0);
 
-    int get_height(); //lay chieu cao
-    int get_width(); //lay chieu rong
-    Vector<Vector<int>> get_grid(); //lay ma tran
+    int get_width() const;
+    int get_height() const;
+    const std::vector<std::vector<Tile>>& get_grid() const;
 
-    void load_File(const String&); //load tu file
-    void draw(sf::RenderWindow&); //ve ban do
-    bool isWalkable(int, int) const; //xem diem co di duoc hay khong
+    void load_File(const std::string& filename);
+
+    bool isWalkable(int x, int y) const;
 };

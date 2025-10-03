@@ -7,10 +7,9 @@ protected:
     int hp;              // luong mau con lai
     int hp_max;          // luong mau toi da
     bool status;
-    int currentTarget = 0;
 public:
     LivingEntity();
-    LivingEntity(int, int, bool, int, int);
+    LivingEntity(int, int, int);
     int get_hp();
     int get_hp_max();
     int get_damage();

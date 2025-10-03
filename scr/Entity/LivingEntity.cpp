@@ -3,14 +3,11 @@
 
 LivingEntity::LivingEntity() {}
 
-LivingEntity::LivingEntity(int x, int y, bool walkable,
-                           int hp, int hp_max)
-    : Entity(x, y)
+LivingEntity::LivingEntity(int x, int y, int hp_max)
+    : Entity(x, y), hp(hp_max), hp_max(hp_max)
 {
-    this->hp = hp;
-    this->hp_max = hp_max;
-    this->walkable = walkable;
     this->status = true;
+    this->walkable = false;
 }
 
 int LivingEntity::get_hp() { return hp; }

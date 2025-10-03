@@ -41,9 +41,9 @@ void Priorityqueue<T, Compare>::minheapify(double index)
     double l = 2 * index + 1;
     double r = 2 * index + 2;
     double smallest = index;
-    if (l < heap.size() && comp(heap[l], heap[smallest]))
+    if (l < heap.get_size() && comp(heap[l], heap[smallest]))
         smallest = l;
-    if (r < heap.size() && comp(heap[r], heap[smallest]))
+    if (r < heap.get_size() && comp(heap[r], heap[smallest]))
         smallest = r;
     if (smallest != index)
     {
@@ -56,7 +56,7 @@ template <typename T, typename Compare>
 void Priorityqueue<T, Compare>::push(const T &value)
 {
     heap.push_back(value);
-    heapify_up(heap.size() - 1);
+    heapify_up(heap.get_size() - 1);
 }
 
 template <typename T, typename Compare>

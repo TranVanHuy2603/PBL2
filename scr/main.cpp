@@ -1,94 +1,51 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "WeaponMenu.h"
-#include "Character.h"
-#include "Bag.h"
+#include "EntityManager.h"
 
-int main() {
-    // tao cua so
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Weapon Crafting Menu Test");
+int main()
+{
+    sf::RenderWindow window(sf::VideoMode(800, 600), "PBL2");
+    window.setFramerateLimit(60);
 
-    // khoi tao nhan vat test
-    Character player(100, 100, true, 100, 100, 1, 10, 0, 10);
+    sf::Clock clock;           // tạo đồng hồ
+    float dt = clock.restart().asSeconds();
 
-    // them mot vai tai nguyen
-    player.get_bag().add(ResourceType::Wood);
-    player.get_bag().add(ResourceType::Wood);
-    player.get_bag().add(ResourceType::Wood);
-    player.get_bag().add(ResourceType::Coal);
+    Rect worldRect(0, 0, 800, 600); //khoi tao vung ban do cho quadtree
+    EntityManager manager(worldRect, 10); //quan li entity
 
-    // tao menu
-    WeaponMenu menu;
-    menu.toggle(); // bat menu de test
+    Character* player = new Character(100, 100, 200, 50); //khoi tao nhan vat
+    manager.set_player(player);
+    manager.add(player);
 
-    Vector<String> icons;
-    Vector<WeaponType> types;
+    Castle* castle = new Castle(150, 150, 500, 50);
+    manager.set_castle(castle);
+    manager.add(castle);
 
-    // danh sach icon va loai vu khi
-    icons.push_back("assets/Woodensword.png"); types.push_back(WeaponType::WoodenSword);
-    icons.push_back("assets/Ironsword.png");   types.push_back(WeaponType::IronSwood);
-    icons.push_back("assets/Ax.png");          types.push_back(WeaponType::Ax);
-    icons.push_back("assets/Bow.png");         types.push_back(WeaponType::Bow);
-    icons.push_back("assets/Gun.png");         types.push_back(WeaponType::Gun);
+    manager.create_monster(15);
+    manager.create_resource(20);
 
-    // tao cac button trong menu
-    menu.create(100, 100, icons, types);
-
-    // khoi tao font va text thong bao
-    sf::Font font;
-    if (!font.loadFromFile("assets/arial.ttf")) {
-        std::cerr << "Khong load duoc font\n";
-    }
-    sf::Text message;
-    message.setFont(font);
-    message.setCharacterSize(18);
-    message.setFillColor(sf::Color::Red);
-    message.setPosition(250, 50);
-
-    std::string msgText = "";
-
-    // vong lap game
-    while (window.isOpen()) {
+    while (window.isOpen())
+    {
         sf::Event event;
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) window.close();
-
-            // bam M de bat/tat menu
-            if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::M) {
-                menu.toggle();
-            }
-
-            // click chuot trai
-            if (event.type == sf::Event::MouseButtonPressed &&
-                event.mouseButton.button == sf::Mouse::Left) {
-
-                int mouseX = event.mouseButton.x;
-                int mouseY = event.mouseButton.y;
-
-                int before = player.get_weapons().get_size();
-                menu.handleClick(mouseX, mouseY, &player);
-                int after = player.get_weapons().get_size();
-
-                if (after > before) {
-                    msgText = "Crafted weapon successfully!";
-                } else {
-                    msgText = "Not enough resources!";
-                }
-                message.setString(msgText);
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            if (event.type == sf::Event::KeyPressed)
+        {
+            if (event.key.code == sf::Keyboard::Enter)
+            {
+                player->attack(manager.getQuadtree());
             }
         }
+        }
 
-        // xoa man hinh
-        window.clear(sf::Color::White);
-
-        // ve menu
-        menu.draw(window);
-
-        // ve thong bao
-        if (!msgText.empty()) window.draw(message);
-
-        // hien thi len cua so
+        float dt = clock.restart().asSeconds();
+        player->handleInput(dt);
+        window.clear(sf::Color(40, 40, 40));
+        manager.drawAll(window);
         window.display();
     }
-
     return 0;
 }

@@ -30,7 +30,10 @@ void Weapons::attack(Quadtree &qt, Character *nv)
     // dung quadtree de lay ra nhung vat the xung quanh nhan vat
     Rect range(center.x, center.y, damage_range, damage_range); // tao mot hinh chu nhat bao quanh vung gay sat thuong
     Vector<Entity *> found;                                     // vecto luu cac vat the xung quanh nhan vat
-    qt.query(range, found);                                     // lay ra at hte nam gan nhan vat
+    qt.query(range, found);  
+    if (!found.empty()) cout << "Da tim duoc muc tieu\n";
+    else cout << "Khong tim duoc muc tieu\n"; 
+                                       // lay ra at hte nam gan nhan vat
 
     for (auto e : found)
     {
@@ -42,19 +45,25 @@ void Weapons::attack(Quadtree &qt, Character *nv)
         float d = std::sqrt(dx * dx + dy * dy); // khoang cach thuc te
 
         if (d > damage_range)
-            continue;
+            {
+                cout << "Nam ngoai vung\n"; 
+                continue;
+            }
 
         if (Monster *m = dynamic_cast<Monster *>(e))
         {
             m->take_damage(damage);
+            cout << "Takedamage\n";
             if (!m->get_status()) // neu nhu quai chet
             {
+                cout << "Quai chet\n";
                 nv->incr_gold(m->get_gold()); // tang vang
                 nv->incr_exp(m->get_exp());   // tang exp
                 if (nv->get_exp() >= nv->get_exp_max())
                 {
                     nv->levelUp(); // tang level
                 }
+                qt.remove(m);
             }
         }
         else if (Resource *r = dynamic_cast<Resource *>(e))

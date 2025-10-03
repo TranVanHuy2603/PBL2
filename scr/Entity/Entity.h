@@ -12,7 +12,6 @@ protected:
     bool walkable;     // di qua duoc hay khong
     string type;
     sf::Sprite sprite; // Hinh anh duoc hien thi tren game
-    Vector<sf::Vector2f> path;
 
 public:
     Entity();
