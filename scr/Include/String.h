@@ -17,9 +17,8 @@ private:
 public:
     // ==== Constructors ====
     String();                    // Ham dung rong
-    String(const char* s = "");       // Ham dung tu C-String
+    String(const char* s);       // Ham dung tu C-String
     String(const String &other); // Ham dung copy
-    const char* c_str() const {return data;}
     // ==== Destructor ====
     ~String();
 

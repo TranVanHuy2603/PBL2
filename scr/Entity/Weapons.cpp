@@ -68,9 +68,17 @@ void Weapons::attack(Quadtree &qt, Character *nv)
         }
         else if (Resource *r = dynamic_cast<Resource *>(e))
         {
-            r->set_status();
-            nv->get_bag().add(r->get_type());
-            qt.remove(r);
+            r->take_damage();
+            if (!r->get_status())
+            {
+                nv->incr_gold(r->get_gold());
+                nv->incr_exp(r->get_exp());
+                qt.remove(r);
+                if (nv->get_exp() >= nv->get_exp_max())
+                {
+                    nv->levelUp(); // tang level
+                }
+            }
         }
         else
         {

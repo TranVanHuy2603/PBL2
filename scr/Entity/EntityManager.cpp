@@ -25,6 +25,7 @@ ResourceInfo resourceInfos[] = {
     {ResourceType::Diamond, 0.09f, "assets/diamond.png", 20, 30},
     {ResourceType::Emerald, 0.09f, "assets/emerald.png", 25, 35}};
 
+
 EntityManager::EntityManager(const Rect &area, double cap)
     : qt(area, cap)
 {
@@ -47,6 +48,7 @@ void EntityManager::add(Entity *e)
 
 void EntityManager::remove(Entity *e)
 {
+    qt.remove(e);
     entities.remove(e);
     delete e;
 }
@@ -59,6 +61,13 @@ Vector<Entity *> &EntityManager::getEntities()
 {
     return entities;
 }
+
+Quadtree &EntityManager::getQuadtree()
+{
+    cout << "Tra ve quadtree de thuc hien query tan cong\n";
+    return qt;
+}
+
 
 void EntityManager::set_player(Character *value) { player = value; }
 void EntityManager::set_castle(Castle *value) { castle = value; }
@@ -84,12 +93,6 @@ void EntityManager::drawAll(sf::RenderWindow &window)
 {
     for (auto *e : entities)
         e->draw(window);
-}
-
-Quadtree &EntityManager::getQuadtree()
-{
-    cout << "Tra ve quadtree de thuc hien query tan cong\n";
-    return qt;
 }
 
 bool isOverlapping(const sf::Sprite &s1, const sf::Sprite &s2)
@@ -122,7 +125,6 @@ void EntityManager::create_monster(int n)
                 }
             }
         }
-
         Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, 50, 10, 5, rand() % 10, 10, 20);
         add(m);
     }

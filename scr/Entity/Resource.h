@@ -25,6 +25,7 @@ private:
     bool status;
     int gold;
     int exp;
+    int hp;
 
 public:
     Resource(int, int, ResourceType, const string &, int, int);
@@ -33,7 +34,10 @@ public:
     sf::Sprite &get_sprite();
     int get_gold() const;
     int get_exp() const;
+    bool get_status() const;
 
     void set_status();
     void draw(sf::RenderWindow&) override;
+
+    void take_damage();
 };

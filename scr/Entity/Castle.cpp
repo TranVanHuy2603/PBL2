@@ -1,11 +1,11 @@
 #include "Castle.h"
 
 static const String castleTextures[] = {
-    // "assets/castle_lv1.png",
-    // "assets/castle_lv2.png",
-    // "assets/castle_lv3.png",
-    // "assets/castle_lv4.png",
-    // "assets/castle_lv4.png"
+    "assets/castle_lv1.png",
+    "assets/castle_lv2.png",
+    "assets/castle_lv3.png",
+    "assets/castle_lv4.png",
+    "assets/castle_lv4.png"
 };
 
 Castle::Castle() {}

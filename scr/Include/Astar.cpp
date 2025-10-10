@@ -1,6 +1,6 @@
 #include "Astar.h"
 #include "Priorityqueue.h"
-#include <set>
+#include "Set.h"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -74,7 +74,7 @@ Vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
     updateGridWalkable(grid, qt, cellSize);
 
     Priorityqueue<ASNode *, CompareASNode> openSet;
-    set<ASNode *> closeSet;
+    Set<ASNode *> closeSet;
 
     start->set_g(0);
     start->set_h(heuristic(start, goal));

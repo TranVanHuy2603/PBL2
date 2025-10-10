@@ -24,6 +24,7 @@ public:
     Character* getPlayer();
     Castle* getCastle();
     Vector<Entity*>& getEntities();
+    Quadtree& getQuadtree();
     
     void set_player(Character*);
     void set_castle(Castle*);
@@ -32,8 +33,6 @@ public:
     void drawAll(sf::RenderWindow&);
 
     Vector<Entity*> queryRange(const Rect&);
-
-    Quadtree& getQuadtree();
 
     void create_monster(int);
     void create_resource(int);

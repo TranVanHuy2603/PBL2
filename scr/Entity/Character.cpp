@@ -35,7 +35,7 @@ Recipe recipes[(int)WeaponType::Count]
 //theo thu tu la Damage, Damage_range, Attack_speed, texture
 WeaponInfo weaponInfos[(int)WeaponType::Count] 
 ={
-        {5, 70.0, 1.3, "assets/Barehand.png"},    //HareHand
+        {5, 70.0, 1.0, "assets/Barehand.png"},    //HareHand
         {8, 110.0, 1.5, "assets/Woodensword.png"}, // WoodenSword
         {15, 125.0, 1.3, "assets/Ironsword.png"},  // IronSwood
         {20, 80.0, 0.9, "assets/Ax.png"},         // Ax
@@ -70,7 +70,7 @@ int Character::get_exp_max() { return exp_max; }
 Bag &Character::get_bag() { return bag; }
 int Character::get_indexWeapon() const { return indexWeapon; }
 Vector<Weapons *> &Character::get_weapons() { return weapons; }
-int Character::get_level() { return level; }
+int Character::get_level() const { return level; }
 sf::Texture Character::get_texture() const { return texture; }
 
 // setter
@@ -99,6 +99,15 @@ void Character::levelUp() // tang level
     }
 }
 
+void Character::level_up_castle(Castle *castle)
+{
+    if (gold >= castle->get_cost()) // kiem tra vang co du de nang cap khong
+    {
+        castle->level_up();            // nang level
+        decr_gold(castle->get_cost()); // tru vang ngoi choi hien co
+    }
+}
+
 void Character::handleInput(double deltaTime) // di chuyen bang tay
 {
     sf::Vector2f move(0.f, 0.f); // toa do di chuyen
@@ -121,11 +130,6 @@ void Character::handleInput(double deltaTime) // di chuyen bang tay
 void Character::update(float deltatime)
 {
     handleInput(deltatime);
-}
-
-bool Character::isColliding(const sf::Sprite &other)
-{
-    return sprite.getGlobalBounds().intersects(other.getGlobalBounds()); // neu vung chu nhat chua nhan vat chong ven vung chu nhat cua vat the thi la va cham
 }
 
 void Character::attack(Quadtree &qt)
@@ -173,13 +177,4 @@ bool Character::craft_weapon(WeaponType type)
     if (!weapons.empty()) cout << "Da tao vu khi\n";         // them vu khi vao cho nhan vat
     indexWeapon = weapons.get_size() - 1; // cho nhan vat su dung vu khi ngay
     return true;
-}
-
-void Character::level_up_castle(Castle *castle)
-{
-    if (gold >= castle->get_cost()) // kiem tra vang co du de nang cap khong
-    {
-        castle->level_up();            // nang level
-        decr_gold(castle->get_cost()); // tru vang ngoi choi hien co
-    }
 }

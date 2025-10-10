@@ -33,6 +33,7 @@ public:
     int get_exp_max();
     Bag& get_bag();
     int get_indexWeapon() const;
+    int get_level() const; // lay ra level
     Vector<Weapons*>& get_weapons();
     sf::Texture get_texture() const;
 
@@ -45,19 +46,16 @@ public:
     void decr_gold(int); // giam vang xuong khi xay nha
     void decr_exp(int);  // giam kinh nghiem
 
-    int get_level(); // lay ra level
     void levelUp();  // tang level
+    void level_up_castle(Castle*);
 
     void handleInput(double);                   // di chuyen bang tay
-    // void movePath(float);                       // di chuyen theo a*
 
     void update(float); // di chuyen
 
-    bool isColliding(const sf::Sprite &); // dung de xu li va cham voi cac vat the khac
     void attack(Quadtree &);              // tan cong.....tham so dau vao la mot vecto cac Monster
 
     void add_weapon(Weapons*);
     void switch_weapon(int index);
     bool craft_weapon(WeaponType);
-    void level_up_castle(Castle*);
 };

@@ -1,6 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "Map.h"
 #include "String.h"
 
 class TileMap : public sf::Drawable, public sf::Transformable
