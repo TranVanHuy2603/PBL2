@@ -13,10 +13,10 @@ Castle::Castle(int x, int y, int hp_max, int cost)
        :LivingEntity(x, y, hp_max), level(0), cost(cost)
 { 
     walkable = false; 
-    if (!texture.loadFromFile("assets/castle_lv0.png")) cout << "Error load Castle\n";
+    if (!texture.loadFromFile("assets/castle/castle_lv0.png")) cout << "Error load Castle\n";
     sprite.setTexture(texture);
     sprite.setPosition(x, y);
-    sprite.setScale(0.2, 0.2);
+    sprite.setScale(0.5, 0.5);
 }
 
 int Castle::get_level() const { return level; }

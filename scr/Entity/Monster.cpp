@@ -9,7 +9,7 @@ Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
     attack_speed(attack_speed), gold(gold), exp(exp)
 {
     type = "Monster";
-    if (!texture.loadFromFile("assets/Monster.png")) cout << "Error load Monster\n";
+    if (!texture.loadFromFile("assets/monster/Monster.png")) cout << "Error load Monster\n";
     sprite.setTexture(texture);
     sprite.setPosition(x, y);
     sprite.setScale(0.1, 0.1);

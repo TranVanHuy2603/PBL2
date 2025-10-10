@@ -28,7 +28,7 @@ private:
     int hp;
 
 public:
-    Resource(int, int, ResourceType, const string &, int, int);
+    Resource(int, int, ResourceType, const string &, int, int, float);
     ResourceType get_type() const;
     int get_quantity() const;
     sf::Sprite &get_sprite();

@@ -5,13 +5,13 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "PBL2");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "PBL2");
     window.setFramerateLimit(60);
 
     sf::Clock clock;           // tạo đồng hồ
     float dt = clock.restart().asSeconds();
 
-    Rect worldRect(0, 0, 800, 600); //khoi tao vung ban do cho quadtree
+    Rect worldRect(0, 0, 1920, 1080); //khoi tao vung ban do cho quadtree
     EntityManager manager(worldRect, 10); //quan li entity
 
     Character* player = new Character(100, 100, 200, 50); //khoi tao nhan vat

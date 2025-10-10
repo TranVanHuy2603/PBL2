@@ -1,10 +1,12 @@
 #include "Resource.h"
 
-Resource::Resource(int x, int y, ResourceType type, const string &filename, int gold, int exp)
+Resource::Resource(int x, int y, ResourceType type, const string &filename, int gold, int exp, float scale)
     : Entity(x, y), resourcetype(type), gold(gold), exp(exp), hp(3)
 {
     if (!texture.loadFromFile(filename)) cout << "Loi khi doc tai nguyen\n";
     sprite.setTexture(texture);
+    sprite.setScale(scale, scale);
+    sprite.setPosition(x, y);
     status = true;
 }
 

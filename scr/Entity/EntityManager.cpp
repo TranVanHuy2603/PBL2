@@ -13,17 +13,18 @@ struct ResourceInfo
     std::string filename;
     int gold;
     int exp;
+    float scale;
 };
 
 ResourceInfo resourceInfos[] = {
-    {ResourceType::Wood, 0.2f, "assets/wood.png", 5, 2},
-    {ResourceType::Stone, 0.15f, "assets/stone.png", 5, 2},
-    {ResourceType::Sand, 0.13f, "assets/sand.png", 4, 2},
-    {ResourceType::Coal, 0.13f, "assets/coal.png", 7, 10},
-    {ResourceType::Iron, 0.12f, "assets/iron.png", 8, 15},
-    {ResourceType::Gold, 0.09f, "assets/gold.png", 8, 20},
-    {ResourceType::Diamond, 0.09f, "assets/diamond.png", 20, 30},
-    {ResourceType::Emerald, 0.09f, "assets/emerald.png", 25, 35}};
+    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 0.4},
+    {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.1},
+    {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.07},
+    {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.1},
+    {ResourceType::Iron, 0.12f, "assets/resource/iron.png", 8, 15, 0.07},
+    {ResourceType::Gold, 0.09f, "assets/resource/gold.png", 8, 20, 0.1},
+    {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.1},
+    {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.07}};
 
 
 EntityManager::EntityManager(const Rect &area, double cap)
@@ -110,8 +111,8 @@ void EntityManager::create_monster(int n)
         while (!check)
         {
             // random mot vi tri cho linh
-            float x = rand() % 750 + 25;
-            float y = rand() % 550 + 25;
+            float x = rand() % 1920 - 50 + 25;
+            float y = rand() % 1018 - 50 + 25;
             tempSprite.setPosition(x, y);
             check = true;
 
@@ -146,16 +147,18 @@ ResourceInfo choose() // ap dung thay Tu day lien:))))
 void EntityManager::create_resource(int n)
 {
     sf::Sprite tempSprite;
+    sf::Texture tempTexture;
 
     for (int i = 0; i < n; i++)
     {
         bool check = false;
         ResourceInfo info = choose();
 
+
         while (!check)
         {
-            float x = rand() % 750 + 25;
-            float y = rand() % 550 + 25;
+            float x = rand() % 1920 - 50 + 25;
+            float y = rand() % 1018 - 50 + 25;
             tempSprite.setPosition(x, y);
             check = true;
 
@@ -169,7 +172,7 @@ void EntityManager::create_resource(int n)
             }
         }
 
-        Resource *r = new Resource(tempSprite.getPosition().x, tempSprite.getPosition().y, info.type, info.filename, info.gold, info.exp);
+        Resource *r = new Resource(tempSprite.getPosition().x, tempSprite.getPosition().y, info.type, info.filename, info.gold, info.exp, info.scale);
         add(r);
     }
 }

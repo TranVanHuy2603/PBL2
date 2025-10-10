@@ -35,12 +35,12 @@ Recipe recipes[(int)WeaponType::Count]
 //theo thu tu la Damage, Damage_range, Attack_speed, texture
 WeaponInfo weaponInfos[(int)WeaponType::Count] 
 ={
-        {5, 70.0, 1.0, "assets/Barehand.png"},    //HareHand
-        {8, 110.0, 1.5, "assets/Woodensword.png"}, // WoodenSword
-        {15, 125.0, 1.3, "assets/Ironsword.png"},  // IronSwood
-        {20, 80.0, 0.9, "assets/Ax.png"},         // Ax
-        {12, 150.0, 1.0, "assets/Bow.png"},       // Bow
-        {25, 200.0, 1.0, "assets/Gun.png"}        // Gun
+        {5, 70.0, 1.0, "assets/weapon/Barehand.png"},    //HareHand
+        {8, 110.0, 1.5, "assets/weapon/Woodensword.png"}, // WoodenSword
+        {15, 125.0, 1.3, "assets/weapon/Ironsword.png"},  // IronSwood
+        {20, 80.0, 0.9, "assets/weapon/Ax.png"},         // Ax
+        {12, 150.0, 1.0, "assets/weapon/Bow.png"},       // Bow
+        {25, 200.0, 1.0, "assets/weapon/Gun.png"}        // Gun
 };
 //--------------------------------------------------------------------
 
@@ -50,10 +50,10 @@ Character::Character(int x, int y, int hp_max, int exp_max)
     : LivingEntity(x, y, hp_max), level(1), gold(0), exp(0), exp_max(exp_max)
 {
     type = "Character";
-    if (!texture.loadFromFile("assets/Character.png")) cout << "error load character\n";
+    if (!texture.loadFromFile("assets/character/Character.png")) cout << "error load character\n";
     sprite.setTexture(texture);           // gan hinh anh nha vat cho sprite de ive ra cua so game
     sprite.setPosition(this->x, this->y); // set vi tri cua hinh anh la toa  do cua nhan vat
-    sprite.setScale(0.2, 0.2);
+    sprite.setScale(0.25, 0.25);
     craft_weapon(WeaponType::BareHand);
 }
 
