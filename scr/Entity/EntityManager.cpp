@@ -17,14 +17,14 @@ struct ResourceInfo
 };
 
 ResourceInfo resourceInfos[] = {
-    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 0.4},
-    {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.1},
-    {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.07},
-    {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.1},
-    {ResourceType::Iron, 0.12f, "assets/resource/iron.png", 8, 15, 0.07},
-    {ResourceType::Gold, 0.09f, "assets/resource/gold.png", 8, 20, 0.1},
-    {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.1},
-    {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.07}};
+    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 1.2},
+    {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.4},
+    {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.2},
+    {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.2},
+    {ResourceType::Iron, 0.12f, "assets/resource/iron.png", 8, 15, 0.21},
+    {ResourceType::Gold, 0.09f, "assets/resource/gold.png", 8, 20, 0.6},
+    {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.4},
+    {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.2}};
 
 
 EntityManager::EntityManager(const Rect &area, double cap)
@@ -94,6 +94,8 @@ void EntityManager::drawAll(sf::RenderWindow &window)
 {
     for (auto *e : entities)
         e->draw(window);
+
+    player->draw(window);
 }
 
 bool isOverlapping(const sf::Sprite &s1, const sf::Sprite &s2)

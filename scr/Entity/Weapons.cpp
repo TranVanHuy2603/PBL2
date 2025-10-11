@@ -2,17 +2,20 @@
 #include "Monster.h"
 #include "Entity.h"
 #include "Character.h"
+#include "Audio.h"
 #include <cmath>
 
 using namespace std;
 
-Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed,const String &texture)
+Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed,const String &texture, const String &sound)
     : damage(damage), damage_range(damage_range), attack_speed(attack_speed)
 {
     this->texture.loadFromFile(texture.c_str()); //load texture tu file hinh anh
     this->sprite.setTexture(this->texture);
 
     this->attackCooldown = 1 / attack_speed; //thoi gian giua cac lan danh
+
+    this->sound.loadSound(sound.c_str());
 }
 
 int Weapons::get_damage() { return damage; }
@@ -21,10 +24,13 @@ double Weapons::get_attack_speed() { return attack_speed; }
 
 void Weapons::attack(Quadtree &qt, Character *nv)
 {
+    static Audio collectSound("assets/audio/collect.mp3");
+    static Audio levelupSound("assets/audio/levelup.mp3");
 
     if (attackClock.getElapsedTime().asSeconds() < attackCooldown) //neu chua hoi chieu thi bo qua
         return;
 
+    sound.playSound();
     sf::FloatRect bound = nv->get_sprite().getGlobalBounds();                          // lay ra hinh chu nhat chua nhan vat
     sf::Vector2f center(bound.left + bound.width / 2.f, bound.top + bound.height / 2.f); // lay ra tam
     // dung quadtree de lay ra nhung vat the xung quanh nhan vat
@@ -62,6 +68,7 @@ void Weapons::attack(Quadtree &qt, Character *nv)
                 if (nv->get_exp() >= nv->get_exp_max())
                 {
                     nv->levelUp(); // tang level
+                    levelupSound.playSound();
                 }
                 qt.remove(m);
             }
@@ -71,13 +78,27 @@ void Weapons::attack(Quadtree &qt, Character *nv)
             r->take_damage();
             if (!r->get_status())
             {
+                collectSound.playSound();
                 nv->incr_gold(r->get_gold());
                 nv->incr_exp(r->get_exp());
+
+                switch(r->get_type()) {
+                    case ResourceType::Wood: nv->get_bag().add(ResourceType::Wood); break;
+                    case ResourceType::Stone: nv->get_bag().add(ResourceType::Stone); break;
+                    case ResourceType::Sand: nv->get_bag().add(ResourceType::Sand); break;
+                    case ResourceType::Coal: nv->get_bag().add(ResourceType::Coal); break;
+                    case ResourceType::Iron: nv->get_bag().add(ResourceType::Iron); break;
+                    case ResourceType::Gold: nv->get_bag().add(ResourceType::Gold); break;
+                    case ResourceType::Diamond: nv->get_bag().add(ResourceType::Diamond); break;
+                    case ResourceType::Emerald: nv->get_bag().add(ResourceType::Emerald); break;
+                }
                 qt.remove(r);
                 if (nv->get_exp() >= nv->get_exp_max())
                 {
                     nv->levelUp(); // tang level
+                    levelupSound.playSound();
                 }
+                qt.remove(r);
             }
         }
         else

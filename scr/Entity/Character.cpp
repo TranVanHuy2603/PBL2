@@ -21,6 +21,7 @@ struct WeaponInfo // thuoc tinh cua vu khi duoc che tao
     double damage_range;
     double attack_speed;
     const char *texture;
+    const char *sound;
 };
 // theo thu tu la Wood, Coal, Iron, Gold, Diamond, Emerald
 Recipe recipes[(int)WeaponType::Count] 
@@ -35,12 +36,12 @@ Recipe recipes[(int)WeaponType::Count]
 //theo thu tu la Damage, Damage_range, Attack_speed, texture
 WeaponInfo weaponInfos[(int)WeaponType::Count] 
 ={
-        {5, 70.0, 1.0, "assets/weapon/Barehand.png"},    //HareHand
-        {8, 110.0, 1.5, "assets/weapon/Woodensword.png"}, // WoodenSword
-        {15, 125.0, 1.3, "assets/weapon/Ironsword.png"},  // IronSwood
-        {20, 80.0, 0.9, "assets/weapon/Ax.png"},         // Ax
-        {12, 150.0, 1.0, "assets/weapon/Bow.png"},       // Bow
-        {25, 200.0, 1.0, "assets/weapon/Gun.png"}        // Gun
+        {5, 70.0, 2.0, "assets/weapon/barehand.png", "assets/audio/handsound.mp3"},    //HareHand
+        {8, 110.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.mp3"}, // WoodenSword
+        {15, 125.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.mp3"},  // IronSwood
+        {20, 80.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.mp3"},         // Ax
+        {12, 150.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.mp3"},       // Bow
+        {25, 200.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.mp3"}        // Gun
 };
 //--------------------------------------------------------------------
 
@@ -53,7 +54,7 @@ Character::Character(int x, int y, int hp_max, int exp_max)
     if (!texture.loadFromFile("assets/character/Character.png")) cout << "error load character\n";
     sprite.setTexture(texture);           // gan hinh anh nha vat cho sprite de ive ra cua so game
     sprite.setPosition(this->x, this->y); // set vi tri cua hinh anh la toa  do cua nhan vat
-    sprite.setScale(0.25, 0.25);
+    sprite.setScale(0.5, 0.5);
     craft_weapon(WeaponType::BareHand);
 }
 
@@ -64,14 +65,30 @@ Character::~Character() {
     weapons.clear(); 
 }
 // getter
-int Character::get_gold() { return gold; }
-int Character::get_exp() { return exp; }
-int Character::get_exp_max() { return exp_max; }
+int Character::get_gold() const { return gold; }
+int Character::get_exp() const { return exp; }
+int Character::get_exp_max() const { return exp_max; }
+Bag Character::get_bag() const { return bag; }
 Bag &Character::get_bag() { return bag; }
 int Character::get_indexWeapon() const { return indexWeapon; }
 Vector<Weapons *> &Character::get_weapons() { return weapons; }
 int Character::get_level() const { return level; }
 sf::Texture Character::get_texture() const { return texture; }
+int Character::get_resource_amount(ResourceType type) const
+{
+    switch (type)
+    {
+    case ResourceType::Wood:    return bag.getWood();
+    case ResourceType::Stone:   return bag.getStone();
+    case ResourceType::Sand:    return bag.getSand();
+    case ResourceType::Coal:    return bag.getCoal();
+    case ResourceType::Iron:    return bag.getIron();
+    case ResourceType::Gold:    return bag.getGold();
+    case ResourceType::Diamond: return bag.getDiamond();
+    case ResourceType::Emerald: return bag.getEmerald();
+    default: return 0;
+    }
+}
 
 // setter
 void Character::set_indexWeapon(int value) { indexWeapon = value; }
@@ -171,7 +188,7 @@ bool Character::craft_weapon(WeaponType type)
     bag.decr_Diamond(r.diamond); bag.decr_Emerald(r.emerald);
     // tao vu khi moi
     const WeaponInfo& info = weaponInfos[index]; //thuoc tinh cus vu khi
-    Weapons *w = new Weapons(type, info.damage, info.damage_range, info.attack_speed, info.texture);
+    Weapons *w = new Weapons(type, info.damage, info.damage_range, info.attack_speed, info.texture, info.sound);
     
     weapons.push_back(w);
     if (!weapons.empty()) cout << "Da tao vu khi\n";         // them vu khi vao cho nhan vat

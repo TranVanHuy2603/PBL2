@@ -1,6 +1,7 @@
 #pragma once
 #include "Quadtree.h"
 #include "String.h"
+#include "Audio.h"
 #include <SFML/Graphics.hpp>
 
 class Character;
@@ -25,12 +26,13 @@ protected:
     double attack_speed; //toc do danh
     sf::Sprite sprite;
     sf::Texture texture;
+    Audio sound;
 
     sf::Clock attackClock; //dung de do thoi gian giua cac cu danh
     float attackCooldown; //thoi gian giua cac lan danh
 
 public:
-    Weapons(WeaponType, int, double, double, const String&);
+    Weapons(WeaponType, int, double, double, const String&, const String&);
     int get_damage();
     double get_damage_range();
     double get_attack_speed();

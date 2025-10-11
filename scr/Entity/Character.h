@@ -28,14 +28,16 @@ public:
     Character(int, int, int, int);
     ~Character();
 
-    int get_gold(); // lay so vang hien co
-    int get_exp();  // lay kinh nghiem hien co
-    int get_exp_max();
+    int get_gold() const; // lay so vang hien co
+    int get_exp() const;  // lay kinh nghiem hien co
+    int get_exp_max() const;
+    Bag get_bag() const;
     Bag& get_bag();
     int get_indexWeapon() const;
     int get_level() const; // lay ra level
     Vector<Weapons*>& get_weapons();
     sf::Texture get_texture() const;
+    int get_resource_amount(ResourceType type) const;
 
     void set_indexWeapon(int);
     void setScale(float, float); // doi kich co cua anh

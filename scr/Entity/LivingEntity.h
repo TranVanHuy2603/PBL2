@@ -10,18 +10,14 @@ protected:
 public:
     LivingEntity();
     LivingEntity(int, int, int);
-    int get_hp();
-    int get_hp_max();
-    int get_damage();
-    double get_damage_range();
-    double get_attack_speed();
-    bool get_status();
+    int get_hp() const;
+    int get_hp_max() const;
+
+    bool get_status() const;
 
     void set_hp(int);
     void set_hp_max(int);
     void set_damage(int);
-    void set_damage_range(double);
-    void set_attack_speed(double);
 
     void take_damage(int);
 };

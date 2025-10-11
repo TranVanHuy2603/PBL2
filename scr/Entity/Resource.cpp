@@ -11,7 +11,7 @@ Resource::Resource(int x, int y, ResourceType type, const string &filename, int 
 }
 
 ResourceType Resource::get_type() const { return resourcetype; }
-void Resource::set_status() { status = false; }
+void Resource::set_status(bool value) { status = value; }
 sf::Sprite& Resource::get_sprite() { return sprite; }
 bool Resource::get_status() const { return status; }
 
@@ -33,7 +33,7 @@ void Resource::take_damage()
         hp--;
         if (hp <= 0) 
         {
-            set_status();
+            set_status(false);
         }
     }
 }

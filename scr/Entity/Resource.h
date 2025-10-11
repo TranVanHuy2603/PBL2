@@ -1,5 +1,6 @@
 #pragma once
 #include "Entity.h"
+#include "Audio.h"
 #include <SFML/Graphics.hpp>
 #include <string>
 
@@ -15,6 +16,7 @@ enum class ResourceType
     Gold,    // Vang
     Diamond, // Kim cuong
     Emerald, // Ngoc luc bao
+    Count
 };
 
 class Resource : public Entity
@@ -36,7 +38,7 @@ public:
     int get_exp() const;
     bool get_status() const;
 
-    void set_status();
+    void set_status(bool);
     void draw(sf::RenderWindow&) override;
 
     void take_damage();

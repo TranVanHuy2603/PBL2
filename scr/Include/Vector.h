@@ -11,7 +11,6 @@ private:
     T *array;
     int capacity;
     int size;
-    void resize(int);
 
 public:
     // ====== Constructors ========
@@ -22,6 +21,7 @@ public:
     ~Vector();
 
     // ===== Cac ham chuc nang ======
+    void resize(int);
     void resize(int , const T&);
     void push_back(const T&);
     void pop_back();
