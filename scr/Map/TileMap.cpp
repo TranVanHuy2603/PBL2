@@ -1,6 +1,7 @@
 #include "TileMap.h"
 #include <iostream>
 #include <algorithm>
+#include <cmath>
 
 // ======== Constructor ========
 TileMap::TileMap()
@@ -117,25 +118,27 @@ void TileMap::drawVisible(sf::RenderTarget &target, sf::RenderStates state, cons
     }
     state.transform *= getTransform();
     state.texture = &map_tileSetTexture;
-    
+
     // Lay vung nhin thay cua camera
     sf::FloatRect viewRect(view.getCenter() - view.getSize() / 2.f, view.getSize());
 
     // Xac dinh phan vung cho map
-    int StartX = max(0, (int)(viewRect.left / map_vertices.x));
-    int StartY = max(0, (int)(viewRect.top / map_vertices.y));
-    int endX = min(map_width, (int)((viewRect.left + viewRect.width) / map_tileSize.x) + 1);
-    int endY = min(map_height, (int)((viewRect.top + viewRect.height) / map_tileSize.y) + 1);
+    int StartX = std::max(0, static_cast<int>(viewRect.left / map_tileSize.x));
+    int StartY = std::max(0, static_cast<int>(viewRect.top / map_tileSize.y));
+    int endX = std::min(map_width, static_cast<int>((viewRect.left + viewRect.width) / map_tileSize.x) + 1);
+    int endY = std::min(map_height, static_cast<int>((viewRect.top + viewRect.height) / map_tileSize.y) + 1);
 
     // 3. Tạo một vertex array tạm cho vùng visible
     sf::VertexArray visible(sf::Quads);
     visible.resize((endX - StartX) * (endY - StartY) * 4);
 
     // 4. Copy các tile trong vùng nhìn sang visible
-    for (int y = StartY; y < endY; ++y) {
-        for (int x = StartX; x < endX; ++x) {
-            const sf::Vertex* src = &map_vertices[(x + y * map_width) * 4];
-            sf::Vertex* dst = &visible[((x - StartX) + (y - StartY) * (endX - startX)) * 4];
+    for (int y = StartY; y < endY; ++y)
+    {
+        for (int x = StartX; x < endX; ++x)
+        {
+            const sf::Vertex *src = &map_vertices[(x + y * map_width) * 4];
+            sf::Vertex *dst = &visible[((x - StartX) + (y - StartY) * (endX - StartX)) * 4];
             for (int i = 0; i < 4; i++)
                 dst[i] = src[i];
         }
@@ -143,7 +146,7 @@ void TileMap::drawVisible(sf::RenderTarget &target, sf::RenderStates state, cons
 
     // 5. Vẽ vùng visible
     target.draw(visible, state);
-}   
+}
 
 // Kiemtra texture co load duoc ko
 bool TileMap::is_TextureLoaded() const

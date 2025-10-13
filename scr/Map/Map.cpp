@@ -6,7 +6,7 @@
 using namespace std;
 
 Map::Map(int w, int h) : width(w), height(h) {
-    grid.resize(height, std::vector<Tile>(width, Tile(0)));
+    grid.resize(height, std::vector<Tile>(width, Tile(TileType::Grass)));
 }
 
 int Map::get_width() const { return width; }
@@ -27,7 +27,7 @@ void Map::load_File(const std::string& filename) {
         stringstream ss(line);
         int value;
         while (ss >> value) {
-            row.emplace_back(Tile(value));  // thay vì int, giờ tạo Tile
+            row.emplace_back(Tile(static_cast<TileType>(value)));  // thay vì int, giờ tạo Tile
         }
         if (!row.empty()) {
             grid.push_back(row);
