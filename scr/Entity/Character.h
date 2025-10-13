@@ -38,6 +38,8 @@ public:
     Vector<Weapons*>& get_weapons();
     sf::Texture get_texture() const;
     int get_resource_amount(ResourceType type) const;
+    sf::Vector2f get_position() const;
+
 
     void set_indexWeapon(int);
     void setScale(float, float); // doi kich co cua anh

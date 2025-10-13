@@ -90,6 +90,12 @@ int Character::get_resource_amount(ResourceType type) const
     }
 }
 
+sf::Vector2f Character::get_position() const
+{
+    return sprite.getPosition();
+}
+
+
 // setter
 void Character::set_indexWeapon(int value) { indexWeapon = value; }
 void Character::setScale(float x, float y) { sprite.setScale(x, y); }

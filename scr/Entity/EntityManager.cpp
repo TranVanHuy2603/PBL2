@@ -17,7 +17,7 @@ struct ResourceInfo
 };
 
 ResourceInfo resourceInfos[] = {
-    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 1.2},
+    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 0.5},
     {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.4},
     {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.2},
     {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.2},
