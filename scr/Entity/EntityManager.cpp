@@ -73,7 +73,7 @@ Quadtree &EntityManager::getQuadtree()
 void EntityManager::set_player(Character *value) { player = value; }
 void EntityManager::set_castle(Castle *value) { castle = value; }
 
-void EntityManager::updateAll(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
+void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
 {
     Castle *castle = getCastle();
     Character *player = getPlayer();
@@ -90,12 +90,13 @@ void EntityManager::updateAll(float dt, Vector<Vector<ASNode>> &grid, double cel
     player->update(dt);
 }
 
-void EntityManager::drawAll(sf::RenderWindow &window)
+void EntityManager::render(sf::RenderWindow &window)
 {
     for (auto *e : entities)
         e->draw(window);
 
     player->draw(window);
+    castle->render(window);
 }
 
 bool isOverlapping(const sf::Sprite &s1, const sf::Sprite &s2)
@@ -113,8 +114,8 @@ void EntityManager::create_monster(int n)
         while (!check)
         {
             // random mot vi tri cho linh
-            float x = rand() % 1920 - 50 + 25;
-            float y = rand() % 1018 - 50 + 25;
+            float x = rand() % 8000 - 50 + 25;
+            float y = rand() % 4000 - 50 + 25;
             tempSprite.setPosition(x, y);
             check = true;
 
@@ -159,8 +160,8 @@ void EntityManager::create_resource(int n)
 
         while (!check)
         {
-            float x = rand() % 1920 - 50 + 25;
-            float y = rand() % 1018 - 50 + 25;
+            float x = rand() % 8000 - 50 + 25;
+            float y = rand() % 4000 - 50 + 25;
             tempSprite.setPosition(x, y);
             check = true;
 

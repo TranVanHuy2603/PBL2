@@ -47,12 +47,10 @@ void CharacterUI::update(const Character *player, const sf::RenderTarget &target
        << "             "
        << "    EXP: " << player->get_exp() << " / " << player->get_exp_max()
        << "    Coin: " << player->get_gold()
-       << "    Level: " << player->get_level()
-       
-    ;
+       << "    Level: " << player->get_level();
     infoText.setString(ss.str());
 
-    // tinh ti le HP
+    // ==== TÍNH TOÁN THANH HP ====
     float hpPercent = static_cast<float>(player->get_hp()) / player->get_hp_max();
     float barWidth = 400.f;
     float barHeight = 20.f;
@@ -65,6 +63,14 @@ void CharacterUI::update(const Character *player, const sf::RenderTarget &target
     hpBar.setSize(sf::Vector2f(barWidth * hpPercent, barHeight));
     hpBar.setPosition(hpBack.getPosition());
 
+    // ===  ĐỔI MÀU THEO MỨC HP ===
+    if (hpPercent > 0.5f)
+        hpBar.setFillColor(sf::Color(0, 255, 0)); // xanh
+    else if (hpPercent > 0.25f)
+        hpBar.setFillColor(sf::Color(255, 255, 0)); // vàng
+    else
+        hpBar.setFillColor(sf::Color(255, 0, 0)); // đỏ
+
     // cap nhat thanh HP da mat
     hpLostBar.setSize(sf::Vector2f(barWidth * (1.f - hpPercent), barHeight));
     hpLostBar.setPosition(hpBack.getPosition().x + hpBar.getSize().x, hpBack.getPosition().y);
@@ -76,7 +82,7 @@ void CharacterUI::update(const Character *player, const sf::RenderTarget &target
 
     // canh giua chu trong thanh
     sf::FloatRect textBounds = hpText.getLocalBounds();
-    hpText.setOrigin(textBounds.left, textBounds.top); // reset origin
+    hpText.setOrigin(textBounds.left, textBounds.top);
     hpText.setPosition(
         hpBack.getPosition().x + (barWidth - textBounds.width) / 2.f,
         hpBack.getPosition().y + (barHeight - textBounds.height) / 2.f - 3.f);

@@ -6,10 +6,11 @@ Monster::Monster() {}
 Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
                  double attack_speed, int gold, int exp)
     : LivingEntity(x, y, hp_max), damage(damage), damage_range(damage_range),
-    attack_speed(attack_speed), gold(gold), exp(exp)
+      attack_speed(attack_speed), gold(gold), exp(exp)
 {
     type = "Monster";
-    if (!texture.loadFromFile("assets/monster/Monster.png")) cout << "Error load Monster\n";
+    if (!texture.loadFromFile("assets/monster/Monster.png"))
+        cout << "Error load Monster\n";
     sprite.setTexture(texture);
     sprite.setPosition(x, y);
     sprite.setScale(0.2, 0.2);
@@ -20,7 +21,8 @@ int Monster::get_exp() const { return exp; }
 
 void Monster::draw(sf::RenderWindow &window)
 {
-    if (!status) return;
+    if (!status)
+        return;
     window.draw(sprite);
 }
 
@@ -32,14 +34,14 @@ void Monster::set_path(const Vector<sf::Vector2f> &newpath) // gan path cho quai
 
 void Monster::movePath(float deltatime) // cho quai di theo path
 {
-    if (currentTarget < static_cast<int>(path.get_size())) //kiem tra con diem nao trong duong di khong
+    if (currentTarget < static_cast<int>(path.get_size())) // kiem tra con diem nao trong duong di khong
     {
-        sf::Vector2f target = path[currentTarget]; //diem dich hien tai trong path/dime tiep theo
-        sf::Vector2f pos = sprite.getPosition(); //vi tri cua quai
-        sf::Vector2f dir = target - pos; //huong vecto tu quai toi diem ke tiep
-        float length = std::sqrt(dir.x * dir.x + dir.y * dir.y); //do dai cua vecto do
+        sf::Vector2f target = path[currentTarget];               // diem dich hien tai trong path/dime tiep theo
+        sf::Vector2f pos = sprite.getPosition();                 // vi tri cua quai
+        sf::Vector2f dir = target - pos;                         // huong vecto tu quai toi diem ke tiep
+        float length = std::sqrt(dir.x * dir.x + dir.y * dir.y); // do dai cua vecto do
 
-        if (length > 1.f) //chuan hoa de quai di chuyen muot hon
+        if (length > 1.f) // chuan hoa de quai di chuyen muot hon
         {
             dir /= length;
             pos += dir * deltatime * 100.f;
@@ -47,30 +49,31 @@ void Monster::movePath(float deltatime) // cho quai di theo path
         }
         else
         {
-            currentTarget++; //chuyen toi diem tiep theo
+            currentTarget++; // chuyen toi diem tiep theo
         }
     }
 }
 
 void Monster::attack(LivingEntity *target, float deltaTime)
 {
-    if (!target) return; //neu khong co muc tieu
+    if (!target)
+        return; // neu khong co muc tieu
 
-    if (attackcooldown > 0.f) //neu van chua hoi chieu thi giam xuong
+    if (attackcooldown > 0.f) // neu van chua hoi chieu thi giam xuong
         attackcooldown -= deltaTime;
 
-    if (attackcooldown <= 0.f) //neu da hoi chieu xong thi tan cong
+    if (attackcooldown <= 0.f) // neu da hoi chieu xong thi tan cong
     {
-        target->take_damage(damage); //gay sat thuong len muc tieu
-        attackcooldown = 1.f / attack_speed; //reset lai thoi gian hoi chieu
+        target->take_damage(damage);         // gay sat thuong len muc tieu
+        attackcooldown = 1.f / attack_speed; // reset lai thoi gian hoi chieu
     }
 }
-
 
 void Monster::update(float deltaTime, Castle *castle, Character *player,
                      Quadtree *qt, Vector<Vector<ASNode>> &grid, double cellSize)
 {
-    if (!status) return;
+    if (!status)
+        return;
     // 1.Xac dinh muc tieu gan nhat
     LivingEntity *targetEntity;                             // muc tieu
     sf::Vector2f targetpos;                                 // toa do muc tieu
@@ -100,20 +103,19 @@ void Monster::update(float deltaTime, Castle *castle, Character *player,
     float dy = mpos.y - targetpos.y;
     float dist = std::sqrt(dx * dx + dy * dy);
 
-    if (dist <= damage_range) //neu co the gay sat thuong
+    if (dist <= damage_range) // neu co the gay sat thuong
     {
         attack(targetEntity, deltaTime);
     }
 
-    else//neu khong thi cho di the A* de toi muc tieu
+    else // neu khong thi cho di the A* de toi muc tieu
     {
         // dua ve toa do tren grid
-        int startX = mpos.x / cellSize;
-        int startY = mpos.y / cellSize;
-        int goalX = targetpos.x / cellSize;
-        int goalY = targetpos.y / cellSize;
+        int startX = std::clamp(static_cast<int>(mpos.x / cellSize), 0, static_cast<int>(grid.get_size()) - 1);
+        int startY = std::clamp(static_cast<int>(mpos.y / cellSize), 0, static_cast<int>(grid[0].get_size()) - 1);
+        int goalX = std::clamp(static_cast<int>(targetpos.x / cellSize), 0, static_cast<int>(grid.get_size()) - 1);
+        int goalY = std::clamp(static_cast<int>(targetpos.y / cellSize), 0, static_cast<int>(grid[0].get_size()) - 1);
 
-        // tao node cho A*
         ASNode *start = &grid[startX][startY];
         ASNode *goal = &grid[goalX][goalY];
 

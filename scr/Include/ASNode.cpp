@@ -30,3 +30,4 @@ double ASNode::get_g() const { return g; }
 double ASNode::get_h() const { return h; }
 void ASNode::set_g(double val) { g = val; }
 void ASNode::set_h(double val) { h = val; }
+

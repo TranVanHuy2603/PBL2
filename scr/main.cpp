@@ -5,11 +5,16 @@
 #include "CharacterUI.h"
 #include "UpgradeCastleUI.h"
 #include "CameraController.h"
+#include "ASNode.h"
+
+
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "PBL2");
     window.setFramerateLimit(60);
+    double cellSize = 100.0;
+
 
     // ===== Khởi tạo đồng hồ thời gian =====
     sf::Clock clock;
@@ -25,18 +30,20 @@ int main()
     EntityManager manager(worldRect, 10);
 
     // ===== Nhân vật =====
-    Character* player = new Character(300.f, 300.f, 200, 50);
+    Character *player = new Character(3500.f, 1700.f, 200, 50);
     manager.set_player(player);
     manager.add(player);
+    player->take_damage(80);
 
     // ===== Lâu đài =====
-    Castle* castle = new Castle(600.f, 400.f, 500, 50);
+    Castle *castle = new Castle(4000.f, 2000.f, 500, 50);
     manager.set_castle(castle);
     manager.add(castle);
+    castle->take_damage(20);
 
     // ===== Quái và tài nguyên =====
-    manager.create_monster(15);
-    manager.create_resource(50);
+    manager.create_monster(50);
+    manager.create_resource(150);
 
     // ===== Giao diện =====
     CharacterUI ui;
@@ -65,12 +72,14 @@ int main()
         // ===== Cập nhật thời gian khung hình =====
         float dt = clock.restart().asSeconds();
 
+
+
         // ===== Cập nhật logic =====
         player->handleInput(dt);
         ui.update(player, window);
 
         // ===== Camera =====
-        camera.handleInput(window, dt); // WASD để di chuyển camera
+        camera.handleInput(window, dt);        // WASD để di chuyển camera
         camera.follow(player->get_position()); // hoặc có thể bỏ dòng này nếu muốn tự do
 
         // ===== Vẽ khung hình =====
@@ -79,7 +88,7 @@ int main()
         // Áp dụng camera trước khi vẽ thế giới
         window.setView(camera.getView());
 
-        manager.drawAll(window);
+        manager.render(window);
 
         // Đặt lại view mặc định cho UI (UI luôn cố định trên màn hình)
         window.setView(window.getDefaultView());

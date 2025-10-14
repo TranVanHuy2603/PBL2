@@ -87,7 +87,7 @@ void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *c
 
                     if (gold >= cost)
                     {
-                        player->incr_gold(gold - cost);
+                        player->decr_gold(cost);
                         castle->level_up();
                         showNotificationText("Nang cap nha thanh cong!", sf::Color::Green);
                     }

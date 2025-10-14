@@ -27,20 +27,22 @@ Vector<ASNode *> return_path(ASNode *node)
 Vector<ASNode *> get_neighbors(ASNode *node, Vector<Vector<ASNode>> &grid)
 {
     Vector<ASNode *> neighbors;
-    double dx[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
-    double dy[8] = {0, 0, -1, 1, 1, -1, -1, 1};
-    double w = grid.get_size();
-    double h = grid[0].get_size();
+    int w = grid.get_size();
+    int h = grid[0].get_size();
+    int dx[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
+    int dy[8] = {0, 0, -1, 1, 1, -1, -1, 1};
 
     for (int i = 0; i < 8; i++)
     {
-        double nx = node->get_x() + dx[i];
-        double ny = node->get_y() + dy[i];
+        int nx = node->get_x() + dx[i];
+        int ny = node->get_y() + dy[i];
+
         if (nx >= 0 && ny >= 0 && nx < w && ny < h && grid[nx][ny].get_walkable())
             neighbors.push_back(&grid[nx][ny]);
     }
     return neighbors;
 }
+
 
 struct CompareASNode
 {
@@ -59,14 +61,15 @@ void updateGridWalkable(Vector<Vector<ASNode>> &grid, Quadtree *qt, double cellS
     {
         if (!e->is_walkable())
         {
-            double gx = e->get_x() / cellSize;
-            double gy = e->get_y() / cellSize;
+            // Ép về int và clamp vào kích thước grid
+            int ix = std::clamp(static_cast<int>(e->get_x() / cellSize), 0, static_cast<int>(grid.get_size()) - 1);
+            int iy = std::clamp(static_cast<int>(e->get_y() / cellSize), 0, static_cast<int>(grid[0].get_size()) - 1);
 
-            if (gx >= 0 && gy >= 0 && gx < grid.get_size() && gy < grid[0].get_size())
-                grid[gx][gy].set_walkable(false);
+            grid[ix][iy].set_walkable(false);
         }
     }
 }
+
 
 Vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
                        Vector<Vector<ASNode>> &grid, double cellSize)

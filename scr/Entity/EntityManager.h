@@ -29,8 +29,8 @@ public:
     void set_player(Character*);
     void set_castle(Castle*);
 
-    void updateAll(float, Vector<Vector<ASNode>>&, double);
-    void drawAll(sf::RenderWindow&);
+    void update(float, Vector<Vector<ASNode>>&, double);
+    void render(sf::RenderWindow&);
 
     Vector<Entity*> queryRange(const Rect&);
 
