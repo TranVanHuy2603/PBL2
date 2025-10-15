@@ -95,6 +95,11 @@ sf::Vector2f Character::get_position() const
     return sprite.getPosition();
 }
 
+sf::Vector2f Character::getSize() const {
+        sf::FloatRect bounds = sprite.getGlobalBounds();
+        return sf::Vector2f(bounds.width, bounds.height);
+    }
+
 
 // setter
 void Character::set_indexWeapon(int value) { indexWeapon = value; }

@@ -11,7 +11,7 @@ static const WeaponInfo weaponInfos[] = {
 
 WeaponCraftUI::WeaponCraftUI() : showList(false)
 {
-    if (!font.loadFromFile("assets/font/arial.ttf"))
+    if (!font.loadFromFile("assets/font/font2.ttf"))
         std::cerr << "Loi tai font!\n";
 
     init();
@@ -61,7 +61,7 @@ void WeaponCraftUI::initWeaponButtons()
 
         wb.nameText.setFont(font);
         wb.nameText.setString(weaponInfos[i].name.c_str());
-        wb.nameText.setCharacterSize(14);
+        wb.nameText.setCharacterSize(12);
         wb.nameText.setFillColor(sf::Color::White);
         wb.nameText.setPosition(wb.button.getPosition().x + 10.f,
                                 wb.button.getPosition().y + 120.f);
@@ -123,7 +123,7 @@ void WeaponCraftUI::render(sf::RenderWindow &window)
             sf::Vector2u size = window.getSize();
             sf::FloatRect textBounds = notificationText.getLocalBounds();
             notificationText.setFont(font);
-            notificationText.setCharacterSize(28);
+            notificationText.setCharacterSize(35);
             notificationText.setStyle(sf::Text::Bold);
             notificationText.setPosition(
                 (size.x - textBounds.width) / 2.f,

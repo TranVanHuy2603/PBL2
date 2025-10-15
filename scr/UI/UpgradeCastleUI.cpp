@@ -1,8 +1,8 @@
 #include "UpgradeCastleUI.h"
-
+#include "Audio.h"
 UpgradeCastleUI::UpgradeCastleUI() : showMenu(false)
 {
-    if (!font.loadFromFile("assets/font/arial.ttf"))
+    if (!font.loadFromFile("assets/font/font2.ttf"))
         std::cerr << "Loi tai font!\n";
 
     // Nut icon ngoi nha
@@ -19,32 +19,32 @@ UpgradeCastleUI::UpgradeCastleUI() : showMenu(false)
                           houseButton.getPosition().y + 10.f);
 
     // Nut nang cap
-    upgradeButton.setSize(sf::Vector2f(200.f, 60.f));
+    upgradeButton.setSize(sf::Vector2f(300.f, 60.f));
     upgradeButton.setFillColor(sf::Color(0, 180, 0));
-    upgradeButton.setPosition(100.f, 700.f);
+    upgradeButton.setPosition(130.f, 800.f);
 
     upgradeText.setFont(font);
     upgradeText.setString("Nang cap nha");
     upgradeText.setCharacterSize(22);
     upgradeText.setFillColor(sf::Color::White);
-    upgradeText.setPosition(120.f, 715.f);
+    upgradeText.setPosition(160.f, 815.f);
 
     // Nut huy
-    cancelButton.setSize(sf::Vector2f(200.f, 60.f));
+    cancelButton.setSize(sf::Vector2f(300.f, 60.f));
     cancelButton.setFillColor(sf::Color(180, 0, 0));
-    cancelButton.setPosition(100.f, 770.f);
+    cancelButton.setPosition(130.f, 870.f);
 
     cancelText.setFont(font);
     cancelText.setString("Huy");
     cancelText.setCharacterSize(22);
     cancelText.setFillColor(sf::Color::White);
-    cancelText.setPosition(190.f, 785.f);
+    cancelText.setPosition(240.f, 885.f);
 
     // Chu hien thi chi phi
     costText.setFont(font);
     costText.setCharacterSize(20);
     costText.setFillColor(sf::Color::Yellow);
-    costText.setPosition(110.f, 660.f);
+    costText.setPosition(140.f, 760.f);
 }
 
 void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *castle)
@@ -89,6 +89,8 @@ void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *c
                     {
                         player->decr_gold(cost);
                         castle->level_up();
+                        static Audio levelupsound("assets/audio/levelupcastle.mp3");
+                        levelupsound.playSound();
                         showNotificationText("Nang cap nha thanh cong!", sf::Color::Green);
                     }
                     else
