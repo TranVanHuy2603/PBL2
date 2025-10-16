@@ -8,7 +8,6 @@
 #include "ASNode.h"
 
 
-
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "PBL2");

@@ -20,7 +20,7 @@ void CameraController::handleInput(const sf::RenderWindow& window, float deltaTi
 
     // zoom bằng chuột cuộn
     if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
-        // ví dụ: nhấn giữ chuột giữa + lăn sẽ zoom
+        // nhấn giữ chuột giữa + lăn sẽ zoom
     }
 }
 

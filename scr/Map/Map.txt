@@ -5,4 +5,5 @@
  ├── MapLoader.h / MapLoader.cpp  # load/save map từ file tĩnh (txt/json) hoặc seed (random)
  ├── MapGenerator.h / MapGenerator.cpp  # tạo map ngẫu nhiên (Perlin noise / rule-based)
  ├── Quadtree.h / Quadtree.cpp # đã có, để spatial partition cho obstacles
+ |- CameraController  
  └── Minimap.h / Minimap.cpp  # render minimap và UI liên quan
