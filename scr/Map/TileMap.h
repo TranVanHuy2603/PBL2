@@ -3,7 +3,7 @@
 #include "String.h"
 #include "Map.h"
 
-class TileMap : public sf::Drawable, public sf::Transformable
+class TileMap : public MapLayer
 {
 private:
     sf::VertexArray map_vertices;   // Mang chua cac vertex cua map
@@ -28,6 +28,15 @@ public:
     // Update sau khi farm quai, khai thac tai nguyen tren 1 tile
     void updateTile(const Map &map, int x, int y);
 
+    // Getter
+    sf::Vector2u getTileSize() const { return map_tileSize; }
+    int getWidth() const { return map_width; }
+    int getHeight() const { return map_height; }
+    bool isTextureLoaded() const { return map_textureLoaded; }
+
+    // MapLayer override
+    void update(float deltaTime) override; // hiện tại có thể rỗng
+    void draw(sf::RenderTarget &target, sf::RenderStates state) const override;
     // Ve vung viewer hien tai len man hinh
     void drawVisible(sf::RenderTarget &target, sf::RenderStates state, const sf::View &view) const;
 

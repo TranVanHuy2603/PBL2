@@ -1,0 +1,153 @@
+Rất tuyệt — từ giờ **mình sẽ đóng vai “người thầy hướng dẫn”** giúp bạn phát triển map RTS 2D của bạn **theo lộ trình chuyên nghiệp**, từng bước rõ ràng, có lý do kỹ thuật và ví dụ minh họa bằng C++ (SFML).
+Ta sẽ làm giống như trong các studio game: hoàn thiện nền tảng trước, rồi mới thêm tính năng nâng cao.
+
+---
+
+## 🎯 MỤC TIÊU GIAI ĐOẠN HIỆN TẠI
+
+> Biến bản đồ 2D tĩnh của bạn thành **bản đồ tương tác** — có thể click chọn, thay đổi tile, lưu & nạp map.
+
+---
+
+## 🧱 Giai đoạn 1: Thêm **chọn tile bằng chuột**
+
+### 🎯 Mục tiêu:
+
+Cho phép người chơi nhấp vào bản đồ để xác định tile nào đang được chọn.
+
+### 🔧 Bước 1 — Lấy vị trí chuột trong toạ độ thế giới:
+
+Trong `main.cpp`, sau khi vẽ map và set view của camera, thêm đoạn này:
+
+```cpp
+// Giả sử ta có: sf::RenderWindow window; CameraController camera; TileMap tileMap;
+sf::Vector2i mousePixel = sf::Mouse::getPosition(window);
+sf::Vector2f mouseWorld = window.mapPixelToCoords(mousePixel, camera.getView());
+```
+
+### 🔧 Bước 2 — Xác định tile mà chuột đang trỏ:
+
+```cpp
+int tileX = static_cast<int>(mouseWorld.x) / tileMap.getTileSize().x;
+int tileY = static_cast<int>(mouseWorld.y) / tileMap.getTileSize().y;
+```
+
+Kiểm tra xem có hợp lệ không:
+
+```cpp
+if (tileX >= 0 && tileY >= 0 && tileX < map.get_width() && tileY < map.get_height()) {
+    std::cout << "Mouse over tile: (" << tileX << ", " << tileY << ")\n";
+}
+```
+
+---
+
+## 🧱 Giai đoạn 2: **Highlight tile đang chọn**
+
+### 🎯 Mục tiêu:
+
+Khi nhấp chuột, tile đó được “viền sáng” lên để biết bạn đang chọn nó.
+
+### 🔧 Bước 1 — Thêm `sf::RectangleShape selectedTile` vào `main.cpp` hoặc lớp `TileMap`.
+
+Khởi tạo:
+
+```cpp
+sf::RectangleShape selectedTileShape;
+selectedTileShape.setSize(sf::Vector2f(tileMap.getTileSize().x, tileMap.getTileSize().y));
+selectedTileShape.setFillColor(sf::Color(255, 255, 255, 50)); // mờ nhẹ
+selectedTileShape.setOutlineColor(sf::Color::Yellow);
+selectedTileShape.setOutlineThickness(2.f);
+```
+
+### 🔧 Bước 2 — Khi click chuột:
+
+```cpp
+if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    selectedTileShape.setPosition(tileX * tileMap.getTileSize().x, tileY * tileMap.getTileSize().y);
+}
+```
+
+### 🔧 Bước 3 — Khi vẽ:
+
+```cpp
+window.draw(tileMap);
+window.draw(selectedTileShape);
+```
+
+---
+
+## 🧱 Giai đoạn 3: **Click để thay đổi tile**
+
+### 🎯 Mục tiêu:
+
+Click vào tile → biến đổi loại tile (ví dụ: Grass → Forest → Hill → Mountain).
+
+### 🔧 Cách làm:
+
+Trong `main.cpp`, thêm logic khi click chuột trái:
+
+```cpp
+if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    Tile &tile = map.get_grid()[tileY][tileX];
+    TileType newType = static_cast<TileType>((tile.getType() + 1) % 14); // 14 loại
+    tile.setType(newType);
+    tileMap.updateTile(map, tileX, tileY);
+}
+```
+
+---
+
+## 🧱 Giai đoạn 4: **Lưu và nạp map**
+
+### 🎯 Mục tiêu:
+
+Cho phép người chơi lưu file `.txt` map hiện tại và nạp lại sau.
+
+### 🔧 Bước 1 — Viết hàm `saveToFile()` trong `Map.cpp`:
+
+```cpp
+void Map::saveToFile(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Không thể lưu file " << filename << "\n";
+        return;
+    }
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            file << static_cast<int>(grid[y][x].getType()) << " ";
+        }
+        file << "\n";
+    }
+
+    file.close();
+    std::cout << "Đã lưu map ra " << filename << "\n";
+}
+```
+
+### 🔧 Bước 2 — Gọi khi nhấn phím:
+
+```cpp
+if (sf::Keyboard::isKeyPressed(sf::Keyboard::L)) map.load_File("assets/map.txt");
+if (sf::Keyboard::isKeyPressed(sf::Keyboard::K)) map.saveToFile("assets/map.txt");
+```
+
+---
+
+## 🧱 Giai đoạn 5: (Tùy chọn tiếp theo)
+
+Sau khi hoàn thành 4 bước trên, map của bạn sẽ **giống một trình chỉnh sửa bản đồ** cơ bản:
+
+* Chọn tile, đổi tile, lưu map, nạp lại map, camera di chuyển.
+
+Từ đó ta có thể chọn nhánh phát triển:
+
+1. 🪖 RTS (đơn vị di chuyển → A*, cost tile)
+2. 🧱 Xây dựng công trình (thêm layer object)
+3. 🌾 Sandbox/Nông trại (resource, khai thác, spawn)
+
+---
+
+Bạn muốn mình hướng dẫn **giai đoạn 1** (chọn tile bằng chuột + highlight) bằng **code cụ thể hoàn chỉnh** để bạn copy chạy thử trong `main.cpp` luôn chứ?
+Nếu có thì mình sẽ viết hẳn đoạn code mẫu đầy đủ (có camera, TileMap, Map, input chuột).

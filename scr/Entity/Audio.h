@@ -1,5 +1,5 @@
-#ifndef AUDIO_H
-#define AUDIO_H
+#ifndef AUDIO_H_
+#define AUDIO_H_
 #include "String.h"
 #include <SFML/Audio.hpp>
 #include <iostream>

@@ -1,6 +1,5 @@
 #include "TileMap.h"
 #include <iostream>
-#include <algorithm>
 #include <cmath>
 
 // ======== Constructor ========
@@ -123,10 +122,10 @@ void TileMap::drawVisible(sf::RenderTarget &target, sf::RenderStates state, cons
     sf::FloatRect viewRect(view.getCenter() - view.getSize() / 2.f, view.getSize());
 
     // Xac dinh phan vung cho map
-    int StartX = std::max(0, static_cast<int>(viewRect.left / map_tileSize.x));
-    int StartY = std::max(0, static_cast<int>(viewRect.top / map_tileSize.y));
-    int endX = std::min(map_width, static_cast<int>((viewRect.left + viewRect.width) / map_tileSize.x) + 1);
-    int endY = std::min(map_height, static_cast<int>((viewRect.top + viewRect.height) / map_tileSize.y) + 1);
+    int StartX = TileMap::Get_max(0, static_cast<int>(viewRect.left / map_tileSize.x));
+    int StartY = TileMap::Get_max(0, static_cast<int>(viewRect.top / map_tileSize.y));
+    int endX = Tilemap::Get_min(map_width, static_cast<int>((viewRect.left + viewRect.width) / map_tileSize.x) + 1);
+    int endY = TileMap::Get_min(map_height, static_cast<int>((viewRect.top + viewRect.height) / map_tileSize.y) + 1);
 
     // 3. Tạo một vertex array tạm cho vùng visible
     sf::VertexArray visible(sf::Quads);
@@ -146,6 +145,23 @@ void TileMap::drawVisible(sf::RenderTarget &target, sf::RenderStates state, cons
 
     // 5. Vẽ vùng visible
     target.draw(visible, state);
+}
+
+void TileMap::update(float deltaTime)
+{
+    // Nếu bạn có animated tiles: update frame index ở đây.
+}
+
+void TileMap::draw(sf::RenderTarget &target, sf::RenderStates state) const
+{
+    if (!map_textureLoaded)
+    {
+        std::cout << "Khong doc duoc file map\n";
+        return;
+    }
+    state.transform *= getTransform();
+    state.texture = &map_tileSetTexture;
+    target.draw(map_vertices, state);
 }
 
 // Kiemtra texture co load duoc ko

@@ -4,7 +4,7 @@
 #include <ctime>
 #include <cmath>
 
-#define MAP_SIZE 500
+#define MAP_SIZE 1000
 
 int main() {
     // Tạo thư mục assets (trên Windows cần dùng "mkdir assets" thay vì -p)

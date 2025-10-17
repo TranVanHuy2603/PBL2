@@ -16,6 +16,6 @@ public:
     const std::vector<std::vector<Tile>>& get_grid() const;
 
     void load_File(const std::string& filename);
-
+    void saveToFile(const std::string& filename) const;
     bool isWalkable(int x, int y) const;
 };
