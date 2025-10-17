@@ -39,6 +39,7 @@ public:
     sf::Texture get_texture() const;
     int get_resource_amount(ResourceType type) const;
     sf::Vector2f get_position() const;
+    sf::Vector2f getSize() const;
 
 
     void set_indexWeapon(int);

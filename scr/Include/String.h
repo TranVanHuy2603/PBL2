@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "SFML/Graphics.hpp"
 using namespace std;
 
 using ll = long long;
@@ -31,6 +32,10 @@ public:
     const char &operator[](llu position) const; // Truy xuat ki tu
 
     // ===== Method =======
+    static String to_string(int value);
+    static String to_string(long long value);
+    static String to_string(unsigned long long value);
+    static String to_string(double value, int precision = 2);
     llu size() const;                                 // tra ve do dai chuoi
     bool empty() const;                               // Ktra chuoi co rong khong
     const char *c_str() const;                        // tra ve C-String
@@ -38,8 +43,12 @@ public:
     void push_back(char c);                           // Them ki tu
     String substr(llu position, llu n) const;         // Cat chuoi -> chuoi con
     llu find(const String &, llu position = 0) const; // Tim chuoi con
+    friend double pow(llu, llu);
 
     // ===== Stream operators ========
     friend ostream &operator<<(ostream &, const String &);
     friend istream &operator>>(istream &, String &);
+    sf::String toSFString() const {
+        return sf::String(this->data);
+    }
 };

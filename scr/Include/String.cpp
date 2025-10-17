@@ -114,7 +114,109 @@ const char &String::operator[](llu position) const // Truy xuat ki tu
         return NGU;
 }
 
-// ===== Method =======
+// ========== Method ===========
+double pow(llu a, llu b) {
+    double res = 1;
+    for (llu i = 1; i <= b; i++) {
+        res *= a;
+    }
+
+    return res;
+}
+// ==== Hàm static to_string ====
+static String to_string(int value)
+{
+    char buffer[50];
+    bool neg = (value < 0);
+    unsigned int v = neg ? -value : value;
+    int i = 0;
+
+    do
+    {
+        buffer[i++] = '0' + (v % 10);
+        v /= 10;
+    } while (v > 0);
+
+    if (neg)
+        buffer[i++] = '-';
+    buffer[i] = '\0';
+
+    // đảo ngược
+    for (int j = 0; j < i / 2; ++j)
+    {
+        std::swap(buffer[j], buffer[i - j - 1]);
+    }
+    return String(buffer);
+}
+
+static String to_string(long long value)
+{
+    char buffer[70];
+    bool neg = (value < 0);
+    unsigned long long v = neg ? -value : value;
+    int i = 0;
+
+    do
+    {
+        buffer[i++] = '0' + (v % 10);
+        v /= 10;
+    } while (v > 0);
+
+    if (neg)
+        buffer[i++] = '-';
+    buffer[i] = '\0';
+
+    for (int j = 0; j < i / 2; ++j)
+    {
+        std::swap(buffer[j], buffer[i - j - 1]);
+    }
+    return String(buffer);
+}
+
+static String to_string(unsigned long long value)
+{
+    char buffer[70];
+    int i = 0;
+    do
+    {
+        buffer[i++] = '0' + (value % 10);
+        value /= 10;
+    } while (value > 0);
+
+    buffer[i] = '\0';
+    for (int j = 0; j < i / 2; ++j)
+    {
+        std::swap(buffer[j], buffer[i - j - 1]);
+    }
+    return String(buffer);
+}
+
+static String to_string(double value, int precision = 2)
+{
+    long long intPart = static_cast<long long>(value);
+    double fracPart = value - intPart;
+    if (fracPart < 0)
+        fracPart = -fracPart;
+
+    String sInt = String::to_string(intPart);
+
+    // Xử lý phần thập phân
+    char fracBuffer[20];
+    fracPart *= pow(10, precision);
+    long long fracInt = static_cast<long long>(fracPart + 0.5); // làm tròn
+
+    for (int i = precision - 1; i >= 0; --i)
+    {
+        fracBuffer[i] = '0' + (fracInt % 10);
+        fracInt /= 10;
+    }
+    fracBuffer[precision] = '\0';
+
+    // Nối phần nguyên và thập phân
+    String result = sInt + String(".") + String(fracBuffer);
+    return result;
+}
+
 llu String::size() const // tra ve do dai chuoi
 {
     return length;

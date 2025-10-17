@@ -39,8 +39,8 @@ Castle::Castle(int x, int y, int hp_max, int cost)
     hpBar.setFillColor(sf::Color(0, 255, 0));
 
     // vi tri co dinh cua thanh mau tren man hinh
-    hpBarBack.setPosition(4000.f - 100.f, 1800.f); // can giua (200 rong)
-    hpBar.setPosition(4000.f - 100.f, 1800.f);
+    hpBarBack.setPosition(4000.f - 100.f, 1600.f); // can giua (200 rong)
+    hpBar.setPosition(4000.f - 100.f, 1600.f);
 }
 
 int Castle::get_level() const { return level; }

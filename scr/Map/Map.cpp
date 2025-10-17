@@ -40,6 +40,24 @@ void Map::load_File(const std::string& filename) {
     file.close();
 }
 
+void Map::saveToFile(const std::string& filename) const {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Không thể lưu file " << filename << "\n";
+        return;
+    }
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            file << static_cast<int>(grid[y][x].getType()) << " ";
+        }
+        file << "\n";
+    }
+
+    file.close();
+    std::cout << "Đã lưu map ra " << filename << "\n";
+}
+
 bool Map::isWalkable(int x, int y) const {
     if (y < 0 || y >= height || x < 0 || x >= width)
         return false;
