@@ -1,0 +1,21 @@
+assets/
+│
+├── tilesets/
+│   ├── terrain.png
+│   ├── dungeon.png
+│   └── ...
+│
+├── maps/
+│   ├── grassland/
+│   │   ├── mapdata.txt
+│   │   ├── config.txt
+│   │   └── objects.txt
+│   ├── desert/
+│   │   ├── mapdata.txt
+│   │   └── config.txt
+│   └── ...
+│
+└── backgrounds/
+    ├── sky.png
+    ├── mountain_bg.png
+    └── ...
