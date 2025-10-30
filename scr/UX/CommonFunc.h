@@ -1,8 +1,11 @@
+#define _HAS_STD_BYTE 0
 #ifndef COMMON_FUNCTION_H
 #define COMMON_FUNCTION_H
+// #define NOMINMAX
 
-#include <SFML/Graphics.hpp>
 #include <windows.h>
+#include <string.h>
+#include <SFML/Graphics.hpp>
 #include "String.h"
 
 static sf::RenderWindow* g_window = nullptr; // Cua so chinh

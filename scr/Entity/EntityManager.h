@@ -1,3 +1,4 @@
+#define _HAS_STD_BYTE 0
 #pragma once
 #include "Vector.h"
 #include <SFML/Graphics.hpp>

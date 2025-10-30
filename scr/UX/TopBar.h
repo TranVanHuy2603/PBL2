@@ -1,5 +1,5 @@
+#define _HAS_STD_BYTE 0
 #pragma once
-
 #include "SFML/Graphics.hpp"
 
 class TopBar {

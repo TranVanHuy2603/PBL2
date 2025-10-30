@@ -1,11 +1,13 @@
 #ifndef BASE_OBJECT_H
 #define BASE_OBJECT_H
+#define _HAS_STD_BYTE 0
+// #define NOMINMAX
 
 #include "CommonFunc.h"
 
 class BaseObject {
     public:
-        BaseObject() = default;
+        BaseObject();
         virtual ~BaseObject();
         void SetPosition(int x, int y);
         sf::Vector2f GetPosition() const;

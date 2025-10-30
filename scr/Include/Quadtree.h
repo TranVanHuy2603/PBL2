@@ -1,3 +1,4 @@
+#define _HAS_STD_BYTE 0
 #include "Rect.h"
 #include "Entity.h"
 #include "Vector.h"

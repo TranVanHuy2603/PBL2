@@ -1,5 +1,6 @@
-#include "MainMenu.h"
 #include <iostream>
+#include "MainMenu.h"
+
 
 MainMenu::MainMenu(float width, float height)
 {
