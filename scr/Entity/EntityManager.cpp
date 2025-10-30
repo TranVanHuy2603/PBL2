@@ -6,27 +6,36 @@
 
 using namespace std;
 
+// ======== Cau truc thong tin resource ========
 struct ResourceInfo
 {
     ResourceType type;
-    float xs; // ti te ra
-    std::string filename;
-    int gold;
-    int exp;
-    float scale;
+    float xs;               // ti le xuat hien
+    std::string filename;   // duong dan hinh anh
+    int gold;               // vang thu duoc
+    int exp;                // kinh nghiem nhan duoc
+    float scale;            // ti le phong to/thu nho
 };
 
+// Bang thong tin cac loai tai nguyen
 ResourceInfo resourceInfos[] = {
-    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 0.5},
-    {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.4},
-    {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.2},
-    {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.2},
-    {ResourceType::Iron, 0.12f, "assets/resource/iron.png", 8, 15, 0.21},
-    {ResourceType::Gold, 0.09f, "assets/resource/gold.png", 8, 20, 0.6},
-    {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.4},
-    {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.2}};
+    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 0.5f},
+    {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.4f},
+    {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.2f},
+    {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.2f},
+    {ResourceType::Iron, 0.12f, "assets/resource/iron.png", 8, 15, 0.21f},
+    {ResourceType::Gold, 0.09f, "assets/resource/gold.png", 8, 20, 0.6f},
+    {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.4f},
+    {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.2f}
+};
 
+// ======== Ham ho tro ========
+bool isOverlapping(const sf::Sprite &s1, const sf::Sprite &s2)
+{
+    return s1.getGlobalBounds().intersects(s2.getGlobalBounds());
+}
 
+// ======== Khoi tao va huy ========
 EntityManager::EntityManager(const Rect &area, double cap)
     : qt(area, cap)
 {
@@ -35,14 +44,14 @@ EntityManager::EntityManager(const Rect &area, double cap)
 EntityManager::~EntityManager()
 {
     for (auto *e : entities)
-    {
         delete e;
-    }
     entities.clear();
 }
 
+// ======== Them / xoa Entity co dinh ========
 void EntityManager::add(Entity *e)
 {
+    // Dung cho cac vat the tinh (Resource, Castle, v.v.)
     entities.push_back(e);
     qt.insert(e);
 }
@@ -54,14 +63,13 @@ void EntityManager::remove(Entity *e)
     delete e;
 }
 
+// ======== Getter ========
 Character *EntityManager::getPlayer() { return player; }
-
 Castle *EntityManager::getCastle() { return castle; }
 
-Vector<Entity *> &EntityManager::getEntities()
-{
-    return entities;
-}
+Vector<Entity *> &EntityManager::getEntities() { return entities; }
+
+const Vector<Entity*>& EntityManager::getEntities() const {return this->entities; }
 
 Quadtree &EntityManager::getQuadtree()
 {
@@ -69,113 +77,156 @@ Quadtree &EntityManager::getQuadtree()
     return qt;
 }
 
-
 void EntityManager::set_player(Character *value) { player = value; }
 void EntityManager::set_castle(Castle *value) { castle = value; }
 
-void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
-{
-    Castle *castle = getCastle();
-    Character *player = getPlayer();
+// ======== Tao quai ========
 
-    for (auto *e : entities) // duyet tat ca vat the
-    {
-        if (Monster *m = dynamic_cast<Monster *>(e))
-        {
-            // quai tim duong tan cong bang A*
-            m->update(dt, castle, player, &qt, grid, cellSize);
-        }
-    }
-    castle->update(dt);
-    player->update(dt);
+// Tao 1 quai tai vi tri chi dinh
+void EntityManager::create_monster_at(float x, float y)
+{
+    Monster *m = new Monster(x, y, 50, 10, 5, rand() % 10, 10, 20);
+
+    // Monster la vat the dong → them truc tiep, khong dung add()
+    entities.push_back(m);
+    qt.insert(m);
+
+    cout << "Tao MONSTER tai (" << x << ", " << y << ")\n";
 }
 
-void EntityManager::render(sf::RenderWindow &window)
-{
-    for (auto *e : entities)
-        e->draw(window);
-
-    player->draw(window);
-    castle->render(window);
-}
-
-bool isOverlapping(const sf::Sprite &s1, const sf::Sprite &s2)
-{
-    return s1.getGlobalBounds().intersects(s2.getGlobalBounds());
-}
-
+// Tao nhieu quai ngau nhien
 void EntityManager::create_monster(int n)
 {
-    sf::Sprite tempSprite; // sprite tam
+    sf::Sprite tempSprite;
 
     for (int i = 0; i < n; i++)
     {
-        bool check = false; // false la khong duoc tao, true la duoc tao
-        while (!check)
+        bool valid = false;
+        while (!valid)
         {
-            // random mot vi tri cho linh
-            float x = rand() % 8000 - 50 + 25;
-            float y = rand() % 4000 - 50 + 25;
+            float x = rand() % 8000;
+            float y = rand() % 4000;
             tempSprite.setPosition(x, y);
-            check = true;
+            valid = true;
 
-            // kiem tra vi tri moi co chong len nhung vat the hien co trong game khong
             for (auto *e : entities)
             {
                 if (isOverlapping(tempSprite, e->get_sprite()))
                 {
-                    check = false; // neu nhu chong len thi khog duoc
+                    valid = false;
                     break;
                 }
             }
         }
-        Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, 50, 10, 5, rand() % 10, 10, 20);
-        add(m);
+
+        Monster *m = new Monster(tempSprite.getPosition().x,
+                                 tempSprite.getPosition().y,
+                                 50, 10, 5, rand() % 10, 10, 20);
+
+        entities.push_back(m);
+        qt.insert(m);
     }
+
+    cout << "Da tao " << n << " quai vat\n";
 }
 
-ResourceInfo choose() // ap dung thay Tu day lien:))))
+// ======== Tao tai nguyen ========
+
+ResourceInfo choose_random_resource()
 {
-    float r = static_cast<float>(rand()) / RAND_MAX; // 0~1
+    float r = static_cast<float>(rand()) / RAND_MAX;
     float sum = 0.f;
+
     for (auto &info : resourceInfos)
     {
         sum += info.xs;
         if (r <= sum)
             return info;
     }
+
     return resourceInfos[0];
+}
+
+void EntityManager::create_resource_at(int x, int y)
+{
+    ResourceInfo info = choose_random_resource();
+    Resource *res = new Resource(x, y, info.type, info.filename, info.gold, info.exp, info.scale);
+
+    entities.push_back(res);
+    qt.insert(res);
+
+    cout << "Tao RESOURCE tai (" << x << ", " << y << ")\n";
 }
 
 void EntityManager::create_resource(int n)
 {
     sf::Sprite tempSprite;
-    sf::Texture tempTexture;
 
     for (int i = 0; i < n; i++)
     {
-        bool check = false;
-        ResourceInfo info = choose();
+        bool valid = false;
+        ResourceInfo info = choose_random_resource();
 
-
-        while (!check)
+        while (!valid)
         {
-            float x = rand() % 8000 - 50 + 25;
-            float y = rand() % 4000 - 50 + 25;
+            float x = rand() % 8000;
+            float y = rand() % 4000;
             tempSprite.setPosition(x, y);
-            check = true;
+            valid = true;
 
             for (auto *e : entities)
             {
                 if (isOverlapping(tempSprite, e->get_sprite()))
                 {
-                    check = false;
+                    valid = false;
                     break;
                 }
             }
         }
 
-        Resource *r = new Resource(tempSprite.getPosition().x, tempSprite.getPosition().y, info.type, info.filename, info.gold, info.exp, info.scale);
-        add(r);
+        Resource *r = new Resource(tempSprite.getPosition().x, tempSprite.getPosition().y,
+                                   info.type, info.filename, info.gold, info.exp, info.scale);
+
+        entities.push_back(r);
+        qt.insert(r);
     }
+
+    cout << "Da tao " << n << " tai nguyen\n";
+}
+
+// ======== Vong cap nhat ========
+void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
+{
+    Castle *castle = getCastle();
+    Character *player = getPlayer();
+
+    int monsterCount = 0;
+
+    for (auto *e : entities)
+    {
+        if (Monster *m = dynamic_cast<Monster *>(e))
+        {
+            m->update(dt, castle, player, &qt, grid, cellSize);
+            monsterCount++;
+        }
+    }
+
+    if (castle)
+        castle->update(dt);
+    if (player)
+        player->update(dt);
+
+    cout << "So luong quai dang ton tai: " << monsterCount << endl;
+}
+
+// ======== Ve toan bo vat the ========
+void EntityManager::render(sf::RenderWindow &window)
+{
+    for (auto *e : entities)
+        e->draw(window);
+
+    if (player)
+        player->draw(window);
+    if (castle)
+        castle->render(window);
 }

@@ -10,10 +10,14 @@ CameraController::CameraController(const sf::Vector2f& windowSize, const sf::Flo
 void CameraController::handleInput(const sf::RenderWindow& window, float deltaTime) {
     sf::Vector2f move(0.f, 0.f);
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) move.y -= moveSpeed * deltaTime;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) move.y += moveSpeed * deltaTime;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) move.x -= moveSpeed * deltaTime;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) move.x += moveSpeed * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        move.y -= moveSpeed * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        move.y += moveSpeed * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        move.x -= moveSpeed * deltaTime;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        move.x += moveSpeed * deltaTime;
 
     view.move(move);
     clampToBounds();

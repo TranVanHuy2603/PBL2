@@ -1,5 +1,5 @@
 #include "TopBar.h"
-#include "String.h"
+
 
 TopBar::TopBar(const sf::Font &font, sf::Vector2u windowSize)
 {

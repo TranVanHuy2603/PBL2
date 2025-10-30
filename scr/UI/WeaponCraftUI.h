@@ -1,9 +1,11 @@
+#define _HAS_STD_BYTE 0
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Weapons.h"   // de dung WeaponType
 #include "Character.h"
 #include "String.h"
-#include <iostream>
+
 
 struct WeaponInfo
 {

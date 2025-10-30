@@ -6,7 +6,7 @@
 
 #define MAP_SIZE 1000
 
-int main() {
+int generate_map_main() {
     // Tạo thư mục assets (trên Windows cần dùng "mkdir assets" thay vì -p)
 #ifdef _WIN32
     system("mkdir assets");

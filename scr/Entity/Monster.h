@@ -29,6 +29,7 @@ public:
     Monster(int, int, int, int, double, double, int, int);
     int get_gold() const;
     int get_exp() const;
+    int get_damage() const;
 
     void draw(sf::RenderWindow &) override;
     void set_path(const Vector<sf::Vector2f>&);

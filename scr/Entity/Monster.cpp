@@ -18,6 +18,7 @@ Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
 
 int Monster::get_gold() const { return gold; }
 int Monster::get_exp() const { return exp; }
+int Monster::get_damage() const {return this->damage; }
 
 void Monster::draw(sf::RenderWindow &window)
 {

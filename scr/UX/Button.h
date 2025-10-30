@@ -1,3 +1,4 @@
+#define _HAS_STD_BYTE 0
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <functional>  // để dùng callback (std::function)

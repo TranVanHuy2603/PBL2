@@ -9,7 +9,7 @@ llu String::strlen(const char *s) const // Ham tinh do dai cua chuoi
     return len;
 }
 
-void String::strcpy(char *dest, const char *src) const // Ham copy chuoi
+void String::strcpy(char *dest, const char *src) // Ham copy chuoi
 {
     llu index = 0;
     while (src[index] != '\0')
@@ -19,7 +19,7 @@ void String::strcpy(char *dest, const char *src) const // Ham copy chuoi
     }
     dest[index] = '\0';
 }
-int String::strcmp(const char *s1, const char *s2) const // Ham so sanh chuoi
+int String::strcmp(const char *s1, const char *s2) // Ham so sanh chuoi
 {
     llu i = 0;
     while (s1[i] != '\0' && s2[i] != '\0')
@@ -124,56 +124,19 @@ double pow(llu a, llu b) {
     return res;
 }
 // ==== Hàm static to_string ====
-static String to_string(int value)
-{
-    char buffer[50];
-    bool neg = (value < 0);
-    unsigned int v = neg ? -value : value;
-    int i = 0;
-
-    do
-    {
-        buffer[i++] = '0' + (v % 10);
-        v /= 10;
-    } while (v > 0);
-
-    if (neg)
-        buffer[i++] = '-';
-    buffer[i] = '\0';
-
-    // đảo ngược
-    for (int j = 0; j < i / 2; ++j)
-    {
-        std::swap(buffer[j], buffer[i - j - 1]);
-    }
-    return String(buffer);
+String String::to_string(int value) {
+    char buf[32];
+    sprintf(buf, "%d", value);
+    return String(buf);
 }
 
-static String to_string(long long value)
-{
-    char buffer[70];
-    bool neg = (value < 0);
-    unsigned long long v = neg ? -value : value;
-    int i = 0;
-
-    do
-    {
-        buffer[i++] = '0' + (v % 10);
-        v /= 10;
-    } while (v > 0);
-
-    if (neg)
-        buffer[i++] = '-';
-    buffer[i] = '\0';
-
-    for (int j = 0; j < i / 2; ++j)
-    {
-        std::swap(buffer[j], buffer[i - j - 1]);
-    }
-    return String(buffer);
+String String::to_string(long long value) {
+    char buf[64];
+    sprintf(buf, "%lld", value);
+    return String(buf);
 }
 
-static String to_string(unsigned long long value)
+String to_string(unsigned long long value)
 {
     char buffer[70];
     int i = 0;
@@ -191,7 +154,7 @@ static String to_string(unsigned long long value)
     return String(buffer);
 }
 
-static String to_string(double value, int precision = 2)
+String to_string(double value, int precision = 2)
 {
     long long intPart = static_cast<long long>(value);
     double fracPart = value - intPart;

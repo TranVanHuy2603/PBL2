@@ -1,21 +1,25 @@
 #pragma once
-#include <vector>
-#include <string>
+#include <SFML/Graphics.hpp>
 #include "Tile.h"
+#include "EntityManager.h"
 
 class Map {
 private:
-    int width, height;
-    std::vector<std::vector<Tile>> grid;  // dùng Tile thay vì int
+    int width;
+    int height;
+    Tile** grid; // mang 2D luu tile
 
 public:
-    Map(int w = 0, int h = 0);
+    Map();
+    ~Map();
 
     int get_width() const;
     int get_height() const;
-    const std::vector<std::vector<Tile>>& get_grid() const;
+    Tile* get_tile(int x, int y) const;
+    Tile** get_grid() const { return grid; }
 
-    void load_File(const std::string& filename);
-    void saveToFile(const std::string& filename) const;
+    void load_File(const char* filename, EntityManager* entityManager = nullptr);
+    void saveToFile(const char* filename, const EntityManager* entityManager = nullptr) const;
+
     bool isWalkable(int x, int y) const;
 };

@@ -11,10 +11,6 @@ private:
     char *data; // Mang luu chuoi ki tu
     llu length; // Do dai cua chuoi
 
-    // Cac ham tien ich noi bo
-    llu strlen(const char *) const;               // Ham tinh do dai cua chuoi
-    void strcpy(char *, const char *) const;      // Ham copy chuoi
-    int strcmp(const char *, const char *) const; // Ham so sanh chuoi
 public:
     // ==== Constructors ====
     String();                    // Ham dung rong
@@ -23,6 +19,11 @@ public:
     // ==== Destructor ====
     ~String();
 
+    // Cac ham tien ich noi bo
+    llu strlen(const char *) const;               // Ham tinh do dai cua chuoi
+    static void strcpy(char *, const char *);      // Ham copy chuoi
+    static int strcmp(const char *, const char *); // Ham so sanh chuoi
+    
     // ==== Operator overloading ====
     String& operator=(const String &);          // Gan chuoi
     String operator+(const String &) const;     // Cong 2 chuoi

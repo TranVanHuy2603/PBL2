@@ -1,5 +1,5 @@
 #pragma once
-#include <SFML/Graphics.hpp>
+// #include <SFML/Graphics.hpp>
 #include "Vector.h"
 #include "String.h"
 
@@ -22,6 +22,6 @@ public:
 
     void set_position(int, int);
     bool is_walkable() const;
-    sf::Sprite get_sprite() const;
+    const sf::Sprite& get_sprite() const;
     virtual void draw(sf::RenderWindow &); // ve hinh anh ra cua so game
 };

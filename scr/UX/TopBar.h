@@ -1,6 +1,6 @@
+#define _HAS_STD_BYTE 0
 #pragma once
-
-#include "SFML/Graphics.hpp"
+#include "String.h"
 
 class TopBar {
     sf::RectangleShape background; // hình chữ nhật làm nền

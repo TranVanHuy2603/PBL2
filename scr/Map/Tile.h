@@ -32,7 +32,8 @@ private:
 
 public:
     Tile(TileType);
-
+    Tile() = default;
+    ~Tile() = default;
     // Các hàm để lấy thông tin (getter)
     bool isWalkable() const; 
     int getCost() const;

@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "String.h"
 #include "Map.h"
+#include "MapLayer.h"
 
 class TileMap : public MapLayer
 {
@@ -13,7 +14,7 @@ private:
     int map_width, map_height;      // Kich thuoc mao (tinh theo cac o)
 
     // Ham draw call
-    virtual void draw(sf::RenderTarget &target, sf::RenderStates state) const override;
+    // virtual void draw(sf::RenderTarget &target, sf::RenderStates state) const override;
 
 public:
     // ======== Constructor ========
@@ -44,6 +45,6 @@ public:
     bool is_TextureLoaded() const;
 
     // Cac ham phu
-    int Get_min(int a, int b);
-    int Get_max(int a, int b);
+    static int Get_min(int a, int b);
+    static int Get_max(int a, int b);
 };

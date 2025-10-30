@@ -13,7 +13,7 @@ void Entity::set_position(int newx, int newy)
        y = newy;
 }
 
-sf::Sprite Entity::get_sprite() const { return this->sprite; }
+const sf::Sprite& Entity::get_sprite() const { return this->sprite; }
 
 bool Entity::is_walkable() const { return walkable; }
 
