@@ -5,6 +5,8 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
+const int frameW = 64;
+const int frameH = 64;
 // dung trong ham craft_weapon()
 struct Recipe // cong thuc che che tao vu khi
 {
@@ -60,7 +62,7 @@ Character::Character(int x, int y, int hp_max, int exp_max)
     Entity::sprite.setTexture(texture);
     Entity::sprite.setPosition((float)x, (float)y);
     Entity::sprite.setScale(1.f, 1.f);
-    Entity::sprite.setOrigin(32.f, 48.f);
+    Entity::sprite.setOrigin(frameW / 2.f, frameW / 2.f);
 
     // ====== Setup animation ======
     idleAnim.setTexture(texture);
@@ -69,8 +71,18 @@ Character::Character(int x, int y, int hp_max, int exp_max)
     deathAnim.setTexture(texture);
     hurtAnim.setTexture(hurtTexture);
 
-    idleAnim.play();
+   /* `idleAnim.play();` is a function call that starts playing the idle animation for the character.
+   This function call sets the animation state to play the idle animation sequence, which typically
+   involves displaying a series of frames that create the illusion of the character standing still
+   or in a resting state. */
+    // idleAnim.play();
     loadAnimations();
+    // Khi khởi tạo, ta chỉ muốn nhân vật ĐỨNG YÊN — không chạy animation
+    idleAnim.reset();
+    idleAnim.stop();
+
+    // Gán frame đầu tiên của idle vào sprite để hiển thị đúng khung tĩnh
+    idleAnim.applyToSprite(Entity::sprite);
 
     // ====== Setup gameplay ======
     hp = hp_max;

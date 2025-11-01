@@ -73,11 +73,26 @@ void Animation::update(float dt)
     }
 }
 
-void Animation::applyToSprite(sf::Sprite &sprite)
+void Animation::applyToSprite(sf::Sprite& sprite)
 {
-    if(!texture || frames.empty()) return;
-    // sprite.setTexture(*texture);
+    if (!texture || frames.empty()) return;
+
+    // Lưu lại trạng thái hiện tại của sprite
+    sf::Vector2f prevPos = sprite.getPosition();
+    sf::Vector2f prevScale = sprite.getScale();
+    sf::Vector2f prevOrigin = sprite.getOrigin();
+    sf::Color prevColor = sprite.getColor();
+    sf::RenderStates states;
+
+    // Áp dụng texture và frame hiện tại
+    sprite.setTexture(*texture);
     sprite.setTextureRect(frames[currentFrame]);
+
+    // Phục hồi trạng thái cũ
+    sprite.setPosition(prevPos);
+    sprite.setScale(prevScale);
+    sprite.setOrigin(prevOrigin);
+    sprite.setColor(prevColor);
 }
 
 bool Animation::isFinished() const
