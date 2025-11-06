@@ -26,11 +26,11 @@ bool Entity::is_walkable() const { return walkable; }
 const sf::Sprite& Entity::get_sprite() const { return sprite; }
 
 // ===== Setter =====
-void Entity::set_position(int newx, int newy)
+void Entity::set_position(float newx, float newy)
 {
     x = newx;
     y = newy;
-    sprite.setPosition((float)x, (float)y);
+    sprite.setPosition(x, y);
 }
 
 void Entity::set_texture(const std::string& path)
@@ -60,6 +60,31 @@ void Entity::set_scale(float sx, float sy)
 void Entity::set_texture_rect(const sf::IntRect& rect)
 {
     sprite.setTextureRect(rect);
+}
+
+bool Entity::LoadImg(const std::string &path, sf::RenderWindow &window)
+{
+    sf::Texture new_texture;
+    if (!new_texture.loadFromFile(path)) {
+        return false;
+    }
+
+    this->sprite.setTexture(new_texture);
+    sf::Image image;
+    if(image.loadFromFile(path)) {
+        for(int y = 0; y < image.getSize().y; y++) {
+            for(int x = 0; x < image.getSize().x; x++) {
+                if(image.getPixel(x, y) == COLOR_KEY) 
+                    image.setPixel(x, y, sf::Color(0,0,0,0));
+            }
+        }
+        new_texture.loadFromImage(image);
+        sprite.setTexture(new_texture);
+    }
+
+    texture = new_texture;
+    size = texture.getSize();
+    return true;
 }
 
 // ===== Draw =====

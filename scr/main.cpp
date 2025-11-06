@@ -1,17 +1,15 @@
 #define _HAS_STD_BYTE 0
-#include "UX/CommonFunc.h" 
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "WeaponCraftUI.h"
 #include "EntityManager.h"
-#include "CharacterUI.h"
-#include "UpgradeCastleUI.h"
 #include "CameraController.h"
-#include "ASNode.h"
 #include "MainMenu.h"
 #include "Map.h"
 #include "TileMap.h"
+#include "UIManager.h" // Bao gồm file quản lý UI mới
+
 using namespace std;
+
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "RTS 2D - PBL2");
@@ -24,7 +22,7 @@ int main()
 
     // ===== Map setup =====
     Map gameMap;
-    gameMap.load_File("assets/map/mapdata5xx.txt"); // file chứa ma trận tile (số nguyên)
+    gameMap.load_File("assets/map/mapdata5xx.txt");
     TileMap tileMap;
     if (!tileMap.LoadTileset("assets/map/Tileset.png", {32, 32}))
     {
@@ -41,21 +39,20 @@ int main()
     Rect worldRect(0, 0, worldBounds.width, worldBounds.height);
     EntityManager manager(worldRect, 10);
 
-    Character *player = new Character(3500.f, 1700.f, 200, 50);
+    Character* player = new Character(3500.f, 1700.f, 200, 50);
     manager.set_player(player);
     manager.add(player);
 
-    Castle *castle = new Castle(4000.f, 2000.f, 500, 50);
+    Castle* castle = new Castle(4000.f, 2000.f, 500, 50);
     manager.set_castle(castle);
     manager.add(castle);
 
     manager.create_monster(50);
     manager.create_resource(150);
 
-    // ===== UI =====
-    CharacterUI ui;
-    WeaponCraftUI craftUI;
-    UpgradeCastleUI upgradeUI;
+    // ===== UI Manager =====
+    // Chỉ cần tạo một đối tượng UIManager để quản lý tất cả UI
+    UIManager uiManager;
 
     // ===== Clock =====
     sf::Clock clock;
@@ -84,11 +81,8 @@ int main()
             }
             else if (inGame)
             {
-                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
-                    player->attack(manager.getQuadtree());
-
-                craftUI.handleEvent(event, player);
-                upgradeUI.handleEvent(event, player, castle);
+                // UIManager xử lý tất cả các sự kiện liên quan đến UI
+                uiManager.handleEvent(event, window, player, castle);
 
                 // Zoom bằng lăn chuột
                 if (event.type == sf::Event::MouseWheelScrolled)
@@ -110,20 +104,31 @@ int main()
         else if (inGame)
         {
             // ===== Update game logic =====
+
+            // 1. Xử lý input của người chơi (di chuyển, nhấn nút tấn công)
             player->handleInput(dt);
-            player->update(dt);
+
+            // 2. Cập nhật trạng thái của người chơi (animation, logic tấn công)
+            //    Truyền vào Quadtree để hàm attack bên trong có thể tìm mục tiêu
+            player->update(dt, manager.getQuadtree());
+
+            // 3. Cập nhật tất cả các thực thể khác (quái vật, tài nguyên,...)
+            manager.update(dt);
+
+            // 4. Cập nhật camera và UI
             camera.follow(player->get_position() + player->getSize() / 2.f);
             camera.handleInput(window, dt);
-            ui.update(player, window);
+            uiManager.update(player, window);
 
             // ===== Draw everything =====
+            // Vẽ thế giới game qua camera
             window.setView(camera.getView());
-            tileMap.drawVisible(window, sf::RenderStates::Default, camera.getView()); // bản đồ nền
-            manager.render(window);                                                  // quái, player, castle...
+            tileMap.drawVisible(window, sf::RenderStates::Default, camera.getView());
+            manager.render(window);
+
+            // Chuyển về view mặc định để vẽ UI
             window.setView(window.getDefaultView());
-            ui.render(window);
-            upgradeUI.render(window);
-            craftUI.render(window);
+            uiManager.render(window);
         }
 
         window.display();

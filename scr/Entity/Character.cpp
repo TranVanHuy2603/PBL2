@@ -1,12 +1,10 @@
 #include "Character.h"
-#include "Entity.h"
-#include "Quadtree.h"
 #include "Rect.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
-const int frameW = 64;
-const int frameH = 64;
+const int frameW = 128;
+const int frameH = 128;
 // dung trong ham craft_weapon()
 struct Recipe // cong thuc che che tao vu khi
 {
@@ -61,28 +59,18 @@ Character::Character(int x, int y, int hp_max, int exp_max)
     // ====== Setup sprite ======
     Entity::sprite.setTexture(texture);
     Entity::sprite.setPosition((float)x, (float)y);
-    Entity::sprite.setScale(1.f, 1.f);
-    Entity::sprite.setOrigin(frameW / 2.f, frameW / 2.f);
+    Entity::sprite.setScale(2.f, 2.f);
+    Entity::sprite.setOrigin(frameH / 4.f, frameW / 6.f);
 
     // ====== Setup animation ======
-    idleAnim.setTexture(texture);
-    walkAnim.setTexture(texture);
-    attackAnim.setTexture(texture);
-    deathAnim.setTexture(texture);
-    hurtAnim.setTexture(hurtTexture);
-
-   /* `idleAnim.play();` is a function call that starts playing the idle animation for the character.
-   This function call sets the animation state to play the idle animation sequence, which typically
-   involves displaying a series of frames that create the illusion of the character standing still
-   or in a resting state. */
-    // idleAnim.play();
     loadAnimations();
     // Khi khởi tạo, ta chỉ muốn nhân vật ĐỨNG YÊN — không chạy animation
     idleAnim.reset();
     idleAnim.stop();
 
     // Gán frame đầu tiên của idle vào sprite để hiển thị đúng khung tĩnh
-    idleAnim.applyToSprite(Entity::sprite);
+    idleAnim.applyToSprite(Entity::sprite, true);
+
 
     // ====== Setup gameplay ======
     hp = hp_max;
@@ -261,15 +249,19 @@ void Character::takeDamage(float dmg)
     else
     {
         isHurt = true;
+        hurtTimer = 0.5f; // Thời gian bị thương
         hurtAnim.play();
     }
 }
 
+
 // ====== Animation ===========
+
 void Character::loadAnimations()
 {
-    int frameWidth = 128;
-    int frameHeight = 128;
+    const int frameWidth = 128;
+    const int frameHeight = 128;
+    const int frameCount = 6;
 
     idleAnim.setTexture(texture);
     walkAnim.setTexture(texture);
@@ -277,34 +269,52 @@ void Character::loadAnimations()
     deathAnim.setTexture(texture);
     hurtAnim.setTexture(hurtTexture);
 
-    for (int i = 1; i < 6; i++)
+    // ===== Idle =====
+    for (int i = 0; i < frameCount; ++i)
         idleAnim.addFrame(sf::IntRect(i * frameWidth, 0 * frameHeight, frameWidth, frameHeight));
 
-    for (int i = 1; i < 6; i++)
+    // ===== Walk =====
+    for (int i = 0; i < frameCount; ++i)
         walkAnim.addFrame(sf::IntRect(i * frameWidth, 1 * frameHeight, frameWidth, frameHeight));
 
-    for (int i = 0; i < 6; i++)
+    // ===== Attack =====
+    for (int i = 0; i < frameCount; ++i)
         attackAnim.addFrame(sf::IntRect(i * frameWidth, 2 * frameHeight, frameWidth, frameHeight));
 
-    for (int i = 0; i < 6; i++)
+    // ===== Death =====
+    for (int i = 0; i < frameCount; ++i)
         deathAnim.addFrame(sf::IntRect(i * frameWidth, 3 * frameHeight, frameWidth, frameHeight));
-    deathAnim.setFrameDuration(0.15f);
-    deathAnim.setLoop(false);
 
-    for (int i = 0; i < 4; i++)
-        hurtAnim.addFrame(sf::IntRect(i * frameWidth, 0, frameWidth, frameHeight));
-    hurtAnim.setFrameDuration(0.1f);
-    hurtAnim.setLoop(false);
-
+    // ===== Animation config =====
     idleAnim.setFrameDuration(0.15f);
     walkAnim.setFrameDuration(0.1f);
     attackAnim.setFrameDuration(0.08f);
+    deathAnim.setFrameDuration(0.15f);
+    deathAnim.setLoop(false);
 
-    idleAnim.play(); // Mac dinh la dung yen khi khoi tao
+    // ===== Hurt animation (từ ảnh khác) =====
+    sf::Vector2u hurtSize = hurtTexture.getSize();
+    int hurtFrameW = hurtSize.x / 4;
+    int hurtFrameH = hurtSize.y;
+    for (int i = 0; i < 4; ++i)
+        hurtAnim.addFrame(sf::IntRect(i * hurtFrameW, 0, hurtFrameW, hurtFrameH));
+    hurtAnim.setFrameDuration(0.1f);
+    hurtAnim.setLoop(false);
+
+    // ===== Khởi tạo sprite mặc định =====
+    idleAnim.reset();
+    idleAnim.stop();
+    Entity::sprite.setTexture(texture);
+    Entity::sprite.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
 }
 
 void Character::handleInput(float dt)
 {
+    if (isDead || isAttacking || isHurt) {
+        isMoving = false;
+        return;
+    }
+
     sf::Vector2f move(0.f, 0.f);
     isMoving = false;
 
@@ -339,16 +349,14 @@ void Character::handleInput(float dt)
         attackAnim.play();
         hitTriggered = false;
     }
-    std::cout << "Player pos: " << Entity::sprite.getPosition().x
-              << ", " << Entity::sprite.getPosition().y << "\n";
 }
 
-void Character::update(float dt)
+void Character::update(float dt, Quadtree& qt)
 {
     if (isDead)
     {
         deathAnim.update(dt);
-        deathAnim.applyToSprite(Entity::sprite);
+        deathAnim.applyToSprite(Entity::sprite, true);
         if (deathAnim.isFinished())
         {
             Entity::sprite.setColor(sf::Color(255, 255, 255, 0)); // ẩn sprite
@@ -360,7 +368,7 @@ void Character::update(float dt)
     {
         hurtTimer -= dt;
         hurtAnim.update(dt);
-        hurtAnim.applyToSprite(Entity::sprite);
+        hurtAnim.applyToSprite(Entity::sprite, true);
         Entity::sprite.setColor(sf::Color(255, 100, 100));
 
         if (hurtTimer <= 0.f || hurtAnim.isFinished())
@@ -379,10 +387,11 @@ void Character::update(float dt)
     if (isAttacking)
     {
         attackAnim.update(dt);
-        attackAnim.applyToSprite(Entity::sprite);
+        attackAnim.applyToSprite(Entity::sprite, true);
 
-        if (attackAnim.getCurrentFrameIndex() == hitFrameIndex && !hitTriggered)
+        if (attackAnim.getCurrentFrameIndex().x == hitFrameIndex && !hitTriggered)
         {
+            attack(qt);
             hitTriggered = true;
         }
 
@@ -395,11 +404,11 @@ void Character::update(float dt)
     else if (isMoving)
     {
         walkAnim.update(dt);
-        walkAnim.applyToSprite(Entity::sprite);
+        walkAnim.applyToSprite(Entity::sprite, true);
     }
     else
     {
         idleAnim.update(dt);
-        idleAnim.applyToSprite(Entity::sprite);
+        idleAnim.applyToSprite(Entity::sprite, true);
     }
 }

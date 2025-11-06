@@ -49,7 +49,7 @@ private:
     int hitFrameIndex;
 
 public:
-    Character();
+    Character() = default;
     Character(int, int, int, int);
     ~Character();
 
@@ -92,5 +92,5 @@ public:
     // ====== Animation ========
     void loadAnimations();
     void handleInput(float dt);
-    void update(float dt);
+    void update(float dt, Quadtree& qt);
 };

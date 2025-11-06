@@ -2,8 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include "Vector.h"
 #include "String.h"
+#include "CommonFunc.h"
 
-class Entity // đại diện cho mọi vật thể trong game
+class Entity// đại diện cho mọi vật thể trong game
 {
 protected:
     sf::Sprite sprite;   // sprite chính của entity (sẽ dùng cho animation)
@@ -11,11 +12,13 @@ protected:
     int x, y;            // toạ độ trong thế giới game
     bool walkable;       // có thể đi xuyên qua hay không
     std::string type;    // loại đối tượng (Character, Monster, Castle, ...)
+    sf::Vector2u size; // size texture sau khi xu ly
 
 public:
     Entity();
     Entity(int x, int y);
-
+    ~Entity() = default;
+    
     // ===== Getter =====
     int get_x() const;
     int get_y() const;
@@ -24,12 +27,14 @@ public:
     const sf::Sprite& get_sprite() const;
 
     // ===== Setter =====
-    void set_position(int newx, int newy);
+    void set_position(float newx, float newy);
     void set_texture(const std::string& path);
     void set_texture(const sf::Texture& tex);
     void set_origin_center();
     void set_scale(float sx, float sy);
     void set_texture_rect(const sf::IntRect& rect);
+
+    bool LoadImg(const std::string &path, sf::RenderWindow &window);
 
     // ===== Draw =====
     virtual void draw(sf::RenderWindow& window);
