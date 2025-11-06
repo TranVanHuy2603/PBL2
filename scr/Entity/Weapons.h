@@ -30,12 +30,19 @@ protected:
 
     sf::Clock attackClock; //dung de do thoi gian giua cac cu danh
     float attackCooldown; //thoi gian giua cac lan danh
+    bool isAnimating;
+    float animationProgress; // Từ 0.0 đến 1.0
+    
+    sf::Texture effectTexture;
 
 public:
     Weapons(WeaponType, int, double, double, const String&, const String&);
     int get_damage();
     double get_damage_range();
     double get_attack_speed();
+    sf::Texture& getEffectTexture(); 
     void attack(Quadtree&, Character*); //tan cong
+    void startAttackAnimation();
+    void updateAnimation(float dt, const sf::Vector2f& ownerPos, bool ownerIsFacingLeft);
     void draw(sf::RenderWindow&);
 };

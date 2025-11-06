@@ -11,6 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include <sstream>
 
+class EntityManager;
 class Castle;
 enum class Direction {
     Left,
@@ -47,6 +48,11 @@ private:
     bool isAttacking;
     bool hitTriggered;
     int hitFrameIndex;
+
+    // Hieu ung bui
+    sf::Texture dustTexture;
+    Vector<sf::Sprite> dustParticles;
+    sf::Clock dustSpawnClock;
 
 public:
     Character() = default;
@@ -92,5 +98,7 @@ public:
     // ====== Animation ========
     void loadAnimations();
     void handleInput(float dt);
-    void update(float dt, Quadtree& qt);
+    void update(float dt, Quadtree& qt, EntityManager& manager);
+    void updateDustEffect(float dt);
+    void draw(sf::RenderWindow& window);
 };

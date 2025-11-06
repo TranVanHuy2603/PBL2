@@ -10,6 +10,7 @@
 #include "Resource.h"
 #include "ASNode.h"
 #include "Rect.h"
+#include "Effect.h"
 
 // Lop quan ly tat ca vat the trong game (Player, Castle, Monster, Resource, ...)
 class EntityManager
@@ -21,6 +22,7 @@ private:
     Character* player = nullptr; // Nhan vat nguoi choi
     Castle* castle = nullptr;    // Thanh chinh cua nguoi choi
 
+    Vector<Effect*> effects;
 public:
     // ======== Khoi tao / huy ========
     EntityManager(const Rect& area, double capacity);
@@ -66,4 +68,5 @@ public:
 
     // Ve tat ca doi tuong ra man hinh
     void render(sf::RenderWindow& window);
+    void createWeaponEffect(Weapons* weapon, sf::Vector2f position); 
 };

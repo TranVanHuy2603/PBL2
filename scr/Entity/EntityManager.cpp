@@ -197,26 +197,60 @@ void EntityManager::create_resource(int n)
 // ======== Vong cap nhat ========
 void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
 {
-    Castle *castle = getCastle();
-    Character *player = getPlayer();
+      Castle* castle = getCastle();
+    Character* player = getPlayer();
 
-    int monsterCount = 0;
-
-    for (auto *e : entities)
+    // Cập nhật và xóa các thực thể (quái, tài nguyên)
+    for (auto it = entities.begin(); it != entities.end(); )
     {
-        if (Monster *m = dynamic_cast<Monster *>(e))
+        Entity* e = *it;
+        bool removed = false;
+
+        if (Monster* m = dynamic_cast<Monster*>(e))
         {
-            m->update(dt, castle, player, &qt, grid, cellSize);
-            monsterCount++;
+            if (!m->get_status())
+            {
+                qt.remove(m);
+                it = entities.erase(it);
+                delete m;
+                removed = true;
+            }
+            else
+            {
+                m->update(dt, castle, player, &qt, grid, cellSize);
+            }
+        }
+        // (Thêm logic xóa cho Resource nếu cần)
+
+        if (!removed)
+        {
+            ++it;
         }
     }
 
     if (castle)
         castle->update(dt);
-    if (player)
-        player->update(dt);
 
-    cout << "So luong quai dang ton tai: " << monsterCount << endl;
+    if (player)
+    {
+        // SỬA LỖI TẠI ĐÂY: Truyền Quadtree vào hàm update của player
+        player->update(dt, qt, *this);
+    }
+
+    // Cập nhật và xóa các hiệu ứng đã kết thúc
+    for (size_t i = 0; i < effects.get_size(); )
+    {
+        effects[i]->update(dt);
+        if (effects[i]->isFinished())
+        {
+            delete effects[i];
+            effects.erase(effects.begin() + i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
 }
 
 // ======== Ve toan bo vat the ========
@@ -229,4 +263,18 @@ void EntityManager::render(sf::RenderWindow &window)
         player->draw(window);
     if (castle)
         castle->render(window);
+}
+
+void EntityManager::createWeaponEffect(Weapons* weapon, sf::Vector2f position)
+{
+    sf::Texture& tex = weapon->getEffectTexture();
+    if (tex.getSize().x == 0) return; // Không có texture thì không tạo
+
+    // Giả định thông số animation, bạn có thể lưu chúng trong WeaponInfo
+    int frameWidth = 128;
+    int frameHeight = 128;
+    int frameCount = 5;
+    float frameDuration = 0.05f;
+
+    effects.push_back(new Effect(tex, position, frameWidth, frameHeight, frameCount, frameDuration));
 }

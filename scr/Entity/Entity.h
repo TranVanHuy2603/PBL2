@@ -27,7 +27,7 @@ public:
     const sf::Sprite& get_sprite() const;
 
     // ===== Setter =====
-    void set_position(float newx, float newy);
+    void set_position(int newx, int newy);
     void set_texture(const std::string& path);
     void set_texture(const sf::Texture& tex);
     void set_origin_center();

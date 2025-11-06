@@ -1,5 +1,6 @@
 #include "Character.h"
 #include "Rect.h"
+#include "EntityManager.h"
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
@@ -56,6 +57,8 @@ Character::Character(int x, int y, int hp_max, int exp_max)
     if (!hurtTexture.loadFromFile("assets/character/character_hurt.png"))
         std::cout << "Error load hurt texture\n";
 
+    if (!dustTexture.loadFromFile("assets/effects/dust.png"))
+        std::cout << "Error loading dust texture\n";
     // ====== Setup sprite ======
     Entity::sprite.setTexture(texture);
     Entity::sprite.setPosition((float)x, (float)y);
@@ -306,6 +309,9 @@ void Character::loadAnimations()
     idleAnim.stop();
     Entity::sprite.setTexture(texture);
     Entity::sprite.setTextureRect(sf::IntRect(0, 0, frameWidth, frameHeight));
+
+    // QUAN TRỌNG: Đặt origin vào TÂM của khung hình
+    Entity::sprite.setOrigin(frameWidth / 2.f, frameHeight / 2.f);
 }
 
 void Character::handleInput(float dt)
@@ -351,8 +357,9 @@ void Character::handleInput(float dt)
     }
 }
 
-void Character::update(float dt, Quadtree& qt)
+void Character::update(float dt, Quadtree& qt, EntityManager& manager)
 {
+    bool shouldFlip = (facing == Direction::Left);
     if (isDead)
     {
         deathAnim.update(dt);
@@ -379,20 +386,16 @@ void Character::update(float dt, Quadtree& qt)
         return;
     }
 
-    if (facing == Direction::Right)
-        Entity::sprite.setScale(2.f, 2.f);
-    else
-        Entity::sprite.setScale(-2.f, 2.f);
-
     if (isAttacking)
     {
         attackAnim.update(dt);
-        attackAnim.applyToSprite(Entity::sprite, true);
+        attackAnim.applyToSprite(Entity::sprite, shouldFlip);
 
         if (attackAnim.getCurrentFrameIndex().x == hitFrameIndex && !hitTriggered)
         {
             attack(qt);
             hitTriggered = true;
+            manager.createWeaponEffect(weapons[indexWeapon], get_position());
         }
 
         if (attackAnim.isFinished())
@@ -401,14 +404,78 @@ void Character::update(float dt, Quadtree& qt)
             idleAnim.play();
         }
     }
+
     else if (isMoving)
     {
         walkAnim.update(dt);
-        walkAnim.applyToSprite(Entity::sprite, true);
+        walkAnim.applyToSprite(Entity::sprite, shouldFlip);
     }
     else
     {
         idleAnim.update(dt);
-        idleAnim.applyToSprite(Entity::sprite, true);
+        idleAnim.applyToSprite(Entity::sprite, shouldFlip);
+    }
+    weapons[indexWeapon]->updateAnimation(dt, get_position(), shouldFlip);
+    updateDustEffect(dt);
+    
+}
+
+void Character::updateDustEffect(float dt)
+{
+    // Logic 1: Tạo hạt bụi mới nếu nhân vật đang di chuyển
+    if (isMoving && dustSpawnClock.getElapsedTime().asSeconds() > 0.15f)
+    {
+        // Tạo một sprite mới cho hạt bụi
+        sf::Sprite particle(dustTexture);
+        particle.setScale(0.5f, 0.5f); // Thu nhỏ hạt bụi
+        particle.setOrigin(dustTexture.getSize().x / 2.f, dustTexture.getSize().y / 2.f);
+
+        // Đặt vị trí ban đầu ở chân nhân vật
+        sf::Vector2f pos = get_position();
+        pos.y += getSize().y / 2.f - 20; // Điều chỉnh vị trí Y cho phù hợp
+        particle.setPosition(pos);
+
+        // Thêm hạt bụi vào danh sách để quản lý
+        dustParticles.push_back(particle);
+        dustSpawnClock.restart(); // Reset đồng hồ đếm
+    }
+
+    // Logic 2: Cập nhật tất cả các hạt bụi đang có
+    for (size_t i = 0; i < dustParticles.get_size(); )
+    {
+        // Cho hạt bụi bay lên trên
+        dustParticles[i].move(0, -30.f * dt);
+
+        // Làm mờ dần hạt bụi
+        sf::Color color = dustParticles[i].getColor();
+        if (color.a < 10) // Nếu đã gần như trong suốt
+        {
+            // Xóa hạt bụi khỏi danh sách
+            dustParticles.erase(dustParticles.begin() + i);
+        }
+        else
+        {
+            // Giảm độ trong suốt (alpha)
+            color.a -= static_cast<unsigned char>(200.f * dt);
+            dustParticles[i].setColor(color);
+            // Chỉ tăng i nếu không xóa phần tử
+            ++i;
+        }
     }
 }
+
+void Character::draw(sf::RenderWindow& window)
+{
+    // Vẽ các hạt bụi TRƯỚC (để chúng ở phía sau nhân vật)
+    for (const auto& particle : dustParticles)
+    {
+        window.draw(particle);
+    }
+
+    // Vẽ sprite nhân vật (gọi hàm của lớp cha)
+    LivingEntity::draw(window);
+
+    // Vẽ vũ khí SAU (để nó ở phía trước nhân vật)
+    weapons[indexWeapon]->draw(window);
+}
+

@@ -7,20 +7,79 @@
 
 using namespace std;
 
-Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed,const String &texture, const String &sound)
-    : damage(damage), damage_range(damage_range), attack_speed(attack_speed)
+Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack_speed, const String &texturePath, const String &sound)
+    : damage(damage), damage_range(damage_range), attack_speed(attack_speed),
+      isAnimating(false), animationProgress(0.f) // Khởi tạo biến mới
 {
-    this->texture.loadFromFile(texture.c_str()); //load texture tu file hinh anh
+    this->texture.loadFromFile(texturePath.c_str());
     this->sprite.setTexture(this->texture);
 
-    this->attackCooldown = 1 / attack_speed; //thoi gian giua cac lan danh
+    sf::Vector2u texSize = this->texture.getSize();
+    this->sprite.setOrigin(texSize.x * 0.2f, texSize.y * 0.9f);
 
+    this->attackCooldown = 1 / attack_speed;
     this->sound.loadSound(sound.c_str());
+
+    // TẢI HIỆU ỨNG DỰA TRÊN LOẠI VŨ KHÍ
+    String effectPath = "";
+    switch (type)
+    {
+        case WeaponType::WoodenSword: effectPath = "assets/effects/sword_slash.png"; break;
+        case WeaponType::IronSwood:   effectPath = "assets/effects/sword_slash_iron.png"; break;
+        case WeaponType::Ax:          effectPath = "assets/effects/axe_slash.png"; break;
+        case WeaponType::Bow:         effectPath = "assets/effects/arrow_impact.png"; break;
+        case WeaponType::Gun:         effectPath = "assets/effects/muzzle_flash.png"; break;
+        default: break;
+    }
+
+    if (!effectPath.empty() && !effectTexture.loadFromFile(effectPath.c_str())) {
+        cout << "Loi tai hieu ung vu khi: " << effectPath.c_str() << endl;
+    }
 }
 
 int Weapons::get_damage() { return damage; }
 double Weapons::get_damage_range() { return damage_range; }
 double Weapons::get_attack_speed() { return attack_speed; }
+sf::Texture& Weapons::getEffectTexture() {
+    return effectTexture;
+}
+
+void Weapons::startAttackAnimation()
+{
+    isAnimating = true;
+    animationProgress = 0.f;
+}
+
+void Weapons::updateAnimation(float dt, const sf::Vector2f& ownerPos, bool ownerIsFacingLeft)
+{
+    if (!isAnimating) return;
+
+    animationProgress += dt * 5.f;
+
+    if (animationProgress >= 1.f)
+    {
+        isAnimating = false;
+        animationProgress = 1.f;
+        return;
+    }
+
+    sprite.setPosition(ownerPos.x, ownerPos.y - 30.f);
+
+    float startAngle = -60.f;
+    float endAngle = 60.f;
+    float currentAngle = startAngle + (endAngle - startAngle) * animationProgress;
+
+    if (!ownerIsFacingLeft) // Nhìn sang phải
+    {
+        sprite.setScale(1.f, 1.f);
+        sprite.setRotation(currentAngle);
+    }
+    else // Nhìn sang trái
+    {
+        sprite.setScale(-1.f, 1.f);
+        sprite.setRotation(-currentAngle);
+    }
+}
 
 void Weapons::attack(Quadtree &qt, Character *nv)
 {

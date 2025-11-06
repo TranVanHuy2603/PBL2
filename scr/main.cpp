@@ -6,7 +6,8 @@
 #include "MainMenu.h"
 #include "Map.h"
 #include "TileMap.h"
-#include "UIManager.h" // Bao gồm file quản lý UI mới
+#include "UIManager.h"
+#include "ASNode.h" // Cần cho việc tạo lưới A*
 
 using namespace std;
 
@@ -15,24 +16,49 @@ int main()
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "RTS 2D - PBL2");
     window.setFramerateLimit(60);
 
+    // ===== Tải tài nguyên tập trung =====
+    sf::Font mainFont;
+    if (!mainFont.loadFromFile("assets/font/font2.ttf")) {
+        cerr << "Loi: Khong the tai font chinh!" << endl;
+        return -1;
+    }
+
     // ===== MENU =====
-    MainMenu menu(window.getSize().x, window.getSize().y);
+    MainMenu menu(window.getSize().x, window.getSize().y, mainFont); // Truyền font vào menu
     bool inMenu = true;
     bool inGame = false;
 
     // ===== Map setup =====
+    const double CELL_SIZE = 32.0;
     Map gameMap;
     gameMap.load_File("assets/map/mapdata5xx.txt");
     TileMap tileMap;
-    if (!tileMap.LoadTileset("assets/map/Tileset.png", {32, 32}))
+    if (!tileMap.LoadTileset("assets/map/Tileset.png", {(unsigned int)CELL_SIZE, (unsigned int)CELL_SIZE}))
     {
         std::cerr << "Khong the load tileset!\n";
         return -1;
     }
     tileMap.buildMap(gameMap);
 
+    // ===== TẠO LƯỚI TÌM ĐƯỜNG (A* GRID) - BƯỚC QUAN TRỌNG BỊ THIẾU =====
+    Vector<Vector<ASNode>> grid;
+    int mapWidth = gameMap.get_width();
+    int mapHeight = gameMap.get_height();
+    grid.resize(mapWidth);
+    for (int i = 0; i < mapWidth; ++i)
+    {
+        grid[i].resize(mapHeight);
+        for (int j = 0; j < mapHeight; ++j)
+        {
+            grid[i][j].set_position(i, j);
+            // Giả định lớp Map có hàm is_obstacle để kiểm tra vật cản
+            bool isWalkable = !gameMap.is_obstacle(i, j);
+            grid[i][j].set_walkable(isWalkable);
+        }
+    }
+
     // ===== Camera =====
-    sf::FloatRect worldBounds(0, 0, gameMap.get_width() * 32, gameMap.get_height() * 32);
+    sf::FloatRect worldBounds(0, 0, mapWidth * CELL_SIZE, mapHeight * CELL_SIZE);
     CameraController camera(sf::Vector2f(1920, 1080), worldBounds);
 
     // ===== Entities =====
@@ -51,8 +77,7 @@ int main()
     manager.create_resource(150);
 
     // ===== UI Manager =====
-    // Chỉ cần tạo một đối tượng UIManager để quản lý tất cả UI
-    UIManager uiManager;
+    UIManager uiManager(mainFont); // Khởi tạo UIManager với font đã tải
 
     // ===== Clock =====
     sf::Clock clock;
@@ -71,26 +96,16 @@ int main()
             if (inMenu)
             {
                 int action = menu.handleEvent(event, window);
-                if (action == 1)
-                {
-                    inMenu = false;
-                    inGame = true;
-                }
-                else if (action == 2)
-                    window.close();
+                if (action == 1) { inMenu = false; inGame = true; }
+                else if (action == 2) window.close();
             }
             else if (inGame)
             {
-                // UIManager xử lý tất cả các sự kiện liên quan đến UI
                 uiManager.handleEvent(event, window, player, castle);
-
-                // Zoom bằng lăn chuột
                 if (event.type == sf::Event::MouseWheelScrolled)
                 {
-                    if (event.mouseWheelScroll.delta > 0)
-                        camera.zoom(0.9f);
-                    else
-                        camera.zoom(1.1f);
+                    if (event.mouseWheelScroll.delta > 0) camera.zoom(0.9f);
+                    else camera.zoom(1.1f);
                 }
             }
         }
@@ -103,20 +118,16 @@ int main()
         }
         else if (inGame)
         {
-            // ===== Update game logic =====
-
-            // 1. Xử lý input của người chơi (di chuyển, nhấn nút tấn công)
+            // ===== Update game logic - ĐÚNG THỨ TỰ =====
+            // 1. Xử lý input của người chơi
             player->handleInput(dt);
 
-            // 2. Cập nhật trạng thái của người chơi (animation, logic tấn công)
-            //    Truyền vào Quadtree để hàm attack bên trong có thể tìm mục tiêu
-            player->update(dt, manager.getQuadtree());
+            // 2. Cập nhật TẤT CẢ các thực thể (bao gồm cả player và monster)
+            //    Hàm này sẽ gọi player->update và monster->update bên trong nó
+            manager.update(dt, grid, CELL_SIZE);
 
-            // 3. Cập nhật tất cả các thực thể khác (quái vật, tài nguyên,...)
-            manager.update(dt);
-
-            // 4. Cập nhật camera và UI
-            camera.follow(player->get_position() + player->getSize() / 2.f);
+            // 3. Cập nhật camera và UI
+            camera.follow(player->get_position());
             camera.handleInput(window, dt);
             uiManager.update(player, window);
 
@@ -124,7 +135,7 @@ int main()
             // Vẽ thế giới game qua camera
             window.setView(camera.getView());
             tileMap.drawVisible(window, sf::RenderStates::Default, camera.getView());
-            manager.render(window);
+            manager.render(window); // Hàm này sẽ vẽ entities và cả effects
 
             // Chuyển về view mặc định để vẽ UI
             window.setView(window.getDefaultView());

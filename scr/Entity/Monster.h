@@ -3,6 +3,7 @@
 #include "Astar.h"
 #include "Castle.h"
 #include "Character.h"
+#include "Animation.h"
 #include <sstream>
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -24,6 +25,18 @@ private:
     Vector<sf::Vector2f> path; //duong di
     int currentTarget = 0; //chi so toa do trong duong di
     sf::Texture texture;
+    float pathRecalculateTimer; // Timer để tính lại đường đi
+
+    // ANIMATION
+    Animation idleAnim;
+    Animation walkAnim;
+    Animation attackAnim;
+    Animation deathAnim;
+
+    bool isMoving;
+    bool isAttacking;
+
+    void loadAnimations();
 public:
     Monster();
     Monster(int, int, int, int, double, double, int, int);

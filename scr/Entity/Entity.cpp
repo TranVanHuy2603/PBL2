@@ -26,11 +26,11 @@ bool Entity::is_walkable() const { return walkable; }
 const sf::Sprite& Entity::get_sprite() const { return sprite; }
 
 // ===== Setter =====
-void Entity::set_position(float newx, float newy)
+void Entity::set_position(int newx, int newy)
 {
     x = newx;
     y = newy;
-    sprite.setPosition(x, y);
+    sprite.setPosition(float(x), float(y));
 }
 
 void Entity::set_texture(const std::string& path)
