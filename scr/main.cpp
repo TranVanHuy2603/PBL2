@@ -1,93 +1,115 @@
 #define _HAS_STD_BYTE 0
 #include <SFML/Graphics.hpp>
 #include <iostream>
+
+// Bao gồm tất cả các file header cần thiết cho hệ thống
+#include "MainMenu.h"
+#include "UIManager.h"
 #include "EntityManager.h"
 #include "CameraController.h"
-#include "MainMenu.h"
 #include "Map.h"
 #include "TileMap.h"
-#include "UIManager.h"
-#include "ASNode.h" // Cần cho việc tạo lưới A*
+#include "ASNode.h"
 
 using namespace std;
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "RTS 2D - PBL2");
+    //================================================================================
+    // 1. KHỞI TẠO CỬA SỔ VÀ CÁC TÀI NGUYÊN TRUNG TÂM
+    //================================================================================
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "PBL2 - Game RTS 2D");
     window.setFramerateLimit(60);
 
-    // ===== Tải tài nguyên tập trung =====
     sf::Font mainFont;
     if (!mainFont.loadFromFile("assets/font/font2.ttf")) {
-        cerr << "Loi: Khong the tai font chinh!" << endl;
+        cerr << "Loi nghiem trong: Khong the tai file font chinh!" << endl;
         return -1;
     }
 
-    // ===== MENU =====
-    MainMenu menu(window.getSize().x, window.getSize().y, mainFont); // Truyền font vào menu
+    //================================================================================
+    // 2. THIẾT LẬP CÁC TRẠNG THÁI VÀ HỆ THỐNG CỦA GAME
+    //================================================================================
+
     bool inMenu = true;
     bool inGame = false;
 
-    // ===== Map setup =====
+    MainMenu menu(window.getSize().x, window.getSize().y, mainFont);
+
+    // --- Entities (Player, Castle, Monsters, Resources) ---
+    // EntityManager phải được tạo TRƯỚC khi load map
+    sf::FloatRect worldBoundsPlaceholder(0, 0, 1, 1);
+    EntityManager manager(Rect(0, 0, 1, 1), 10);
+
+    // --- Map & A* Grid ---
     const double CELL_SIZE = 32.0;
     Map gameMap;
-    gameMap.load_File("assets/map/mapdata5xx.txt");
+    
+    // THAY ĐỔI 1: CHỈ LOAD DỮ LIỆU TILE TỪ FILE MAP
+    // Bằng cách truyền `nullptr`, chúng ta yêu cầu hàm load_File bỏ qua phần entities.
+    gameMap.load_File("assets/map/mapdata5xx.txt", nullptr);
+
+    // Cập nhật lại worldBounds và Quadtree sau khi đã biết kích thước map
+    int mapWidth = gameMap.get_width();
+    int mapHeight = gameMap.get_height();
+    sf::FloatRect worldBounds(0, 0, mapWidth * CELL_SIZE, mapHeight * CELL_SIZE);
+    manager.rebuildQuadtree(Rect(0, 0, worldBounds.width, worldBounds.height));
+
+    // THAY ĐỔI 2: TẠO PLAYER VÀ CASTLE Ở VỊ TRÍ CỐ ĐỊNH
+    Character* player = new Character(3500.f, 1700.f, 200, 50);
+    manager.add(player);
+    manager.set_player(player);
+
+    Castle* castle = new Castle(4000.f, 2000.f, 500, 50);
+    manager.add(castle);
+    manager.set_castle(castle);
+
+    // THAY ĐỔI 3: BỎ ĐI VIỆC KIỂM TRA NULL POINTER VÌ CHÚNG TA CHẮC CHẮN ĐÃ TẠO CHÚNG
+    // if (!player || !castle) { ... }
+
+    // Tạo thêm quái và tài nguyên ngẫu nhiên
+    manager.create_monster(50);
+    manager.create_resource(150);
+
+    // --- TileMap (để vẽ map) ---
     TileMap tileMap;
     if (!tileMap.LoadTileset("assets/map/Tileset.png", {(unsigned int)CELL_SIZE, (unsigned int)CELL_SIZE}))
     {
-        std::cerr << "Khong the load tileset!\n";
+        std::cerr << "Loi: Khong the load tileset!" << endl;
         return -1;
     }
     tileMap.buildMap(gameMap);
 
-    // ===== TẠO LƯỚI TÌM ĐƯỜNG (A* GRID) - BƯỚC QUAN TRỌNG BỊ THIẾU =====
-    Vector<Vector<ASNode>> grid;
-    int mapWidth = gameMap.get_width();
-    int mapHeight = gameMap.get_height();
-    grid.resize(mapWidth);
+    // --- Tạo lưới A* cho quái vật tìm đường ---
+    Vector<Vector<ASNode>> astarGrid;
+    astarGrid.resize(mapWidth);
     for (int i = 0; i < mapWidth; ++i)
     {
-        grid[i].resize(mapHeight);
+        astarGrid[i].resize(mapHeight);
         for (int j = 0; j < mapHeight; ++j)
         {
-            grid[i][j].set_position(i, j);
-            // Giả định lớp Map có hàm is_obstacle để kiểm tra vật cản
-            bool isWalkable = !gameMap.is_obstacle(i, j);
-            grid[i][j].set_walkable(isWalkable);
+            astarGrid[i][j].set_position(i, j);
+            bool isWalkable = gameMap.isWalkable(i, j);
+            astarGrid[i][j].set_walkable(isWalkable);
         }
     }
 
-    // ===== Camera =====
-    sf::FloatRect worldBounds(0, 0, mapWidth * CELL_SIZE, mapHeight * CELL_SIZE);
+    // --- Camera ---
     CameraController camera(sf::Vector2f(1920, 1080), worldBounds);
 
-    // ===== Entities =====
-    Rect worldRect(0, 0, worldBounds.width, worldBounds.height);
-    EntityManager manager(worldRect, 10);
+    // --- UI In-Game ---
+    UIManager uiManager(mainFont);
 
-    Character* player = new Character(3500.f, 1700.f, 200, 50);
-    manager.set_player(player);
-    manager.add(player);
-
-    Castle* castle = new Castle(4000.f, 2000.f, 500, 50);
-    manager.set_castle(castle);
-    manager.add(castle);
-
-    manager.create_monster(50);
-    manager.create_resource(150);
-
-    // ===== UI Manager =====
-    UIManager uiManager(mainFont); // Khởi tạo UIManager với font đã tải
-
-    // ===== Clock =====
+    // --- Timing ---
     sf::Clock clock;
 
-    // ===== GAME LOOP =====
+    //================================================================================
+    // 3. GAME LOOP CHÍNH (Giữ nguyên)
+    //================================================================================
     while (window.isOpen())
     {
         float dt = clock.restart().asSeconds();
         sf::Event event;
-
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
@@ -95,9 +117,16 @@ int main()
 
             if (inMenu)
             {
-                int action = menu.handleEvent(event, window);
-                if (action == 1) { inMenu = false; inGame = true; }
-                else if (action == 2) window.close();
+                MenuAction action = menu.handleEvent(event, window);
+                if (action == MenuAction::START_GAME)
+                {
+                    inMenu = false;
+                    inGame = true;
+                }
+                else if (action == MenuAction::EXIT_GAME)
+                {
+                    window.close();
+                }
             }
             else if (inGame)
             {
@@ -110,6 +139,15 @@ int main()
             }
         }
 
+        if (inGame)
+        {
+            player->handleInput(dt);
+            manager.update(dt, astarGrid, CELL_SIZE);
+            camera.follow(player->get_position());
+            camera.handleInput(window, dt);
+            uiManager.update(player, window);
+        }
+
         window.clear(sf::Color(40, 40, 40));
 
         if (inMenu)
@@ -118,26 +156,10 @@ int main()
         }
         else if (inGame)
         {
-            // ===== Update game logic - ĐÚNG THỨ TỰ =====
-            // 1. Xử lý input của người chơi
-            player->handleInput(dt);
-
-            // 2. Cập nhật TẤT CẢ các thực thể (bao gồm cả player và monster)
-            //    Hàm này sẽ gọi player->update và monster->update bên trong nó
-            manager.update(dt, grid, CELL_SIZE);
-
-            // 3. Cập nhật camera và UI
-            camera.follow(player->get_position());
-            camera.handleInput(window, dt);
-            uiManager.update(player, window);
-
-            // ===== Draw everything =====
-            // Vẽ thế giới game qua camera
             window.setView(camera.getView());
             tileMap.drawVisible(window, sf::RenderStates::Default, camera.getView());
-            manager.render(window); // Hàm này sẽ vẽ entities và cả effects
+            manager.render(window);
 
-            // Chuyển về view mặc định để vẽ UI
             window.setView(window.getDefaultView());
             uiManager.render(window);
         }

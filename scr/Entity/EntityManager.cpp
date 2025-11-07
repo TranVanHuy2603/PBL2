@@ -194,6 +194,14 @@ void EntityManager::create_resource(int n)
     cout << "Da tao " << n << " tai nguyen\n";
 }
 
+void EntityManager::rebuildQuadtree(const Rect& newArea) {
+    qt.clear();
+    qt = Quadtree(newArea, qt.get_capacity()); // Giả sử có hàm get_capacity
+    for (auto* e : entities) {
+        qt.insert(e);
+    }
+}
+
 // ======== Vong cap nhat ========
 void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
 {
@@ -201,31 +209,23 @@ void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSi
     Character* player = getPlayer();
 
     // Cập nhật và xóa các thực thể (quái, tài nguyên)
-    for (auto it = entities.begin(); it != entities.end(); )
+    for (int i = entities.get_size() - 1; i >= 0; --i)
     {
-        Entity* e = *it;
-        bool removed = false;
-
+        Entity* e = entities[i];
         if (Monster* m = dynamic_cast<Monster*>(e))
         {
             if (!m->get_status())
             {
                 qt.remove(m);
-                it = entities.erase(it);
+                entities.erase(entities.begin() + i);
                 delete m;
-                removed = true;
             }
             else
             {
                 m->update(dt, castle, player, &qt, grid, cellSize);
             }
         }
-        // (Thêm logic xóa cho Resource nếu cần)
-
-        if (!removed)
-        {
-            ++it;
-        }
+        // Thêm logic cho Resource nếu cần
     }
 
     if (castle)
@@ -238,17 +238,13 @@ void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSi
     }
 
     // Cập nhật và xóa các hiệu ứng đã kết thúc
-    for (size_t i = 0; i < effects.get_size(); )
+   for (int i = effects.get_size() - 1; i >= 0; --i)
     {
         effects[i]->update(dt);
         if (effects[i]->isFinished())
         {
             delete effects[i];
             effects.erase(effects.begin() + i);
-        }
-        else
-        {
-            ++i;
         }
     }
 }

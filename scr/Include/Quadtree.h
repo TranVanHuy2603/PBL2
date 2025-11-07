@@ -20,6 +20,7 @@ public:
     Quadtree(Rect, double);
     ~Quadtree();
 
+    double get_capacity();
     void subdivide();                          // chia nho o
     bool insert(Entity *);                     // them vat the
     void query(Rect, Vector<Entity*> &); // truy van

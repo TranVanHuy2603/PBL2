@@ -1,10 +1,8 @@
 #include "UpgradeCastleUI.h"
 #include "Audio.h"
-UpgradeCastleUI::UpgradeCastleUI() : showMenu(false)
+UpgradeCastleUI::UpgradeCastleUI(const sf::Font& font) 
+        : font(font), showMenu(false)
 {
-    if (!font.loadFromFile("assets/font/font2.ttf"))
-        std::cerr << "Loi tai font!\n";
-
     // Nut icon ngoi nha
     houseButton.setRadius(40.f);
     houseButton.setFillColor(sf::Color(100, 100, 255));
@@ -157,6 +155,7 @@ void UpgradeCastleUI::render(sf::RenderWindow &window)
 
 void UpgradeCastleUI::showNotificationText(const std::string &text, sf::Color color)
 {
+    notificationText.setFont(font);
     notificationText.setString(text);
     notificationText.setFillColor(color);
     showNotification = true;

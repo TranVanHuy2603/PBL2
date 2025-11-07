@@ -20,6 +20,12 @@ double ASNode::f() const { return g + h; }
 double ASNode::get_x() const { return x; }
 double ASNode::get_y() const { return y; }
 
+void ASNode::set_position(int new_x, int new_y)
+{
+    this->x = new_x;
+    this->y = new_y;
+}
+
 void ASNode::set_walkable(bool w) { walkable = w; }
 bool ASNode::get_walkable() const { return walkable; }
 

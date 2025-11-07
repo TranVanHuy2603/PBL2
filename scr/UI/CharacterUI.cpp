@@ -2,11 +2,13 @@
 #include <sstream>
 #include <iostream>
 
-CharacterUI::CharacterUI()
-{
-    // Tải font chữ
-    if (!font.loadFromFile("assets/font/font1.ttf"))
-        std::cerr << "Error loading font" << std::endl;
+CharacterUI::CharacterUI(const sf::Font& font)
+    : font(font)
+{  
+    // Gán font cho các Text
+    // infoText.setFont(font);
+    // topRightText.setFont(font);
+    // hpText.setFont(font);
 
     // Góc trái: thông tin tài nguyên
     infoText.setFont(font);
@@ -18,12 +20,13 @@ CharacterUI::CharacterUI()
 
     // Góc phải: Coin, EXP, Level
     topRightText.setFont(font);
-    topRightText.setCharacterSize(35);
+    topRightText.setCharacterSize(25);
     topRightText.setFillColor(sf::Color::Red);
     topRightText.setOutlineColor(sf::Color::Black);
     topRightText.setOutlineThickness(1.f);
 
     // Nền thanh HP
+    hpText.setFont(font);
     hpBack.setSize(sf::Vector2f(400.f, 20.f));
     hpBack.setFillColor(sf::Color(50, 50, 50));
     hpBack.setOutlineThickness(2.f);
@@ -36,7 +39,7 @@ CharacterUI::CharacterUI()
     hpLostBar.setFillColor(sf::Color(200, 200, 200));
 
     // Chữ HP
-    hpText.setFont(font);
+    // hpText.setFont(font);
     hpText.setCharacterSize(25);
     hpText.setFillColor(sf::Color::Black);
 }

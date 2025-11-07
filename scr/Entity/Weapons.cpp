@@ -24,6 +24,7 @@ Weapons::Weapons(WeaponType type, int damage, double damage_range, double attack
     String effectPath = "";
     switch (type)
     {
+        case WeaponType::BareHand: effectPath = "assets/weapon/barehand.png";   break;
         case WeaponType::WoodenSword: effectPath = "assets/effects/sword_slash.png"; break;
         case WeaponType::IronSwood:   effectPath = "assets/effects/sword_slash_iron.png"; break;
         case WeaponType::Ax:          effectPath = "assets/effects/axe_slash.png"; break;

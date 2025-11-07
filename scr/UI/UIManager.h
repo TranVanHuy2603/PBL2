@@ -10,12 +10,13 @@
 class UIManager
 {
 private:
+    // const sf::Font& font;
     CharacterUI characterUI;
     WeaponCraftUI weaponCraftUI;
     UpgradeCastleUI upgradeCastleUI;
 
 public:
-    UIManager();
+    UIManager(const sf::Font& font);
 
     void handleEvent(sf::Event& event, sf::RenderWindow& window, Character* player, Castle* castle);
     void update(const Character* player, const sf::RenderWindow& window);

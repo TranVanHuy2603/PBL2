@@ -16,6 +16,7 @@ struct WeaponInfo
 // luu thong tin ve nut hien thi tung vu khi
 struct WeaponButton
 {
+    const sf::Font *font;
     WeaponType type;
     sf::RectangleShape button;
     sf::Sprite icon;
@@ -25,7 +26,7 @@ struct WeaponButton
 class WeaponCraftUI
 {
 private:
-    sf::Font font;
+    const sf::Font font;
     sf::Texture weaponTextures[(int)WeaponType::Count];
     WeaponButton weaponButtons[(int)WeaponType::Count];
 
@@ -40,8 +41,9 @@ private:
     bool showNotification = false;
 
 public:
-    WeaponCraftUI();
-
+    WeaponCraftUI() = default;
+    WeaponCraftUI(const sf::Font& font);
+    ~WeaponCraftUI() = default;
     void init();               // khoi tao nut xe day
     void initWeaponButtons();  // khoi tao cac nut vu khi
     void handleEvent(sf::Event& event, Character* player);

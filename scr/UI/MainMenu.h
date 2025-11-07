@@ -3,10 +3,15 @@
 
 #include <SFML/Graphics.hpp>
 
+enum class MenuAction {
+    NONE,
+    START_GAME,
+    EXIT_GAME
+};
+
 class MainMenu
 {
 private:
-    sf::Font font;
     sf::Text title;
     sf::Text startText;
     sf::Text exitText;
@@ -18,9 +23,9 @@ private:
     sf::Sprite backgroundSprite;
 
 public:
-    MainMenu(float width, float height);
+    MainMenu(float width, float height, const sf::Font &font);
     void render(sf::RenderWindow& window);
-    int handleEvent(sf::Event event, sf::RenderWindow& window);
+    MenuAction handleEvent(sf::Event event, sf::RenderWindow& window);
 };
 
 #endif

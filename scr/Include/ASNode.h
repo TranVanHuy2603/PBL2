@@ -18,6 +18,7 @@ public:
     double get_x() const;
     double get_y() const;
 
+    void set_position(int x, int y);
     void set_walkable(bool w);
     bool get_walkable() const;
 

@@ -9,11 +9,9 @@ static const WeaponInfo weaponInfos[] = {
     {"Gun", "assets/weapon/gun.png"},
 };
 
-WeaponCraftUI::WeaponCraftUI() : showList(false)
+WeaponCraftUI::WeaponCraftUI(const sf::Font& font)
+        : font(font), showList(false)
 {
-    if (!font.loadFromFile("assets/font/font2.ttf"))
-        std::cerr << "Loi tai font!\n";
-
     init();
     initWeaponButtons();
 }
@@ -46,6 +44,8 @@ void WeaponCraftUI::initWeaponButtons()
         WeaponButton &wb = weaponButtons[i];
         wb.type = static_cast<WeaponType>(i + 1); // +1 de bo BareHand
 
+        wb.font = &font; 
+        wb.nameText.setFont(*wb.font);
         // o vu khi
         wb.button.setSize(sf::Vector2f(150.f, 150.f));
         wb.button.setFillColor(sf::Color(100, 100, 100));
@@ -139,6 +139,7 @@ void WeaponCraftUI::render(sf::RenderWindow &window)
 
 void WeaponCraftUI::showNotificationText(const std::string &text, sf::Color color)
 {
+    notificationText.setFont(font); 
     notificationText.setString(text);
     notificationText.setFillColor(color);
     showNotification = true;

@@ -5,7 +5,7 @@
 class CharacterUI
 {
 private:
-    sf::Font font;           // font chữ
+    const sf::Font &font;           // font chữ
 
     sf::Text infoText;       // góc trái: tài nguyên
     sf::Text topRightText;   // góc phải: coin, exp, level
@@ -16,7 +16,7 @@ private:
     sf::Text hpText;               // chữ hiển thị số HP
 
 public:
-    CharacterUI();
+    CharacterUI(const sf::Font& font);
 
     // cập nhật UI theo player
     void update(const Character* player, const sf::RenderTarget& target);

@@ -8,7 +8,7 @@
 class UpgradeCastleUI
 {
 private:
-    sf::Font font;
+    const sf::Font &font;
     sf::CircleShape houseButton; // nut hinh tron
     sf::Texture houseTexture;
     sf::Sprite houseIcon;
@@ -29,7 +29,7 @@ private:
     sf::Clock notificationClock;
 
 public:
-    UpgradeCastleUI();
+    UpgradeCastleUI(const sf::Font& font);
 
     void handleEvent(sf::Event &event, Character *player, Castle *castle);
     void render(sf::RenderWindow &window);

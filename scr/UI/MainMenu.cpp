@@ -2,7 +2,7 @@
 #include "MainMenu.h"
 
 
-MainMenu::MainMenu(float width, float height)
+MainMenu::MainMenu(float width, float height, const sf::Font &font)
 {
     // === ẢNH NỀN ===
     if (!backgroundTexture.loadFromFile("assets/background/backgroundmenu.png"))
@@ -17,11 +17,8 @@ MainMenu::MainMenu(float width, float height)
     );
 
     // === FONT VÀ CHỮ ===
-    if (!font.loadFromFile("assets/font/font2.ttf"))
-        std::cerr << "Error loading font\n";
-
     title.setFont(font);
-    title.setString("PBL2 GAME");
+    title.setString("PBL2 GAME RTS");
     title.setCharacterSize(70);
     title.setFillColor(sf::Color::Yellow);
     sf::FloatRect tb = title.getLocalBounds();
@@ -66,16 +63,16 @@ void MainMenu::render(sf::RenderWindow& window)
     window.draw(exitText);
 }
 
-int MainMenu::handleEvent(sf::Event event, sf::RenderWindow& window)
+MenuAction MainMenu::handleEvent(sf::Event event, sf::RenderWindow& window)
 {
     if (event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Left)
     {
         sf::Vector2f mouse(sf::Mouse::getPosition(window));
         if (startBox.getGlobalBounds().contains(mouse))
-            return 1; // Start
+            return MenuAction::START_GAME; // Trả về giá trị enum
         if (exitBox.getGlobalBounds().contains(mouse))
-            return 2; // Exit
+            return MenuAction::EXIT_GAME; // Trả về giá trị enum
     }
-    return 0;
+    return MenuAction::NONE;
 }

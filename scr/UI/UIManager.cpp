@@ -1,7 +1,12 @@
 #include "UIManager.h"
+#include "UpgradeCastleUI.h"
 
-UIManager::UIManager()
+UIManager::UIManager(const sf::Font& font)
+        : characterUI(font),
+      weaponCraftUI(font),
+      upgradeCastleUI(font)
 {
+    
     // Hàm khởi tạo có thể để trống vì các đối tượng UI đã tự khởi tạo
 }
 

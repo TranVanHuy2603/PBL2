@@ -17,6 +17,7 @@ public:
     int get_height() const;
     Tile* get_tile(int x, int y) const;
     Tile** get_grid() const { return grid; }
+    // int get_tile_id(int x, int y) const;
 
     void load_File(const char* filename, EntityManager* entityManager = nullptr);
     void saveToFile(const char* filename, const EntityManager* entityManager = nullptr) const;

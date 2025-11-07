@@ -13,6 +13,9 @@ Quadtree::~Quadtree()
     delete SE;
 }
 
+
+double Quadtree::get_capacity() {return this->capacity; }
+
 void Quadtree::subdivide()
 {
     double x = area.get_x();

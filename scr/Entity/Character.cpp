@@ -46,7 +46,8 @@ WeaponInfo weaponInfos[(int)WeaponType::Count] = {
 
 // === SỬ DỤNG ENTITY::SPRITE ===
 Character::Character(int x, int y, int hp_max, int exp_max)
-    : LivingEntity(x, y, hp_max), level(1), gold(0), exp(0), exp_max(exp_max)
+    : LivingEntity(x, y, hp_max), level(1), gold(0), exp(0), exp_max(exp_max),
+    indexWeapon(-1)
 {
     type = "Character";
 
@@ -363,7 +364,7 @@ void Character::update(float dt, Quadtree& qt, EntityManager& manager)
     if (isDead)
     {
         deathAnim.update(dt);
-        deathAnim.applyToSprite(Entity::sprite, true);
+        deathAnim.applyToSprite(Entity::sprite, shouldFlip);
         if (deathAnim.isFinished())
         {
             Entity::sprite.setColor(sf::Color(255, 255, 255, 0)); // ẩn sprite
@@ -375,7 +376,7 @@ void Character::update(float dt, Quadtree& qt, EntityManager& manager)
     {
         hurtTimer -= dt;
         hurtAnim.update(dt);
-        hurtAnim.applyToSprite(Entity::sprite, true);
+        hurtAnim.applyToSprite(Entity::sprite, shouldFlip);
         Entity::sprite.setColor(sf::Color(255, 100, 100));
 
         if (hurtTimer <= 0.f || hurtAnim.isFinished())
@@ -441,25 +442,19 @@ void Character::updateDustEffect(float dt)
     }
 
     // Logic 2: Cập nhật tất cả các hạt bụi đang có
-    for (size_t i = 0; i < dustParticles.get_size(); )
+     for (int i = dustParticles.get_size() - 1; i >= 0; --i)
     {
-        // Cho hạt bụi bay lên trên
         dustParticles[i].move(0, -30.f * dt);
-
-        // Làm mờ dần hạt bụi
         sf::Color color = dustParticles[i].getColor();
-        if (color.a < 10) // Nếu đã gần như trong suốt
+
+        if (color.a < 10)
         {
-            // Xóa hạt bụi khỏi danh sách
             dustParticles.erase(dustParticles.begin() + i);
         }
         else
         {
-            // Giảm độ trong suốt (alpha)
             color.a -= static_cast<unsigned char>(200.f * dt);
             dustParticles[i].setColor(color);
-            // Chỉ tăng i nếu không xóa phần tử
-            ++i;
         }
     }
 }

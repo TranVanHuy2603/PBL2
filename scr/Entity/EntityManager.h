@@ -62,7 +62,7 @@ public:
     void create_resource_at(int x, int y);  // Tao tai nguyen tai vi tri chi dinh
 
     // ======== Cap nhat & ve ========
-
+    void rebuildQuadtree(const Rect& newArea);
     // Cap nhat toan bo doi tuong (goi update() cua tung entity)
     void update(float dt, Vector<Vector<ASNode>>& grid, double cellSize);
 
