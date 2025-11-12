@@ -36,11 +36,11 @@ Recipe recipes[(int)WeaponType::Count] = {
 // theo thu tu la Damage, Damage_range, Attack_speed, texture
 WeaponInfo weaponInfos[(int)WeaponType::Count] = {
     {5, 70.0, 2.0, "assets/weapon/barehand.png", "assets/audio/handsound.mp3"},           // HareHand
-    {8, 110.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.mp3"}, // WoodenSword
-    {15, 125.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.mp3"},   // IronSwood
-    {20, 80.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.mp3"},                  // Ax
-    {12, 150.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.mp3"},               // Bow
-    {25, 200.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.mp3"}                // Gun
+    {8, 110.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/handsound.mp3"}, // WoodenSword
+    {15, 125.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/handsound.mp3"},   // IronSwood
+    {20, 80.0, 1.9, "assets/weapon/axe.png", "assets/audio/handsound.mp3"},                  // Ax
+    {12, 150.0, 2.0, "assets/weapon/bow.png", "assets/audio/handsound.mp3"},               // Bow
+    {25, 200.0, 2.0, "assets/weapon/gun.png", "assets/audio/handsound.mp3"}                // Gun
 };
 //--------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ Character::Character(int x, int y, int hp_max, int exp_max)
     idleAnim.stop();
 
     // Gán frame đầu tiên của idle vào sprite để hiển thị đúng khung tĩnh
-    idleAnim.applyToSprite(Entity::sprite, true);
+    idleAnim.applyToSprite(Entity::sprite, facing == Direction::Left);
 
 
     // ====== Setup gameplay ======

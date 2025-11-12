@@ -31,7 +31,7 @@ bool Map::isWalkable(int x, int y) const {
 
 // File: Map.cpp
 
-void Map::load_File(const char* filename, EntityManager* entityManager) {
+bool Map::load_File(const char* filename, EntityManager* entityManager) {
     // Xoa du lieu cu neu co
     if (grid) {
         for (int i = 0; i < height; i++)
@@ -43,7 +43,7 @@ void Map::load_File(const char* filename, EntityManager* entityManager) {
     FILE* file = fopen(filename, "r");
     if (!file) {
         printf("Khong the mo file ban do: %s\n", filename);
-        return;
+        return false;
     }
 
     const int MAX_LINE = 1024;
@@ -80,7 +80,7 @@ void Map::load_File(const char* filename, EntityManager* entityManager) {
     if (width == 0 || height == 0) {
         printf("Loi: Khong the doc kich thuoc map tu file %s\n", filename);
         fclose(file);
-        return;
+        return false;
     }
 
     // Cap phat mang dong 2 chieu
@@ -92,9 +92,9 @@ void Map::load_File(const char* filename, EntityManager* entityManager) {
     fseek(file, 0, SEEK_SET);
     int y = 0;
     while (y < height && fgets(line, MAX_LINE, file)) {
-        if (line[0] == '#' ) // Dừng khi gặp #
+        if (line[0] == '#')
             break;
-        if (line[0] == '\n' || line[0] == '\r') // Bỏ qua dòng trống
+        if (line[0] == '\n' || line[0] == '\r')
             continue;
 
         int x = 0;
@@ -138,6 +138,7 @@ void Map::load_File(const char* filename, EntityManager* entityManager) {
 
     fclose(file);
     printf("Tai map thanh cong (%d x %d)\n", width, height);
+    return true;
 }
 
 void Map::saveToFile(const char* filename, const EntityManager* entityManager) const {

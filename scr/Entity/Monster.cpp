@@ -28,7 +28,7 @@ void Monster::loadAnimations()
 {
     const int frameWidth = 128;  // <-- Điều chỉnh cho khớp với file ảnh của bạn
     const int frameHeight = 128; // <-- Điều chỉnh cho khớp với file ảnh của bạn
-    const int frameCount = 6;
+    const int frameCount = 4;
 
     // Gán texture cho tất cả animation
     idleAnim.setTexture(texture);

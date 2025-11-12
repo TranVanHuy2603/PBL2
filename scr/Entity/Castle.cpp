@@ -23,7 +23,7 @@ Castle::Castle(int x, int y, int hp_max, int cost)
 
     // dat goc toa do o giua day lau dai
     sf::FloatRect bounds = sprite.getLocalBounds();
-    sprite.setOrigin(bounds.width / 2.f, bounds.height);
+    sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 
     // dat vi tri lau dai theo toa do truyen vao
     sprite.setPosition(x, y);
@@ -63,7 +63,7 @@ void Castle::set_texture(const String &filetexture)
     sprite.setScale(0.9f, 0.9f);
 
     sf::FloatRect bounds = sprite.getLocalBounds();
-    sprite.setOrigin(bounds.width / 2.f, bounds.height);
+    sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
 }
 
 void Castle::level_up()
