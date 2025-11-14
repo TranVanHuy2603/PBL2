@@ -1,10 +1,11 @@
 #pragma once
-#include "Vector.h"
+
 #include <memory>
 #include "MapLayer.h"
+#include <vector>
 #include "CameraController.h"
 #include <SFML/Window.hpp>
-
+using namespace std;
 class MapManager
 {
 public:
@@ -18,6 +19,6 @@ public:
     CameraController &getCamera() { return camera; }
 
 private:
-    Vector<std::unique_ptr<MapLayer>> layers;
+    vector<std::unique_ptr<MapLayer>> layers;
     CameraController camera;
 };

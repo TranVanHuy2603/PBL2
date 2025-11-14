@@ -39,7 +39,7 @@ bool Quadtree::insert(Entity *e)
     }
     else
     {
-        if (entities.get_size() < capacity)
+        if (entities.size() < capacity)
         {
             entities.push_back(e);
             cout << "Da them vat the vao quadtree\n";
@@ -73,7 +73,7 @@ bool Quadtree::insert(Entity *e)
     return false;
 }
 
-void Quadtree::query(Rect r, Vector<Entity*> &found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
+void Quadtree::query(Rect r, vector<Entity*> &found) // chuc nang tim tat ca cac vat the nam trong hinh chu nhat r va luu vao found
 {
     if (!area.doubleersects(r))
         return;
@@ -97,8 +97,8 @@ void Quadtree::query(Rect r, Vector<Entity*> &found) // chuc nang tim tat ca cac
 
 bool Quadtree::remove(Entity *e)
 {
-    if (!area.contains(e))
-        return false;
+    // if (!area.contains(e))
+    //     return false;
     auto it = find(entities.begin(), entities.end(), e);
     if (it != entities.end())
     {
@@ -129,9 +129,9 @@ bool Quadtree::update(Entity *e, double newx, double newy)
 
 double Quadtree::count(Rect r)
 {
-    Vector<Entity *> res;
+    vector<Entity *> res;
     query(r, res);
-    return res.get_size();
+    return res.size();
 }
 
 void Quadtree::clear()
@@ -155,7 +155,7 @@ void Quadtree::clear()
     }
 }
 
-void Quadtree::getAllEntities(Vector<Entity *> &all)
+void Quadtree::getAllEntities(vector<Entity *> &all)
 {
     for (auto e : entities)
         all.push_back(e);

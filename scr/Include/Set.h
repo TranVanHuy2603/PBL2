@@ -1,10 +1,12 @@
 #pragma once
-#include "Vector.h"
 
+#include <vector>
+
+using namespace std;
 template <typename T>
 class Set {
 private:
-    Vector<T> data;
+    vector<T> data;
 
 public:
     Set();

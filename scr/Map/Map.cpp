@@ -69,7 +69,7 @@ bool Map::load_File(const char* filename, EntityManager* entityManager) {
         }
         if (count > 0) {
             rowCount++;
-            colCount = count;
+            colCount = std::max(colCount, count);
         }
     }
 
@@ -159,8 +159,8 @@ void Map::saveToFile(const char* filename, const EntityManager* entityManager) c
 
     // Ghi phan entity
     if (entityManager) {
-        Vector<Entity*>& list = const_cast<Vector<Entity*>&>(entityManager->getEntities());
-        for (int i = 0; i < list.get_size(); i++) {
+        vector<Entity*>& list = const_cast<vector<Entity*>&>(entityManager->getEntities());
+        for (int i = 0; i < list.size(); i++) {
             Entity* e = list[i];
             sf::Vector2f pos = e->get_sprite().getPosition();
             fprintf(file, "%s %.1f %.1f\n", e->get_type().c_str(), pos.x, pos.y);

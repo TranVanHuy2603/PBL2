@@ -39,6 +39,10 @@ void TileMap::buildMap(const Map &Map)
     // Khoi tao mang Vertex cua 4 dinh trong 1 tile
     map_vertices.setPrimitiveType(sf::Quads);
     map_vertices.resize(map_width * map_height * 4);
+    if (map_vertices.getVertexCount() != static_cast<std::size_t>(map_width) * map_height * 4) {
+    std::cerr << "Vertex array size mismatch: " << map_vertices.getVertexCount()
+              << " vs " << (map_width * map_height * 4) << std::endl;
+    }
 
     // Lay luoi tu map
     const auto &grid = Map.get_grid();
@@ -116,8 +120,14 @@ void TileMap::drawVisible(sf::RenderTarget &target, sf::RenderStates state, cons
     int endY = TileMap::Get_min(map_height, static_cast<int>((viewRect.top + viewRect.height) / map_tileSize.y) + 1);
 
     // 3. Tạo một vertex array tạm cho vùng visible
+   int w = TileMap::Get_max(0, endX - StartX);
+    int h = TileMap::Get_max(0, endY - StartY);
     sf::VertexArray visible(sf::Quads);
-    visible.resize((endX - StartX) * (endY - StartY) * 4);
+    if (w == 0 || h == 0) {
+        // nothing to draw
+        return;
+    }
+    visible.resize(static_cast<std::size_t>(w) * static_cast<std::size_t>(h) * 4);
 
     // 4. Copy các tile trong vùng nhìn sang visible
     for (int y = StartY; y < endY; ++y)

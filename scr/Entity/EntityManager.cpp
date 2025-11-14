@@ -59,7 +59,9 @@ void EntityManager::add(Entity *e)
 void EntityManager::remove(Entity *e)
 {
     qt.remove(e);
-    entities.remove(e);
+    auto it = std::find(entities.begin(), entities.end(), e);
+    if (it != entities.end())
+        entities.erase(it);
     delete e;
 }
 
@@ -67,9 +69,9 @@ void EntityManager::remove(Entity *e)
 Character *EntityManager::getPlayer() { return player; }
 Castle *EntityManager::getCastle() { return castle; }
 
-Vector<Entity *> &EntityManager::getEntities() { return entities; }
+vector<Entity *> &EntityManager::getEntities() { return entities; }
 
-const Vector<Entity*>& EntityManager::getEntities() const {return this->entities; }
+const vector<Entity*>& EntityManager::getEntities() const {return this->entities; }
 
 Quadtree &EntityManager::getQuadtree()
 {
@@ -203,13 +205,13 @@ void EntityManager::rebuildQuadtree(const Rect& newArea) {
 }
 
 // ======== Vong cap nhat ========
-void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
+void EntityManager::update(float dt, std::vector<std::vector<ASNode>> &grid, double cellSize)
 {
-      Castle* castle = getCastle();
+    Castle* castle = getCastle();
     Character* player = getPlayer();
 
     // Cập nhật và xóa các thực thể (quái, tài nguyên)
-    for (int i = entities.get_size() - 1; i >= 0; --i)
+    for (int i = entities.size() - 1; i >= 0; --i)
     {
         Entity* e = entities[i];
         if (Monster* m = dynamic_cast<Monster*>(e))
@@ -238,7 +240,7 @@ void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSi
     }
 
     // Cập nhật và xóa các hiệu ứng đã kết thúc
-   for (int i = effects.get_size() - 1; i >= 0; --i)
+   for (int i = effects.size() - 1; i >= 0; --i)
     {
         effects[i]->update(dt);
         if (effects[i]->isFinished())

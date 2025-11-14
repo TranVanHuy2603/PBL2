@@ -1,9 +1,11 @@
 #define _HAS_STD_BYTE 0
-#include <SFML/Graphics.hpp>
 #include <iostream>
 #include <filesystem>
+#include <vector> // ✅ Thêm include vector chuẩn
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
 
-// Bao gồm tất cả các file header cần thiết cho hệ thống
 #include "MainMenu.h"
 #include "UIManager.h"
 #include "EntityManager.h"
@@ -54,9 +56,9 @@ int main()
         EntityManager manager(Rect(0, 0, 1, 1), 10);
 
         Map gameMap;
-        if (!gameMap.load_File("assets/map/mapdata.txt", nullptr))
+        if (!gameMap.load_File("assets/map/mapdata5xx.txt", nullptr))
         {
-            cerr << "[Canh bao] Khong the load file map: assets/map/mapdata.txt" << endl;
+            cerr << "[Canh bao] Khong the load file map: assets/map/mapdata5xx.txt" << endl;
             return EXIT_FAILURE;
         }
 
@@ -93,12 +95,14 @@ int main()
             return EXIT_FAILURE;
         }
         tileMap.buildMap(gameMap);
+        std::cout << "[DEBUG] after buildMap: mapWidth=" << mapWidth << " mapHeight=" << mapHeight << std::endl;
 
         //================================================================================
         // 8. KHỞI TẠO LƯỚI A* PATHFINDING
         //================================================================================
-        Vector<Vector<ASNode>> astarGrid;
+        std::vector<std::vector<ASNode>> astarGrid; // ✅ Đổi từ Vector<Vector<ASNode>> sang std::vector<std::vector<ASNode>>
         astarGrid.resize(mapWidth);
+        std::cout << "[DEBUG] astarGrid resized: astarGrid.size()=" << astarGrid.size() << std::endl;
         std::cout << "Map size: " << mapWidth << " x " << mapHeight << std::endl;
 
         for (int i = 0; i < mapWidth; ++i)

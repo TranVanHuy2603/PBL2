@@ -107,7 +107,7 @@ int Character::get_exp_max() const { return exp_max; }
 Bag Character::get_bag() const { return bag; }
 Bag &Character::get_bag() { return bag; }
 int Character::get_indexWeapon() const { return indexWeapon; }
-Vector<Weapons *> &Character::get_weapons() { return weapons; }
+vector<Weapons *> &Character::get_weapons() { return weapons; }
 int Character::get_level() const { return level; }
 sf::Texture Character::get_texture() const { return texture; }
 
@@ -205,7 +205,7 @@ void Character::add_weapon(Weapons *newWeapon)
 
 void Character::switch_weapon(int index)
 {
-    if (index >= 0 && index < weapons.get_size())
+    if (index >= 0 && index < weapons.size())
     {
         set_indexWeapon(index);
     }
@@ -235,7 +235,7 @@ bool Character::craft_weapon(WeaponType type)
     weapons.push_back(w);
     if (!weapons.empty())
         std::cout << "Da tao vu khi\n";
-    indexWeapon = weapons.get_size() - 1;
+    indexWeapon = weapons.size() - 1;
     return true;
 }
 
@@ -442,7 +442,7 @@ void Character::updateDustEffect(float dt)
     }
 
     // Logic 2: Cập nhật tất cả các hạt bụi đang có
-     for (int i = dustParticles.get_size() - 1; i >= 0; --i)
+     for (int i = dustParticles.size() - 1; i >= 0; --i)
     {
         dustParticles[i].move(0, -30.f * dt);
         sf::Color color = dustParticles[i].getColor();

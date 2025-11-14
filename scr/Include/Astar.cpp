@@ -12,9 +12,9 @@ double heuristic(ASNode *a, ASNode *b)
     return abs(a->get_x() - b->get_x()) + abs(a->get_y() - b->get_y());
 }
 
-Vector<ASNode *> return_path(ASNode *node)
+vector<ASNode *> return_path(ASNode *node)
 {
-    Vector<ASNode *> path;
+    vector<ASNode *> path;
     while (node)
     {
         path.push_back(node);
@@ -24,11 +24,11 @@ Vector<ASNode *> return_path(ASNode *node)
     return path;
 }
 
-Vector<ASNode *> get_neighbors(ASNode *node, Vector<Vector<ASNode>> &grid)
+vector<ASNode *> get_neighbors(ASNode *node, vector<vector<ASNode>> &grid)
 {
-    Vector<ASNode *> neighbors;
-    int w = grid.get_size();
-    int h = grid[0].get_size();
+    vector<ASNode *> neighbors;
+    int w = grid.size();
+    int h = grid[0].size();
     int dx[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
     int dy[8] = {0, 0, -1, 1, 1, -1, -1, 1};
 
@@ -52,18 +52,18 @@ struct CompareASNode
     }
 };
 
-void updateGridWalkable(Vector<Vector<ASNode>> &grid, Quadtree *qt, double cellSize)
+void updateGridWalkable(vector<vector<ASNode>> &grid, Quadtree *qt, double cellSize)
 {
-    Vector<Entity *> entities;
-    qt->query(Rect(0, 0, grid.get_size() * cellSize, grid[0].get_size() * cellSize), entities);
+    vector<Entity *> entities;
+    qt->query(Rect(0, 0, grid.size() * cellSize, grid[0].size() * cellSize), entities);
 
     for (Entity *e : entities)
     {
         if (!e->is_walkable())
         {
             // Ép về int và clamp vào kích thước grid
-            int ix = std::clamp(static_cast<int>(e->get_x() / cellSize), 0, static_cast<int>(grid.get_size()) - 1);
-            int iy = std::clamp(static_cast<int>(e->get_y() / cellSize), 0, static_cast<int>(grid[0].get_size()) - 1);
+            int ix = std::clamp(static_cast<int>(e->get_x() / cellSize), 0, static_cast<int>(grid.size()) - 1);
+            int iy = std::clamp(static_cast<int>(e->get_y() / cellSize), 0, static_cast<int>(grid[0].size()) - 1);
 
             grid[ix][iy].set_walkable(false);
         }
@@ -71,8 +71,8 @@ void updateGridWalkable(Vector<Vector<ASNode>> &grid, Quadtree *qt, double cellS
 }
 
 
-Vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
-                       Vector<Vector<ASNode>> &grid, double cellSize)
+vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
+                       vector<vector<ASNode>> &grid, double cellSize)
 {
     updateGridWalkable(grid, qt, cellSize);
 
@@ -93,7 +93,7 @@ Vector<ASNode *> astar(ASNode *start, ASNode *goal, Quadtree *qt,
 
         closeSet.insert(cur);
 
-        Vector<ASNode *> neighbors = get_neighbors(cur, grid);
+        vector<ASNode *> neighbors = get_neighbors(cur, grid);
         for (ASNode *n : neighbors)
         {
             if (closeSet.count(n))

@@ -2,7 +2,7 @@
 #define _HAS_STD_BYTE 0
 
 #include <SFML/Graphics.hpp>
-#include "Vector.h"
+#include <vector>
 #include "Entity.h"
 #include "Character.h"
 #include "Castle.h"
@@ -11,18 +11,19 @@
 #include "ASNode.h"
 #include "Rect.h"
 #include "Effect.h"
+using namespace std;
 
 // Lop quan ly tat ca vat the trong game (Player, Castle, Monster, Resource, ...)
 class EntityManager
 {
 private:
-    Vector<Entity*> entities; // Danh sach tat ca vat the trong game
+    vector<Entity*> entities; // Danh sach tat ca vat the trong game
     Quadtree qt;              // Cay quadtree dung cho viec truy van nhanh (vd: tim doi tuong gan nhat)
 
     Character* player = nullptr; // Nhan vat nguoi choi
     Castle* castle = nullptr;    // Thanh chinh cua nguoi choi
 
-    Vector<Effect*> effects;
+    vector<Effect*> effects;
 public:
     // ======== Khoi tao / huy ========
     EntityManager(const Rect& area, double capacity);
@@ -41,8 +42,8 @@ public:
     Castle* getCastle();
 
     // Lay danh sach tat ca vat the
-    Vector<Entity*>& getEntities();
-    const Vector<Entity*>& getEntities() const;
+    vector<Entity*>& getEntities();
+    const vector<Entity*>& getEntities() const;
 
     // Lay quadtree hien tai (phuc vu cho A*, tan cong, ... )
     Quadtree& getQuadtree();
@@ -64,7 +65,7 @@ public:
     // ======== Cap nhat & ve ========
     void rebuildQuadtree(const Rect& newArea);
     // Cap nhat toan bo doi tuong (goi update() cua tung entity)
-    void update(float dt, Vector<Vector<ASNode>>& grid, double cellSize);
+    void update(float dt, std::vector<std::vector<ASNode>>& grid, double cellSize);
 
     // Ve tat ca doi tuong ra man hinh
     void render(sf::RenderWindow& window);

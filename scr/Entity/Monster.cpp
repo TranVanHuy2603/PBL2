@@ -1,6 +1,7 @@
 #include "Monster.h"
 #include "ASNode.h"
 #include <cmath>
+using namespace std;
 
 Monster::Monster() {}
 Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
@@ -68,7 +69,7 @@ void Monster::draw(sf::RenderWindow &window)
     window.draw(sprite);
 }
 
-void Monster::set_path(const Vector<sf::Vector2f> &newpath) // gan path cho quai
+void Monster::set_path(const vector<sf::Vector2f> &newpath) // gan path cho quai
 {
     path = newpath;
     currentTarget = 0;
@@ -76,7 +77,7 @@ void Monster::set_path(const Vector<sf::Vector2f> &newpath) // gan path cho quai
 
 void Monster::movePath(float deltatime) // cho quai di theo path
 {
-    if (currentTarget < static_cast<int>(path.get_size())) // kiem tra con diem nao trong duong di khong
+    if (currentTarget < static_cast<int>(path.size())) // kiem tra con diem nao trong duong di khong
     {
         sf::Vector2f target = path[currentTarget];               // diem dich hien tai trong path/dime tiep theo
         sf::Vector2f pos = sprite.getPosition();                 // vi tri cua quai
@@ -112,8 +113,13 @@ void Monster::attack(LivingEntity *target, float deltaTime)
 }
 
 void Monster::update(float deltaTime, Castle *castle, Character *player,
-                     Quadtree *qt, Vector<Vector<ASNode>> &grid, double cellSize)
+                     Quadtree *qt, vector<vector<ASNode>> &grid, double cellSize)
 {
+    if(!castle || !player) {
+        cerr << "Nhan vat / lau dai nullptr\n";
+        return;
+    }
+
     if (!status) {
         deathAnim.update(deltaTime);
         deathAnim.applyToSprite(sprite, false);
@@ -127,7 +133,7 @@ void Monster::update(float deltaTime, Castle *castle, Character *player,
     sf::Vector2f cpos = castle->get_sprite().getPosition(); // vi tri cua thanh tri
     sf::Vector2f ppos = player->get_sprite().getPosition(); // vi tri cua nguoi choi
 
-    bool shouldFlip = (sprite.getPosition().x > targetpos.x);
+   
     // khoang cach tu quai den thanh tri
     float d_castle = std::sqrt((mpos.x - cpos.x) * (mpos.x - cpos.x) + (mpos.y - cpos.y) * (mpos.y - cpos.y));
     // khoang cach tu quai den nguoi choi
@@ -144,6 +150,8 @@ void Monster::update(float deltaTime, Castle *castle, Character *player,
         targetEntity = player;
         targetpos = ppos;
     }
+
+    bool shouldFlip = (sprite.getPosition().x > targetpos.x);
 
     // 2.kiem tra muc tieu co nam trong vung gay sat thong khong
     float dx = mpos.x - targetpos.x;
@@ -162,21 +170,25 @@ void Monster::update(float deltaTime, Castle *castle, Character *player,
     {
         isAttacking = false;
         isMoving = true;
+        if(!grid.size()) {
+            cerr << "Grid khong load duoc, size = 0!\n";
+            return;
+        }
         // dua ve toa do tren grid
-        int startX = std::clamp(static_cast<int>(mpos.x / cellSize), 0, static_cast<int>(grid.get_size()) - 1);
-        int startY = std::clamp(static_cast<int>(mpos.y / cellSize), 0, static_cast<int>(grid[0].get_size()) - 1);
-        int goalX = std::clamp(static_cast<int>(targetpos.x / cellSize), 0, static_cast<int>(grid.get_size()) - 1);
-        int goalY = std::clamp(static_cast<int>(targetpos.y / cellSize), 0, static_cast<int>(grid[0].get_size()) - 1);
+        int startX = std::clamp(static_cast<int>(mpos.x / cellSize), 0, static_cast<int>(grid.size()) - 1);
+        int startY = std::clamp(static_cast<int>(mpos.y / cellSize), 0, static_cast<int>(grid[0].size()) - 1);
+        int goalX = std::clamp(static_cast<int>(targetpos.x / cellSize), 0, static_cast<int>(grid.size()) - 1);
+        int goalY = std::clamp(static_cast<int>(targetpos.y / cellSize), 0, static_cast<int>(grid[0].size()) - 1);
 
         ASNode *start = &grid[startX][startY];
         ASNode *goal = &grid[goalX][goalY];
-
+        
         // tim duong di cho quai bang A*
-        Vector<ASNode *> newpath = astar(start, goal, qt, grid, cellSize);
+        vector<ASNode *> newpath = astar(start, goal, qt, grid, cellSize);
 
         if (!newpath.empty())
         {
-            Vector<sf::Vector2f> realpath; // chuyen tu node thanh path voi toa do thuc
+            vector<sf::Vector2f> realpath; // chuyen tu node thanh path voi toa do thuc
             for (ASNode *node : newpath)
             {                                                                                         // duyet tat ca cac node
                 realpath.push_back(sf::Vector2f(node->get_x() * cellSize, node->get_y() * cellSize)); // toa do thuc de quai di

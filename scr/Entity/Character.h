@@ -11,6 +11,7 @@
 #include <SFML/Graphics.hpp>
 #include <sstream>
 
+using namespace std;
 class EntityManager;
 class Castle;
 enum class Direction {
@@ -28,7 +29,7 @@ private:
     float hp; // Mau
     Bag bag;
     sf::Texture texture, hurtTexture;
-    Vector<Weapons *> weapons;
+    vector<Weapons *> weapons;
     int indexWeapon; // chi so cua vu khi trong vector
     void takeDamage(float);
 
@@ -51,7 +52,7 @@ private:
 
     // Hieu ung bui
     sf::Texture dustTexture;
-    Vector<sf::Sprite> dustParticles;
+    vector<sf::Sprite> dustParticles;
     sf::Clock dustSpawnClock;
 
 public:
@@ -66,7 +67,7 @@ public:
     Bag &get_bag();
     int get_indexWeapon() const;
     int get_level() const; // lay ra level
-    Vector<Weapons *> &get_weapons();
+    vector<Weapons *> &get_weapons();
     sf::Texture get_texture() const;
     int get_resource_amount(ResourceType type) const;
     sf::Vector2f get_position() const;

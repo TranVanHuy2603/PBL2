@@ -1,13 +1,13 @@
 #include "Collision.h"
 #include <iostream>
-
+using namespace std;
 bool Collision::CheckCollision(const sf::Sprite& a, const sf::Sprite& b) {
     return a.getGlobalBounds().intersects(b.getGlobalBounds());
 }
 
 // -----------------------------------------------------------
 // Ngăn nhân vật đi xuyên tường
-void Collision::CharacterWall(Character* player, const Vector<sf::FloatRect>& walls) {
+void Collision::CharacterWall(Character* player, const vector<sf::FloatRect>& walls) {
     sf::FloatRect playerBounds = player->get_sprite().getGlobalBounds();
 
     for (const auto& wall : walls) {
@@ -30,7 +30,7 @@ void Collision::CharacterWall(Character* player, const Vector<sf::FloatRect>& wa
 
 // -----------------------------------------------------------
 // Nhân vật chạm quái → nhận damage
-void Collision::CharacterMonster(Character* player, Vector<Monster*>& monsters) {
+void Collision::CharacterMonster(Character* player, vector<Monster*>& monsters) {
     for (auto* monster : monsters) {
         if (!monster->get_status()) continue;
 
@@ -43,7 +43,7 @@ void Collision::CharacterMonster(Character* player, Vector<Monster*>& monsters) 
 
 // -----------------------------------------------------------
 // Quái chạm vào Castle → gây damage
-void Collision::MonsterCastle(Vector<Monster*>& monsters, Castle* castle) {
+void Collision::MonsterCastle(vector<Monster*>& monsters, Castle* castle) {
     for (auto* monster : monsters) {
         if (!monster->get_status()) continue;
 

@@ -95,7 +95,7 @@ void Weapons::attack(Quadtree &qt, Character *nv)
     sf::Vector2f center(bound.left + bound.width / 2.f, bound.top + bound.height / 2.f); // lay ra tam
     // dung quadtree de lay ra nhung vat the xung quanh nhan vat
     Rect range(center.x, center.y, damage_range, damage_range); // tao mot hinh chu nhat bao quanh vung gay sat thuong
-    Vector<Entity *> found;                                     // vecto luu cac vat the xung quanh nhan vat
+    std::vector<Entity *> found;                                     // vecto luu cac vat the xung quanh nhan vat
     qt.query(range, found);  
     if (!found.empty()) cout << "Da tim duoc muc tieu\n";
     else cout << "Khong tim duoc muc tieu\n"; 

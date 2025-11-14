@@ -1,15 +1,17 @@
 #define _HAS_STD_BYTE 0
 #include "Rect.h"
 #include "Entity.h"
-#include "Vector.h"
+#include <vector>
 #pragma once
+
+using namespace std;
 
 class Quadtree
 {
 private:
     Rect area;                      // vung chu nhat ma quadtree quan li
     double capacity;                // so luong vat the toi da chua trong mot o
-    Vector<Entity *> entities; // danh sach cac vat the
+    vector<Entity *> entities; // danh sach cac vat the
     bool divided;
     // cac o con
     Quadtree *NW; // tay bac
@@ -23,10 +25,10 @@ public:
     double get_capacity();
     void subdivide();                          // chia nho o
     bool insert(Entity *);                     // them vat the
-    void query(Rect, Vector<Entity*> &); // truy van
+    void query(Rect, vector<Entity*> &); // truy van
     bool remove(Entity *);
     bool update(Entity *, double, double);
     double count(Rect r);
     void clear();
-    void getAllEntities(Vector<Entity *> &);
+    void getAllEntities(vector<Entity *> &);
 };

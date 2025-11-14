@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include "SFML/Graphics.hpp"
+#include <algorithm>
 using namespace std;
 
 using ll = long long;

@@ -1,6 +1,8 @@
-#include "Vector.h"
+
 #include <functional>
 #include <algorithm>
+#include <vector>
+using namespace std;
 #pragma once
 
 /*template giup viet ham mot lan nhung co the dung cho nhieu kieu du lieu khac nhau*/
@@ -9,7 +11,7 @@ template <typename T, typename Compare = std::less<T> /*Ham so sanh mat dinh*/>
 class Priorityqueue
 {
 private:
-    Vector<T> heap;
+    vector<T> heap;
     Compare comp;
     void heapify_up(double); // day phan thu moi len dnung vi tri
     void minheapify(double); // tao lai heap
@@ -19,7 +21,7 @@ public:
     void pop();
     T &top();
     bool isEmpty() const;
-    Vector<T> &getHeap(); // tra ve heap
+    vector<T> &getHeap(); // tra ve heap
 };
 
 template <typename T, typename Compare>
@@ -83,7 +85,7 @@ bool Priorityqueue<T, Compare>::isEmpty() const
 }
 
 template <typename T, typename Compare>
-Vector<T> &Priorityqueue<T, Compare>::getHeap()
+vector<T> &Priorityqueue<T, Compare>::getHeap()
 {
     return heap;
 }

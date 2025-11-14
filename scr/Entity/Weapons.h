@@ -1,6 +1,7 @@
 #pragma once
 #include "Quadtree.h"
 #include "String.h"
+#include <vector>
 #include "Audio.h"
 #include <SFML/Graphics.hpp>
 

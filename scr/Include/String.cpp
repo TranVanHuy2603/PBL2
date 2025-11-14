@@ -71,25 +71,24 @@ String &String::operator=(const String &other) // Gan chuoi
 }
 String String::operator+(const String &other) const // Cong 2 chuoi
 {
-    llu new_length = length + other.length;
-    char *new_data = new char[new_length + 1];
-    String::strcpy(new_data, this->data);
-    String::strcpy(new_data + length, other.data);
-
-    delete[] this->data;
-
-    return other;
+    llu newlen = length + other.length;
+    char *buf = new char[newlen + 1];
+    if (length) strcpy(buf, data); else buf[0] = '\0';
+    if (other.length) strcpy(buf + length, other.data);
+    String res(buf);
+    delete[] buf;
+    return res;
 }
 String String::operator+=(const String &other) // Cong 2 chuoi
 {
     llu new_length = length + other.length;
     char *new_data = new char[new_length + 1];
-    String::strcpy(new_data, this->data);
-    String::strcpy(new_data + length, other.data);
+    if (length) String::strcpy(new_data, this->data); else new_data[0] = '\0';
+    if (other.length) String::strcpy(new_data + length, other.data); 
 
     delete[] this->data;
-    length = new_length;
-    String::strcpy(this->data, new_data);
+    this->length = new_length;
+    this->data = new_data;
 
     return *this;
 }
@@ -99,11 +98,14 @@ bool String::operator==(const String &other) const // SS 2 chuoi
 }
 char &String::operator[](llu position) // Thay doi gia tri ki tu
 {
-    static char NGU = '\0';
-    if (position < this->length)
-        return *(this->data + position);
-    else
-        return NGU;
+    try {
+        if (position >= this->length || position < 0)
+            throw out_of_range("Truy cap ngoai pham vi!");
+        else return this->data[position];
+    }
+    catch (out_of_range &out){
+        cout << "Exception: " << out.what() << endl;
+    }
 }
 const char &String::operator[](llu position) const // Truy xuat ki tu
 {
@@ -136,7 +138,7 @@ String String::to_string(long long value) {
     return String(buf);
 }
 
-String to_string(unsigned long long value)
+String String::to_string(unsigned long long value)
 {
     char buffer[70];
     int i = 0;
@@ -154,7 +156,7 @@ String to_string(unsigned long long value)
     return String(buffer);
 }
 
-String to_string(double value, int precision = 2)
+String String::to_string(double value, int precision)
 {
     long long intPart = static_cast<long long>(value);
     double fracPart = value - intPart;
@@ -186,9 +188,7 @@ llu String::size() const // tra ve do dai chuoi
 }
 bool String::empty() const // Ktra chuoi co rong khong
 {
-    if (data[0] == '\0')
-        return false;
-    return true;
+    return this->data[0] == '\0';
 }
 const char *String::c_str() const // tra ve C-String
 {
@@ -215,9 +215,9 @@ void String::push_back(char c) // Them ki tu
 }
 String String::substr(llu position, llu n) const // Cat chuoi -> chuoi con
 {
-    if (position >= this->length || n >= this->length)
+    if (position >= this->length)
         return String("");
-    llu realLen = (position + n > length) ? (length - position) : n;
+    llu realLen = min(n, length - position);
     char *buffer = new char[realLen + 1];
 
     for (llu i = 0; i < realLen; i++)
@@ -253,6 +253,30 @@ ostream &operator<<(ostream &o, const String &s)
 
 istream &operator>>(istream &in, String &s)
 {
-    in >> s.data;
+    // Xóa dữ liệu cũ
+    s.clear();
+
+    // Bỏ qua ký tự trắng đầu (space, tab, newline,...)
+    char ch;
+    do
+    {
+        if (!in.get(ch)) // EOF
+            return in;
+    } while (isspace(static_cast<unsigned char>(ch)));
+
+    // Khi gặp ký tự đầu tiên hợp lệ, bắt đầu đọc
+    s.push_back(ch);
+
+    // Đọc tiếp cho đến khi gặp khoảng trắng hoặc EOF
+    while (in.get(ch))
+    {
+        if (isspace(static_cast<unsigned char>(ch)))
+        {
+            in.unget(); // Trả ký tự này lại cho luồng (để lần sau có thể đọc tiếp)
+            break;
+        }
+        s.push_back(ch);
+    }
+
     return in;
 }

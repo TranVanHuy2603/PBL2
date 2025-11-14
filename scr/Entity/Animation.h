@@ -1,11 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <Vector.h>
+#include <vector>
 
 class Animation : public sf::Sprite {
 private:
     const sf::Texture* texture;
-    Vector<sf::IntRect> frames;
+    std::vector<sf::IntRect> frames;
     float frameDuration; // thoi gian giua 2 frame
     float elapsedTime; // Thoi gian tu cac khung hinh truoc den hien tai
     sf::Vector2i currentFrame; // Khung hinh hien tai

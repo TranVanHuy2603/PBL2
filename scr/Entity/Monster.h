@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "LivingEntity.h"
 #include "Astar.h"
 #include "Castle.h"
@@ -22,7 +23,7 @@ private:
     double damage_range; // ban kinh gay sat thuong
     double attack_speed; // toc do gay sat thuong
     float attackcooldown; //thoi gian sau moi cu danh
-    Vector<sf::Vector2f> path; //duong di
+    vector<sf::Vector2f> path; //duong di
     int currentTarget = 0; //chi so toa do trong duong di
     sf::Texture texture;
     float pathRecalculateTimer; // Timer để tính lại đường đi
@@ -45,8 +46,8 @@ public:
     int get_damage() const;
 
     void draw(sf::RenderWindow &) override;
-    void set_path(const Vector<sf::Vector2f>&);
+    void set_path(const vector<sf::Vector2f>&);
     void movePath(float);
     void attack(LivingEntity*, float);
-    void update(float, Castle*, Character*, Quadtree*, Vector<Vector<ASNode>>&, double);
+    void update(float, Castle*, Character*, Quadtree*, std::vector<std::vector<ASNode>>&, double);
 };
