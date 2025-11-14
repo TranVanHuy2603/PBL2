@@ -54,9 +54,9 @@ int main()
         EntityManager manager(Rect(0, 0, 1, 1), 10);
 
         Map gameMap;
-        if (!gameMap.load_File("assets/map/mapdata.txt", nullptr))
+        if (!gameMap.load_File("assets/map/mapdata5xx.txt", nullptr))
         {
-            cerr << "[Canh bao] Khong the load file map: assets/map/mapdata.txt" << endl;
+            cerr << "[Canh bao] Khong the load file map: assets/map/mapdata5xx.txt" << endl;
             return EXIT_FAILURE;
         }
 
