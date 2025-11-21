@@ -6,8 +6,21 @@
 #include "Bag.h"
 #include "Castle.h"
 #include "String.h"
+#include "Quest.h"
 #include <SFML/Graphics.hpp>
 #include <sstream>
+// dung trong ham craft_weapon()
+struct Recipe // cong thuc che che tao vu khi
+{
+    int wood;
+    int coal;
+    int iron;
+    int gold;
+    int diamond;
+    int emerald;
+};
+
+extern Recipe recipes[];
 
 class Castle;
 
@@ -19,13 +32,14 @@ private:
     int exp;
     int exp_max;
     Bag bag;
-    sf::Texture texture;
+    int lives;
+    sf::Texture upTexture, rightTexture, downTexture, leftTexture, texture;
     Vector<Weapons*> weapons;
-    int indexWeapon; //chi so cua vu khi trong vector
+    int indexWeapon; //chi so cua vu khi trong vecto
 public:
 
     Character();
-    Character(int, int, int, int);
+    Character(int, int, int, int, int);
     ~Character();
 
     int get_gold() const; // lay so vang hien co
@@ -36,15 +50,15 @@ public:
     int get_indexWeapon() const;
     int get_level() const; // lay ra level
     Vector<Weapons*>& get_weapons();
-    sf::Texture get_texture() const;
     int get_resource_amount(ResourceType type) const;
     sf::Vector2f get_position() const;
     sf::Vector2f getSize() const;
+    bool get_status() const;
+    int get_lives() const;
 
 
     void set_indexWeapon(int);
     void setScale(float, float); // doi kich co cua anh
-    void set_texture(String texture);
 
     void incr_gold(int); // tang vang len
     void incr_exp(int);  // tang kinh nghiem len
@@ -58,9 +72,10 @@ public:
 
     void update(float); // di chuyen
 
-    void attack(Quadtree &);              // tan cong.....tham so dau vao la mot vecto cac Monster
+    void attack(Quadtree &, Quest& task);              // tan cong.....tham so dau vao la mot vecto cac Monster
 
     void add_weapon(Weapons*);
     void switch_weapon(int index);
     bool craft_weapon(WeaponType);
+    void take_damage(int value) override;
 };

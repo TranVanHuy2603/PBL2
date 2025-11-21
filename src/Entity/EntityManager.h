@@ -5,6 +5,7 @@
 #include "Character.h"
 #include "Castle.h"
 #include "Quadtree.h"
+#include "Map.h"
 
 class EntityManager {
 private:
@@ -29,11 +30,15 @@ public:
     void set_player(Character*);
     void set_castle(Castle*);
 
-    void update(float, Vector<Vector<ASNode>>&, double);
+    void update(float, Vector<Vector<ASNode>>&, double, Map&, EntityManager&);
     void render(sf::RenderWindow&);
 
     Vector<Entity*> queryRange(const Rect&);
 
-    void create_monster(int);
+    void create_monster(int, int, int, int);
     void create_resource(int);
+
+    void clear();
+    
+    void updateQuadtree();
 };

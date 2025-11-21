@@ -2,23 +2,25 @@
 #define MAINMENU_H
 
 #include <SFML/Graphics.hpp>
+#include "String.h"
+#include "RectangleButton.h"
 
-class MainMenu
+class Menu
 {
 private:
     sf::Font font;
     sf::Text title;
-    sf::Text startText;
-    sf::Text exitText;
-    sf::RectangleShape startBox;
-    sf::RectangleShape exitBox;
 
-   
+    RectangleButton btn1;
+    RectangleButton btn2;
+
     sf::Texture backgroundTexture;
     sf::Sprite backgroundSprite;
 
 public:
-    MainMenu(float width, float height);
+    Menu(float width, float height, String titleStr,
+         String btn1Str, String btn2Str);
+
     void render(sf::RenderWindow& window);
     int handleEvent(sf::Event event, sf::RenderWindow& window);
 };

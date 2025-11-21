@@ -19,7 +19,7 @@ Castle::Castle(int x, int y, int hp_max, int cost)
         std::cout << "Loi tai anh lau dai\n";
 
     sprite.setTexture(texture);
-    sprite.setScale(0.9f, 0.9f);
+    sprite.setScale(1.8f, 1.8f);
 
     // dat goc toa do o giua day lau dai
     sf::FloatRect bounds = sprite.getLocalBounds();
@@ -39,8 +39,8 @@ Castle::Castle(int x, int y, int hp_max, int cost)
     hpBar.setFillColor(sf::Color(0, 255, 0));
 
     // vi tri co dinh cua thanh mau tren man hinh
-    hpBarBack.setPosition(4000.f - 100.f, 1600.f); // can giua (200 rong)
-    hpBar.setPosition(4000.f - 100.f, 1600.f);
+    hpBarBack.setPosition(x - 100.f, y - bounds.height - 10.f);
+    hpBar.setPosition(x - 100.f, y - bounds.height - 10.f);
 }
 
 int Castle::get_level() const { return level; }
@@ -60,7 +60,7 @@ void Castle::set_texture(const String &filetexture)
     }
 
     sprite.setTexture(texture);
-    sprite.setScale(0.9f, 0.9f);
+    sprite.setScale(1.8f, 1.8f);
 
     sf::FloatRect bounds = sprite.getLocalBounds();
     sprite.setOrigin(bounds.width / 2.f, bounds.height);
@@ -80,29 +80,23 @@ void Castle::level_up()
 
 void Castle::update(float deltatime)
 {
-    // hoi mau theo thoi gian
-    int currentHP = get_hp();
-    currentHP += static_cast<int>(1 * deltatime);
-    if (currentHP > get_hp_max())
-        currentHP = get_hp_max();
-    set_hp(currentHP);
+    // Tính phần trăm HP
+    float hpPercent = static_cast<float>(hp) / get_hp_max();
+    float hpWidth = 350.f; // chiều rộng thanh HP
+    hpBar.setSize(sf::Vector2f(hpWidth * hpPercent, 10.f));
 
-    // tinh phan tram mau
-    float hpPercent = static_cast<float>(currentHP) / get_hp_max();
-    float fullWidth = 200.f;
-    hpBar.setSize(sf::Vector2f(fullWidth * hpPercent, 10.f));
+    // đổi màu theo HP
+    if (hpPercent > 0.5f) hpBar.setFillColor(sf::Color::Green);
+    else if (hpPercent > 0.25f) hpBar.setFillColor(sf::Color::Yellow);
+    else hpBar.setFillColor(sf::Color::Red);
 
-    // doi mau theo muc mau
-    if (hpPercent > 0.5f)
-        hpBar.setFillColor(sf::Color(0, 255, 0)); // xanh
-    else if (hpPercent > 0.25f)
-        hpBar.setFillColor(sf::Color(255, 255, 0)); // vang
-    else
-        hpBar.setFillColor(sf::Color(255, 0, 0)); // do
+    // Vị trí lâu đài
+    sf::Vector2f castlePos = sprite.getPosition();
+    float scaledHeight = sprite.getLocalBounds().height * sprite.getScale().y;
 
-    // GIU VI TRI CO DINH cho thanh mau
-    hpBarBack.setPosition(4000.f - 100.f, 1500.f);
-    hpBar.setPosition(4000.f - 100.f, 1500.f);
+    // **Cập nhật vị trí HP bar trên đỉnh lâu đài, căn giữa**
+    hpBarBack.setPosition(castlePos.x - hpWidth / 2.f, castlePos.y - scaledHeight);
+    hpBar.setPosition(castlePos.x - hpWidth / 2.f, castlePos.y - scaledHeight);
 }
 
 void Castle::render(sf::RenderWindow &window)

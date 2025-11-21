@@ -1,29 +1,29 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <iostream>
 #include <string>
 #include "Castle.h"
 #include "Character.h"
+#include "CircleButton.h"
+#include "RectangleButton.h"
 
 class UpgradeCastleUI
 {
 private:
     sf::Font font;
-    sf::CircleShape houseButton; // nut hinh tron
-    sf::Texture houseTexture;
-    sf::Sprite houseIcon;
 
-    sf::RectangleShape upgradeButton;
-    sf::RectangleShape cancelButton;
-    sf::Text upgradeText;
-    sf::Text cancelText;
+    // Nút mở menu nâng cấp (hình tròn có icon)
+    CircleButton houseButton;
 
-    // hien thi chi phi nang cap
+    // Hai nút nâng cấp & hủy
+    RectangleButton upgradeButton;
+    RectangleButton cancelButton;
+
+    // Hiển thị chi phí nâng cấp
     sf::Text costText;
 
-    bool showMenu;
+    bool showMenu = false;
 
-    // Thong bao
+    // Thông báo kết quả nâng cấp
     sf::Text notificationText;
     bool showNotification = false;
     sf::Clock notificationClock;
@@ -31,7 +31,9 @@ private:
 public:
     UpgradeCastleUI();
 
-    void handleEvent(sf::Event &event, Character *player, Castle *castle);
-    void render(sf::RenderWindow &window);
-    void showNotificationText(const std::string &text, sf::Color color);
+    void handleEvent(sf::Event& event, Character* player, Castle* castle, sf::RenderWindow& window);
+    void render(sf::RenderWindow& window, Castle*);
+
+private:
+    void showNotificationText(const String& text, sf::Color color);
 };

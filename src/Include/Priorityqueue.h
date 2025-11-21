@@ -1,7 +1,9 @@
 #include "Vector.h"
 #include <functional>
 #include <algorithm>
+#include <utility>
 #pragma once
+using namespace std;
 
 /*template giup viet ham mot lan nhung co the dung cho nhieu kieu du lieu khac nhau*/
 

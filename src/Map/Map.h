@@ -1,21 +1,19 @@
 #pragma once
-#include <vector>
+#include "Vector.h"
+#include "ASNode.h"
+#include "Entity.h"
 #include <string>
-#include "Tile.h"
+#include "SFML/Graphics.hpp"
 
 class Map {
 private:
-    int width, height;
-    std::vector<std::vector<Tile>> grid;  // dùng Tile thay vì int
+    sf::Sprite background;
+    sf::Texture backgroundTexture;
 
 public:
-    Map(int w = 0, int h = 0);
-
-    int get_width() const;
-    int get_height() const;
-    const std::vector<std::vector<Tile>>& get_grid() const;
-
-    void load_File(const std::string& filename);
-
-    bool isWalkable(int x, int y) const;
+    Map(float, float);
+    bool loadFromFile(float, float);
+    void draw(sf::RenderWindow &window, const sf::View &view);
+    void setGrid(Vector<Entity*>& entity, Vector<Vector<ASNode>>&, double);
+    void updateGrid(Vector<Entity*>& entities, Vector<Vector<ASNode>>& grid, double);
 };

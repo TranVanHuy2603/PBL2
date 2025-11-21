@@ -19,5 +19,5 @@ public:
     void set_hp_max(int);
     void set_damage(int);
 
-    void take_damage(int);
+    virtual void take_damage(int);
 };

@@ -4,7 +4,7 @@ Audio::Audio(){}
 
 Audio::Audio(const String &filename) {
     if (!buffer.loadFromFile(filename.c_str())) {
-        std::cerr << "Không thể tải âm thanh từ file: " << filename << std::endl;
+        std::cerr << "Khong the tai am thanh tu: " << filename << std::endl;
     }
     sound.setBuffer(buffer);
 }

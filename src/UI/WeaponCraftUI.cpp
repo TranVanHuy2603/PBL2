@@ -1,4 +1,5 @@
 #include "WeaponCraftUI.h"
+#include "Weapons.h"
 
 // du lieu vu khi (bo qua BareHand)
 static const WeaponInfo weaponInfos[] = {
@@ -9,73 +10,80 @@ static const WeaponInfo weaponInfos[] = {
     {"Gun", "assets/weapon/gun.png"},
 };
 
-WeaponCraftUI::WeaponCraftUI() : showList(false)
+WeaponCraftUI::WeaponCraftUI(sf::RenderWindow &window) : showList(false)
 {
     if (!font.loadFromFile("assets/font/font2.ttf"))
         std::cerr << "Loi tai font!\n";
 
-    init();
-    initWeaponButtons();
+    cartButton = CircleButton(35.f);
+    cartButton.setPosition(50.f, 980.f);
+    cartButton.setColor(sf::Color(220, 120, 120));
+    cartButton.setOutline(sf::Color::Black, 3.f);
+    cartButton.setIconScale(0.14f, 0.14f);
+    cartButton.setTexture("assets/icon/cart.png");
+
+    craftTitleText.setFont(font);
+    craftTitleText.setCharacterSize(35);
+    craftTitleText.setStyle(sf::Text::Bold);
+    craftTitleText.setString("CHE TAO VU KHI");
+    craftTitleText.setFillColor(sf::Color::White);
+
+    initWeaponButtons(window);
 }
 
-void WeaponCraftUI::init()
+void WeaponCraftUI::initWeaponButtons(sf::RenderWindow &window)
 {
-    // nut hinh tron
-    cartButton.setRadius(40.f);
-    cartButton.setFillColor(sf::Color(150, 75, 0)); // mau nau
-    cartButton.setPosition(20.f, 900.f);
-
-    if (!cartTexture.loadFromFile("assets/icon/cart.png"))
-        std::cerr << "Loi tai anh cart.png\n";
-
-    cartIcon.setTexture(cartTexture);
-    cartIcon.setScale(0.11f, 0.11f);
-    cartIcon.setPosition(cartButton.getPosition().x + 10.f,
-                         cartButton.getPosition().y + 10.f);
-}
-
-void WeaponCraftUI::initWeaponButtons()
-{
-    float startX = 150.f;
-    float startY = 850.f;
-    float spacing = 160.f;
-
     int weaponCount = sizeof(weaponInfos) / sizeof(WeaponInfo);
+    float buttonWidth = 180.f;
+    float buttonHeight = 180.f;
+    float spacing = 80.f;
+
+    // Tính tổng chiều rộng của dãy button
+    float totalWidth = weaponCount * buttonWidth + (weaponCount - 1) * (spacing);
+    sf::Vector2u winSize = window.getSize();
+
+    // Lấy vị trí startX để căn giữa theo chiều ngang
+    float startX = (winSize.x - totalWidth) / 2.f;
+    float startY = 700.f; // giữ vị trí y ở dưới, có thể tinh chỉnh
+
     for (int i = 0; i < weaponCount; ++i)
     {
-        WeaponButton &wb = weaponButtons[i];
-        wb.type = static_cast<WeaponType>(i + 1); // +1 de bo BareHand
+        RectangleButton &btn = weaponButtons[i];
 
-        // o vu khi
-        wb.button.setSize(sf::Vector2f(150.f, 150.f));
-        wb.button.setFillColor(sf::Color(100, 100, 100));
-        wb.button.setPosition(startX + i * spacing, startY);
+        // Khởi tạo RectangleButton
+        float x = startX + i * (buttonWidth + spacing);
+        btn = RectangleButton(
+            x, startY,
+            buttonWidth, buttonHeight,
+            &font,
+            weaponInfos[i].name.c_str(),
+            sf::Color(100, 100, 100),
+            sf::Color(150, 150, 150),
+            sf::Color(160, 160, 160),
+            12);
 
-        if (!weaponTextures[i].loadFromFile(weaponInfos[i].iconPath.c_str()))
-            std::cerr << "Loi tai anh: " << weaponInfos[i].iconPath.c_str() << "\n";
+        // Icon
+        btn.setIcon(weaponInfos[i].iconPath.c_str());
+        btn.setIconScale(0.5f, 0.5f);
 
-        wb.icon.setTexture(weaponTextures[i]);
-        wb.icon.setPosition(wb.button.getPosition().x + 25.f,
-                            wb.button.getPosition().y + 25.f);
-        wb.icon.setScale(0.4f, 0.4f);
+        // Text dưới button
+        // btn.setString(weaponInfos[i].name.c_str());
+        btn.setTextColor(sf::Color::Black);
 
-        wb.nameText.setFont(font);
-        wb.nameText.setString(weaponInfos[i].name.c_str());
-        wb.nameText.setCharacterSize(12);
-        wb.nameText.setFillColor(sf::Color::White);
-        wb.nameText.setPosition(wb.button.getPosition().x + 10.f,
-                                wb.button.getPosition().y + 120.f);
+        // Căn giữa text dưới button
+        sf::FloatRect b = btn.getBounds();
+        btn.setTextPosition(b.left + b.width / 2.f, b.top + b.height - 15.f);
     }
 }
 
-void WeaponCraftUI::handleEvent(sf::Event &event, Character *player)
+void WeaponCraftUI::handleEvent(sf::Event &event, Character *player, sf::RenderWindow &window)
 {
     if (event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Left)
     {
         sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
 
-        if (cartButton.getGlobalBounds().contains(mousePos))
+        if (cartButton.isClicked(window, event))
         {
             showList = !showList;
             return;
@@ -86,33 +94,111 @@ void WeaponCraftUI::handleEvent(sf::Event &event, Character *player)
             int weaponCount = sizeof(weaponInfos) / sizeof(WeaponInfo);
             for (int i = 0; i < weaponCount; ++i)
             {
-                WeaponButton &wb = weaponButtons[i];
-                if (wb.button.getGlobalBounds().contains(mousePos))
+                RectangleButton &wb = weaponButtons[i];
+                if (wb.isClicked(window, event))
                 {
-                    if (player->craft_weapon(wb.type))
+                    if (player->craft_weapon(static_cast<WeaponType>(i + 1)))
+                    {
                         showNotificationText("Da che tao vu khi thanh cong!", sf::Color::Green);
+                        static Audio craftSound("assets/audio/collect.mp3");
+                        craftSound.setVolume(40.f);
+                        craftSound.playSound();
+                    }
+
                     else
+                    {
+                        static Audio notenoughmoney("assets/audio/error.mp3");
+                        notenoughmoney.setVolume(40.f);
+                        notenoughmoney.playSound();
                         showNotificationText("Khong du tai nguyen de che tao vu khi!", sf::Color::Red);
+                    }
                 }
+                showList = !showList;
             }
         }
     }
 }
 
-void WeaponCraftUI::render(sf::RenderWindow &window)
+void WeaponCraftUI::drawRecipeText(sf::RenderWindow &window, RectangleButton &btn, Recipe &r, Bag &bag)
 {
-    window.draw(cartButton);
-    window.draw(cartIcon);
+    sf::Text recipeText;
+    recipeText.setFont(font);
+    recipeText.setCharacterSize(12); // chỉnh size lớn hơn
+    recipeText.setStyle(sf::Text::Bold);
+
+    sf::FloatRect b = btn.getBounds();
+    float startX = b.left + b.width / 4;
+    float startY = b.top - 40.f;
+
+    // vẽ từng loại nguyên liệu với màu đỏ nếu thiếu
+    recipeText.setString("Go: " + std::to_string(r.wood));
+    recipeText.setFillColor(bag.getWood() >= r.wood ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY);
+    window.draw(recipeText);
+
+    recipeText.setString("Than: " + std::to_string(r.coal));
+    recipeText.setFillColor(bag.getCoal() >= r.coal ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY + 14); // cách nhau 14 px
+    window.draw(recipeText);
+
+    recipeText.setString("Sat: " + std::to_string(r.iron));
+    recipeText.setFillColor(bag.getIron() >= r.iron ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY + 28);
+    window.draw(recipeText);
+
+    recipeText.setString("Vang: " + std::to_string(r.gold));
+    recipeText.setFillColor(bag.getGold() >= r.gold ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY + 42);
+    window.draw(recipeText);
+
+    recipeText.setString("KCuong: " + std::to_string(r.diamond));
+    recipeText.setFillColor(bag.getDiamond() >= r.diamond ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY + 56);
+    window.draw(recipeText);
+
+    recipeText.setString("NgocLB: " + std::to_string(r.emerald));
+    recipeText.setFillColor(bag.getEmerald() >= r.emerald ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY + 70);
+    window.draw(recipeText);
+}
+
+void WeaponCraftUI::render(sf::RenderWindow &window, Character *player)
+{
+    cartButton.render(window);
+
+    sf::Vector2u winSize = window.getSize();
+    sf::FloatRect textBounds = craftTitleText.getLocalBounds();
+    craftTitleText.setPosition((winSize.x - textBounds.width) / 2.f - textBounds.top, (winSize.y - textBounds.height) / 2.f - textBounds.top);
 
     if (showList)
     {
         int weaponCount = sizeof(weaponInfos) / sizeof(WeaponInfo);
+        Bag bag = player->get_bag();
+
         for (int i = 0; i < weaponCount; ++i)
         {
-            window.draw(weaponButtons[i].button);
-            window.draw(weaponButtons[i].icon);
-            window.draw(weaponButtons[i].nameText);
+            RectangleButton &wb = weaponButtons[i];
+            wb.update(window);
+            // Lấy recipe của vũ khí i
+            Recipe r = recipes[i + 1]; // bỏ qua BareHand, WeaponType bắt đầu từ 1
+
+            bool canCraft = !(bag.getWood() < r.wood ||
+                              bag.getCoal() < r.coal ||
+                              bag.getIron() < r.iron ||
+                              bag.getGold() < r.gold ||
+                              bag.getDiamond() < r.diamond ||
+                              bag.getEmerald() < r.emerald);
+
+            // Đổi màu theo khả năng chế tạo
+            if (canCraft)
+                wb.setFillColor(sf::Color(100, 200, 100)); // xanh
+            else
+                wb.setFillColor(sf::Color(200, 150, 150)); // đỏ nhạt
+
+            wb.render(window);
+            drawRecipeText(window, wb, r, bag);
         }
+        window.draw(craftTitleText);
     }
 
     if (showNotification)

@@ -3,6 +3,8 @@
 #include "Weapons.h"   // de dung WeaponType
 #include "Character.h"
 #include "String.h"
+#include "CircleButton.h"
+#include "RectangleButton.h"
 #include <iostream>
 
 struct WeaponInfo
@@ -24,12 +26,10 @@ class WeaponCraftUI
 {
 private:
     sf::Font font;
-    sf::Texture weaponTextures[(int)WeaponType::Count];
-    WeaponButton weaponButtons[(int)WeaponType::Count];
+    sf::Text craftTitleText;
 
-    sf::CircleShape cartButton; // nut hinh tron (xe day)
-    sf::Texture cartTexture;
-    sf::Sprite cartIcon;
+    RectangleButton weaponButtons[(int)WeaponType::Count];
+    CircleButton cartButton;
 
     bool showList; // hien thi danh sach vu khi
 
@@ -38,12 +38,12 @@ private:
     bool showNotification = false;
 
 public:
-    WeaponCraftUI();
+    WeaponCraftUI(sf::RenderWindow&);
 
-    void init();               // khoi tao nut xe day
-    void initWeaponButtons();  // khoi tao cac nut vu khi
-    void handleEvent(sf::Event& event, Character* player);
-    void render(sf::RenderWindow& window);
+    void initWeaponButtons(sf::RenderWindow&);  // khoi tao cac nut vu khi
+    void handleEvent(sf::Event& event, Character* player, sf::RenderWindow& window);
+    void drawRecipeText(sf::RenderWindow& window, RectangleButton &btn, Recipe &r, Bag &bag);
+    void render(sf::RenderWindow& window, Character*);
 
     void showNotificationText(const std::string& text, sf::Color color);
 };

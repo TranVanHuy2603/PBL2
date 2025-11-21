@@ -17,14 +17,14 @@ struct ResourceInfo
 };
 
 ResourceInfo resourceInfos[] = {
-    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 0.5},
-    {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.4},
-    {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.2},
-    {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.2},
-    {ResourceType::Iron, 0.12f, "assets/resource/iron.png", 8, 15, 0.21},
-    {ResourceType::Gold, 0.09f, "assets/resource/gold.png", 8, 20, 0.6},
-    {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.4},
-    {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.2}};
+    {ResourceType::Wood, 0.2f, "assets/resource/wood.png", 5, 2, 0.23},
+    {ResourceType::Stone, 0.15f, "assets/resource/stone.png", 5, 2, 0.5},
+    {ResourceType::Sand, 0.13f, "assets/resource/sand.png", 4, 2, 0.3},
+    {ResourceType::Coal, 0.13f, "assets/resource/coal.png", 7, 10, 0.3},
+    {ResourceType::Iron, 0.12f, "assets/resource/iron.png", 8, 15, 0.2},
+    {ResourceType::Gold, 0.09f, "assets/resource/gold.png", 8, 20, 0.3},
+    {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.5},
+    {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.3}};
 
 
 EntityManager::EntityManager(const Rect &area, double cap)
@@ -73,10 +73,12 @@ Quadtree &EntityManager::getQuadtree()
 void EntityManager::set_player(Character *value) { player = value; }
 void EntityManager::set_castle(Castle *value) { castle = value; }
 
-void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize)
+void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize, Map &map, EntityManager &manager)
 {
     Castle *castle = getCastle();
     Character *player = getPlayer();
+
+    map.updateGrid(manager.getEntities(), grid, cellSize);
 
     for (auto *e : entities) // duyet tat ca vat the
     {
@@ -88,15 +90,15 @@ void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSi
     }
     castle->update(dt);
     player->update(dt);
+    updateQuadtree();
 }
 
 void EntityManager::render(sf::RenderWindow &window)
 {
     for (auto *e : entities)
         e->draw(window);
-
-    player->draw(window);
     castle->render(window);
+    player->draw(window);
 }
 
 bool isOverlapping(const sf::Sprite &s1, const sf::Sprite &s2)
@@ -104,7 +106,7 @@ bool isOverlapping(const sf::Sprite &s1, const sf::Sprite &s2)
     return s1.getGlobalBounds().intersects(s2.getGlobalBounds());
 }
 
-void EntityManager::create_monster(int n)
+void EntityManager::create_monster(int n, int hp, int damage, int damagerange)
 {
     sf::Sprite tempSprite; // sprite tam
 
@@ -114,8 +116,8 @@ void EntityManager::create_monster(int n)
         while (!check)
         {
             // random mot vi tri cho linh
-            float x = rand() % 8000 - 50 + 25;
-            float y = rand() % 4000 - 50 + 25;
+            float x = rand() % 6500 - 50 + 25;
+            float y = rand() % 3500 - 50 + 25;
             tempSprite.setPosition(x, y);
             check = true;
 
@@ -129,7 +131,7 @@ void EntityManager::create_monster(int n)
                 }
             }
         }
-        Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, 50, 10, 5, rand() % 10, 10, 20);
+        Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, hp, damage, damagerange, 0.6, 10, 20);
         add(m);
     }
 }
@@ -160,8 +162,8 @@ void EntityManager::create_resource(int n)
 
         while (!check)
         {
-            float x = rand() % 8000 - 50 + 25;
-            float y = rand() % 4000 - 50 + 25;
+            float x = rand() % 6500 - 50 + 25;
+            float y = rand() % 3500 - 50 + 25;
             tempSprite.setPosition(x, y);
             check = true;
 
@@ -179,3 +181,33 @@ void EntityManager::create_resource(int n)
         add(r);
     }
 }
+
+void EntityManager::clear()
+{
+    // Xóa tất cả entities
+    for (int i = 0; i < entities.get_size(); i++)
+        delete entities[i];
+    entities.clear();
+
+    // Reset con trỏ
+    player = nullptr;
+    castle = nullptr;
+
+    // Reset quadtree
+    qt.clear();
+}
+
+void EntityManager::updateQuadtree()
+{
+    qt.clear(); // xóa hết
+    for (auto *e : entities)
+    {
+        if (!e->get_status())
+            continue; // bỏ qua nếu entity không còn hoạt động
+        qt.insert(e); // insert lại theo vị trí mới
+    }
+}
+
+
+
+

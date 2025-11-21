@@ -1,4 +1,5 @@
 #include "CameraController.h"
+#include <algorithm>
 
 CameraController::CameraController(const sf::Vector2f& windowSize, const sf::FloatRect& bounds)
     : worldBounds(bounds), moveSpeed(300.f), zoomLevel(1.f)
@@ -18,9 +19,20 @@ void CameraController::handleInput(const sf::RenderWindow& window, float deltaTi
     view.move(move);
     clampToBounds();
 
-    // zoom bằng chuột cuộn
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Middle)) {
-        // ví dụ: nhấn giữ chuột giữa + lăn sẽ zoom
+}
+
+void CameraController::handleEvent(const sf::Event &event)
+{
+    if (event.type == sf::Event::MouseWheelScrolled &&
+        event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+    {
+        float factor = 1.f;
+        if (event.mouseWheelScroll.delta > 0)
+            factor = 1.f - zoomSpeed; // zoom in
+        else
+            factor = 1.f + zoomSpeed; // zoom out
+
+        zoom(factor);
     }
 }
 
@@ -30,8 +42,13 @@ void CameraController::follow(const sf::Vector2f& target) {
 }
 
 void CameraController::zoom(float factor) {
-    zoomLevel *= factor;
+    float newZoom = zoomLevel * factor;
+    newZoom = std::clamp(newZoom, minZoom, maxZoom);
+    factor = newZoom / zoomLevel;
+
+    zoomLevel = newZoom;
     view.zoom(factor);
+
     clampToBounds();
 }
 

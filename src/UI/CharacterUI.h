@@ -9,11 +9,14 @@ private:
 
     sf::Text infoText;       // góc trái: tài nguyên
     sf::Text topRightText;   // góc phải: coin, exp, level
+    sf::Sprite livesIcon;
+    sf::Texture livesTexture;
 
     sf::RectangleShape hpBack;     // nền thanh HP
     sf::RectangleShape hpBar;      // phần HP còn
     sf::RectangleShape hpLostBar;  // phần HP đã mất
     sf::Text hpText;               // chữ hiển thị số HP
+    sf::Text hp;
 
 public:
     CharacterUI();
@@ -22,5 +25,5 @@ public:
     void update(const Character* player, const sf::RenderTarget& target);
 
     // vẽ UI lên màn hình
-    void render(sf::RenderTarget& target);
+    void render(sf::RenderTarget& target, Character*);
 };

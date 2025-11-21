@@ -1,47 +1,96 @@
 #include "Map.h"
-#include <fstream>
-#include <sstream>
 #include <iostream>
-
+#include "String.h"
+#include "Vector.h"
+#include "Monster.h"
 using namespace std;
 
-Map::Map(int w, int h) : width(w), height(h) {
-    grid.resize(height, std::vector<Tile>(width, Tile(TileType::Grass)));
+Map::Map(float worldWidth, float worldHeight)
+{
+    if (!loadFromFile(worldWidth, worldHeight))
+    {
+        cout << "Failed to load map texture!" << endl;
+    }
 }
 
-int Map::get_width() const { return width; }
-int Map::get_height() const { return height; }
-const vector<vector<Tile>>& Map::get_grid() const { return grid; }
-
-void Map::load_File(const std::string& filename) {
-    ifstream file(filename);
-    if (!file.is_open()) {
-        cerr << "ERROR opening " << filename << endl;
-        return;
-    }
-
-    grid.clear();
-    string line;
-    while (getline(file, line)) {
-        vector<Tile> row;
-        stringstream ss(line);
-        int value;
-        while (ss >> value) {
-            row.emplace_back(Tile(static_cast<TileType>(value)));  // thay vì int, giờ tạo Tile
-        }
-        if (!row.empty()) {
-            grid.push_back(row);
-        }
-    }
-
-    height = grid.size();
-    width = (height > 0) ? grid[0].size() : 0;
-
-    file.close();
-}
-
-bool Map::isWalkable(int x, int y) const {
-    if (y < 0 || y >= height || x < 0 || x >= width)
+bool Map::loadFromFile(float worldWidth, float worldHeight)
+{
+    if (!backgroundTexture.loadFromFile("assets/background/map.png"))
+    {
         return false;
-    return grid[y][x].isWalkable();
+    }
+
+    background.setTexture(backgroundTexture);
+
+    // Lấy kích thước gốc texture
+    sf::Vector2u texSize = backgroundTexture.getSize();
+
+    // Scale sprite để phủ toàn bộ world
+    float scaleX = worldWidth / texSize.x;
+    float scaleY = worldHeight / texSize.y;
+    background.setScale(scaleX, scaleY);
+
+    // Đặt vị trí giữa world
+    background.setPosition(0.f, 0.f); // nếu muốn bắt đầu từ (0,0)
+    // hoặc đặt center nếu muốn dùng center:
+    // background.setOrigin(texSize.x/2.f, texSize.y/2.f);
+    // background.setPosition(worldWidth/2.f, worldHeight/2.f);
+
+    return true;
+}
+
+void Map::draw(sf::RenderWindow &window, const sf::View &view)
+{
+    sf::View oldView = window.getView();
+
+    // Dùng view camera để vẽ background
+    window.setView(view);
+    window.draw(background);
+
+    // Khôi phục view mặc định để vẽ các object khác
+    window.setView(oldView);
+}
+
+void Map::setGrid(Vector<Entity *> &entity, Vector<Vector<ASNode>> &grid, double cellSize)
+{
+
+    for (auto *ent : entity)
+    {
+        Monster *monster = dynamic_cast<Monster *>(ent);
+        if (monster)
+        { // chỉ những đối tượng Monster
+            int mx = static_cast<int>(monster->get_x() / cellSize);
+            int my = static_cast<int>(monster->get_y() / cellSize);
+            if (mx >= 0 && mx < grid[0].get_size() &&
+                my >= 0 && my < grid.get_size())
+            {
+                grid[my][mx].set_walkable(false);
+            }
+        }
+    }
+}
+
+void Map::updateGrid(Vector<Entity*>& entities, Vector<Vector<ASNode>>& grid, double cellSize)
+{
+    int rows = grid.get_size();
+    if (rows == 0) return;
+    int cols = grid[0].get_size();
+
+    // 1️⃣ Reset grid (tất cả walkable = true)
+    for (int y = 0; y < rows; ++y)
+        for (int x = 0; x < cols; ++x)
+            grid[y][x].set_walkable(true); // hoặc giữ vật cản cố định nếu cần
+
+    // 2️⃣ Đặt lại các ô có quái
+    for (auto* ent : entities) {
+        Monster* monster = dynamic_cast<Monster*>(ent);
+        if (!monster) continue;
+
+        int mx = static_cast<int>(monster->get_x() / cellSize);
+        int my = static_cast<int>(monster->get_y() / cellSize);
+
+        // Kiểm tra ranh giới grid
+        if (mx >= 0 && mx < cols && my >= 0 && my < rows)
+            grid[my][mx].set_walkable(false);
+    }
 }

@@ -1,317 +1,143 @@
 #pragma once
 #include <iostream>
 #include <algorithm>
-#include "String.h"        
-using llu = unsigned long long;
+#include <stdexcept>
 
 template <typename T>
-class Vector
-{
+class Vector {
 private:
-    T *array;
+    T* array;
     int capacity;
     int size;
 
-public:
-    // ====== Constructors ========
-    Vector();
-    Vector(int , const T&);
-
-    // ====== Destructors ========
-    ~Vector();
-
-    // ===== Cac ham chuc nang ======
-    void resize(int);
-    void resize(int , const T&);
-    void push_back(const T&);
-    void pop_back();
-    void erase(int);
-    T *erase(T *pos);
-    T *insert(T *pos, const T &val);
-    void clear();
-    void reverse();
-    bool remove(const T &);
-    int get_size() const;
-    int get_capacity() const;
-    bool empty() const;
-
-    // ===== Operators overload ======
-    T &operator[](int);
-    const T& operator[](int) const;
-    Vector& operator=(const Vector &other);
-    bool operator==(const Vector<T>& other) const;
-
-    // ===== Truy suat, set phan tu dau va cuoi Vector =====
-    T *begin();
-    T *end();
-    const T *begin() const;
-    const T *end() const;
-
-    const T& front() const;
-    const T& back() const;
-    T& front();
-    T& back();
-};
-
-template <typename T>
-Vector<T>::Vector()
-{
-    array = new T[1];
-    this->capacity = 1;
-    this->size = 0;
-}
-
-template <typename T>
-Vector<T>::Vector(int n, const T& val) {
-    capacity = size = n;
-    array = new T[capacity];
-    for (int i = 0; i < size; i++) {
-        array[i] = val;
-    }
-}
-
-// ====== Destructors ========
-template <typename T>
-Vector<T>::~Vector()
-{
-    delete[] array;
-}
-
-// ===== Cac ham chuc nang ======
-template <typename T>
-void Vector<T>::resize(int newcap)
-{
-    T *newarr = new T[newcap];
-    for (int i = 0; i < size; i++)
-    {
-        newarr[i] = array[i];
-    }
-    delete[] array;
-    this->array = newarr;
-    this->capacity = newcap;
-}
-
-template <typename T>
-void Vector<T>::resize(int new_size, const T& value) {
-    if (new_size <= size) {
-        size = new_size; // cắt ngắn lại
-        return;
-    }
-
-    if (new_size > capacity) {
-        int newcap = capacity;
-        while (newcap < new_size) newcap *= 2;
-        T* newarr = new T[newcap];
-        for (int i = 0; i < size; i++) {
-            newarr[i] = array[i];
-        }
+    void ensureCapacity(int minCap) {
+        if (minCap <= capacity) return;
+        int newCap = capacity ? capacity * 2 : 1;
+        while (newCap < minCap) newCap *= 2;
+        T* newArr = new T[newCap];
+        for (int i = 0; i < size; ++i) newArr[i] = array[i];
         delete[] array;
-        array = newarr;
-        capacity = newcap;
+        array = newArr;
+        capacity = newCap;
     }
 
-    // khởi tạo phần tử mới với giá trị `value`
-    for (int i = size; i < new_size; i++) {
-        array[i] = value;
+public:
+    Vector() : array(nullptr), capacity(0), size(0) {}
+    Vector(int n) : array(new T[n]), capacity(n), size(n) {
+        for (int i = 0; i < n; ++i) array[i] = T();
     }
-    size = new_size;
-}
-
-template <typename T>
-void Vector<T>::push_back(const T &value)
-{
-    if (size == capacity)
-    {
-        resize(capacity * 2);
+    Vector(int n, const T& val) : array(new T[n]), capacity(n), size(n) {
+        for (int i = 0; i < n; ++i) array[i] = val;
     }
-    array[size++] = value;
-}
 
-template <typename T>
-void Vector<T>::pop_back()
-{
-    if (size > 0)
-    {
+    // Copy constructor
+    Vector(const Vector& other) : array(new T[other.capacity]), capacity(other.capacity), size(other.size) {
+        for (int i = 0; i < size; ++i) array[i] = other.array[i];
+    }
+
+    // Move constructor
+    Vector(Vector&& other) noexcept : array(other.array), capacity(other.capacity), size(other.size) {
+        other.array = nullptr;
+        other.capacity = 0;
+        other.size = 0;
+    }
+
+    // Destructor
+    ~Vector() { delete[] array; }
+
+    // Assignment operators
+    Vector& operator=(const Vector& other) {
+        if (this == &other) return *this;
+        delete[] array;
+        capacity = other.capacity;
+        size = other.size;
+        array = new T[capacity];
+        for (int i = 0; i < size; ++i) array[i] = other.array[i];
+        return *this;
+    }
+
+    Vector& operator=(Vector&& other) noexcept {
+        if (this == &other) return *this;
+        delete[] array;
+        array = other.array;
+        size = other.size;
+        capacity = other.capacity;
+        other.array = nullptr;
+        other.size = 0;
+        other.capacity = 0;
+        return *this;
+    }
+
+    // Accessors
+    int get_size() const { return size; }
+    int get_capacity() const { return capacity; }
+    bool empty() const { return size == 0; }
+
+    T& operator[](int index) {
+        if (index < 0 || index >= size) throw std::out_of_range("Index out of range");
+        return array[index];
+    }
+
+    const T& operator[](int index) const {
+        if (index < 0 || index >= size) throw std::out_of_range("Index out of range");
+        return array[index];
+    }
+
+    // Add / remove
+    void push_back(const T& value) {
+        ensureCapacity(size + 1);
+        array[size++] = value;
+    }
+
+    void pop_back() { if (size > 0) --size; }
+
+    void clear() { size = 0; }
+
+    T* begin() { return array; }
+    T* end() { return array + size; }
+    const T* begin() const { return array; }
+    const T* end() const { return array + size; }
+
+    T& front() { if (empty()) throw std::out_of_range("Vector empty"); return array[0]; }
+    T& back() { if (empty()) throw std::out_of_range("Vector empty"); return array[size - 1]; }
+    const T& front() const { if (empty()) throw std::out_of_range("Vector empty"); return array[0]; }
+    const T& back() const { if (empty()) throw std::out_of_range("Vector empty"); return array[size - 1]; }
+
+    // Remove / erase
+    void erase(int index) {
+        if (index < 0 || index >= size) return;
+        for (int i = index; i < size - 1; ++i) array[i] = array[i + 1];
         --size;
     }
-}
 
-template <typename T>
-int Vector<T>::get_size() const { return size; }
-
-template <typename T>
-int Vector<T>::get_capacity() const { return capacity; }
-
-template <typename T>
-void Vector<T>::erase(int index)
-{
-    if (index < 0 || index >= size)
-        return;
-    for (int i = index; i < size - 1; i++)
-    {
-        array[i] = array[i + 1];
+    T* erase(T* pos) {
+        if (pos < array || pos >= array + size) return end();
+        int idx = static_cast<int>(pos - array);
+        erase(idx);
+        return array + idx;
     }
-    --size;
-}
 
-template <typename T>
-T *Vector<T>::erase(T *pos)
-{
-    if (pos < array || pos >= array + size)
-        return end();
-
-    int index = static_cast<int>(pos - array);
-    for (int i = index; i < size - 1; ++i)
-    {
-        array[i] = array[i + 1];
+    T* insert(T* pos, const T& val) {
+        if (pos < array || pos > array + size) return end();
+        int idx = static_cast<int>(pos - array);
+        ensureCapacity(size + 1);
+        for (int i = size; i > idx; --i) array[i] = array[i - 1];
+        array[idx] = val;
+        ++size;
+        return array + idx;
     }
-    --size;
-    return array + index;
-}
 
-template <typename T>
-T *Vector<T>::insert(T *pos, const T &val)
-{
-    if (pos < array || pos > array + size)
-        return end();
-
-    int index = static_cast<int>(pos - array);
-
-    if (size == capacity)
-        resize(capacity * 2);
-
-    for (int i = size; i > index; --i)
-    {
-        array[i] = array[i - 1];
-    }
-    array[index] = val;
-    ++size;
-
-    return array + index;
-}
-
-template <typename T>
-void Vector<T>::clear()
-{
-    size = 0;
-}
-
-template <typename T>
-void Vector<T>::reverse()
-{
-    for (int i = 0; i < size / 2; i++)
-    {
-        T temp = array[i];
-        array[i] = array[size - i - 1];
-        array[size - i - 1] = temp;
-    }
-}
-
-template <typename T>
-bool Vector<T>::remove(const T &value)
-{
-    for (int i = 0; i < size; i++)
-    {
-        if (array[i] == value)
-        {
-            erase(i);
-            return true;
+    bool remove(const T& val) {
+        for (int i = 0; i < size; ++i) {
+            if (array[i] == val) { erase(i); return true; }
         }
+        return false;
     }
-    return false;
-}
 
-template <typename T>
-bool Vector<T>::empty() const
-{
-    return size == 0;
-}
-
-// ===== Operators overload ======
-template <typename T>
-T &Vector<T>::operator[](int index)
-{
-    if (index < 0 || index >= size)
-    {
-        throw std::out_of_range("Index out of range");
+    bool operator==(const Vector& other) const {
+        if (size != other.size) return false;
+        for (int i = 0; i < size; ++i)
+            if (!(array[i] == other.array[i])) return false;
+        return true;
     }
-    else
-        return array[index];
-}
-
-template <typename T>
-const T& Vector<T>::operator[](int index) const
-{
-    if (index < 0 || index >= size)
-    {
-        throw std::out_of_range("Index out of range");
-    }
-    return array[index];
-}
-
-template <typename T>
-Vector<T> &Vector<T>::operator=(const Vector<T> &other)
-{
-    if (this == &other)
-        return *this;
-    delete[] array;
-    capacity = other.capacity;
-    size = other.size;
-    array = new T[capacity];
-    for (int i = 0; i < size; i++)
-    {
-        array[i] = other.array[i];
-    }
-    return *this;
-}
-
-template <typename T>
-bool Vector<T>::operator==(const Vector<T>& other) const {
-    if (size != other.size) return false;
-    for (int i = 0; i < size; i++)
-        if (!(array[i] == other.array[i])) return false;
-    return true;
-}
-
-
-
-// ===== Truy suat, set phan tu dau va cuoi Vector =====
-template <typename T>
-T* Vector<T>::begin() { return array; }
-
-template <typename T>
-T* Vector<T>::end() { return array + size; }
-
-template <typename T>
-const T *Vector<T>::begin() const { return array; }
-
-template <typename T>
-const T *Vector<T>::end() const { return array + size; }
-
-template <typename T>
-T& Vector<T>::front() {
-    if (size == 0) throw std::out_of_range("Vector is empty");
-    return array[0];
-}
-
-template <typename T>
-T& Vector<T>::back() {
-    if (size == 0) throw std::out_of_range("Vector is empty");
-    return array[size - 1];
-}
-
-template <typename T>
-const T& Vector<T>::front() const {
-    if (size == 0) throw std::out_of_range("Vector is empty");
-    return array[0];
-}
-
-template <typename T>
-const T& Vector<T>::back() const {
-    if (size == 0) throw std::out_of_range("Vector is empty");
-    return array[size - 1];
-}
-
-template class Vector<int>;
-template class Vector<String>;
-template class Vector<Vector<int>>;
+};

@@ -10,7 +10,7 @@ CharacterUI::CharacterUI()
 
     // Góc trái: thông tin tài nguyên
     infoText.setFont(font);
-    infoText.setCharacterSize(30);
+    infoText.setCharacterSize(40);
     infoText.setFillColor(sf::Color::Red);
     infoText.setOutlineColor(sf::Color::Black);
     infoText.setOutlineThickness(1.f);
@@ -18,7 +18,7 @@ CharacterUI::CharacterUI()
 
     // Góc phải: Coin, EXP, Level
     topRightText.setFont(font);
-    topRightText.setCharacterSize(35);
+    topRightText.setCharacterSize(40);
     topRightText.setFillColor(sf::Color::Red);
     topRightText.setOutlineColor(sf::Color::Black);
     topRightText.setOutlineThickness(1.f);
@@ -39,20 +39,29 @@ CharacterUI::CharacterUI()
     hpText.setFont(font);
     hpText.setCharacterSize(25);
     hpText.setFillColor(sf::Color::Black);
+
+    hp.setFont(font);
+    hp.setString("HP");
+    hp.setCharacterSize(40);
+    hp.setFillColor(sf::Color::Black);
+
+    livesTexture.loadFromFile("assets/icon/lives.png");
+    livesIcon.setTexture(livesTexture);
+    livesIcon.setScale(0.065, 0.065);
 }
 
 void CharacterUI::update(const Character *player, const sf::RenderTarget &target)
 {
     // ==== Góc trái: tài nguyên ====
     std::stringstream ss;
-    ss << "Wood  " << player->get_bag().getWood()
-       << "\nStone " << player->get_bag().getStone()
-       << "\nSand  " << player->get_bag().getSand()
-       << "\nCoal  " << player->get_bag().getCoal()
-       << "\nIron  " << player->get_bag().getIron()
-       << "\nGold  " << player->get_bag().getGold()
-       << "\nDiamond " << player->get_bag().getDiamond()
-       << "\nEmerald " << player->get_bag().getEmerald();
+    ss << "Go: " << player->get_bag().getWood()
+       << "    Da: " << player->get_bag().getStone()
+       << "    Cat: " << player->get_bag().getSand()
+       << "    Than: " << player->get_bag().getCoal()
+       << "    Sat: " << player->get_bag().getIron()
+       << "    Vang: " << player->get_bag().getGold()
+       << "    KCuong: " << player->get_bag().getDiamond()
+       << "    NgocLB: " << player->get_bag().getEmerald();
     infoText.setString(ss.str());
 
     // ==== Góc phải: Coin + EXP + Level ====
@@ -72,7 +81,7 @@ void CharacterUI::update(const Character *player, const sf::RenderTarget &target
     float barWidth = 400.f, barHeight = 20.f;
 
     // Căn giữa dưới
-    hpBack.setPosition((winSize.x - barWidth) / 2.f, winSize.y - barHeight - 20.f);
+    hpBack.setPosition((winSize.x - barWidth) / 2.f, winSize.y - barHeight - 80.f);
 
     // HP còn
     hpBar.setSize(sf::Vector2f(barWidth * hpPercent, barHeight));
@@ -100,9 +109,13 @@ void CharacterUI::update(const Character *player, const sf::RenderTarget &target
     hpText.setPosition(
         hpBack.getPosition().x + barWidth / 2.f,
         hpBack.getPosition().y + barHeight / 2.f - 1.f);
+
+    sf::Vector2f hpPos = hpBack.getPosition();
+    // Căn giữa theo chiều cao thanh
+    hp.setPosition(hpPos.x - 40.f, hpPos.y - barHeight);
 }
 
-void CharacterUI::render(sf::RenderTarget &target)
+void CharacterUI::render(sf::RenderTarget &target, Character *player)
 {
     target.draw(infoText);     // Góc trái
     target.draw(topRightText); // Góc phải
@@ -110,4 +123,21 @@ void CharacterUI::render(sf::RenderTarget &target)
     target.draw(hpLostBar);
     target.draw(hpBar);
     target.draw(hpText);
+    target.draw(hp);
+
+    sf::Vector2f hpPos = hpBack.getPosition(); // Góc trái thanh HP
+    float barWidth = hpBack.getSize().x;
+    float barHeight = hpBack.getSize().y;
+
+    float iconSpacing = 30.f; 
+    float iconSize = 0.05f;  
+
+    float startX = hpPos.x + barWidth + 30.f;
+    float startY = hpBack.getPosition().y + (hpBack.getSize().y - 30) / 2.f;
+
+    for (int i = 0; i < player->get_lives(); i++)
+    {
+        livesIcon.setPosition(startX + i * (livesIcon.getGlobalBounds().width * iconSize + iconSpacing), startY);
+        target.draw(livesIcon);
+    }
 }

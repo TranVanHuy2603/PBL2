@@ -12,6 +12,7 @@ protected:
     bool walkable;     // di qua duoc hay khong
     string type;
     sf::Sprite sprite; // Hinh anh duoc hien thi tren game
+    bool status = true;
 
 public:
     Entity();
@@ -24,4 +25,5 @@ public:
     bool is_walkable() const;
     sf::Sprite get_sprite() const;
     virtual void draw(sf::RenderWindow &); // ve hinh anh ra cua so game
+    virtual bool get_status() const { return status; }
 };
