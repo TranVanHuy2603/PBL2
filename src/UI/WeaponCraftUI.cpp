@@ -78,11 +78,48 @@ void WeaponCraftUI::initWeaponButtons(sf::RenderWindow &window)
 
 void WeaponCraftUI::handleEvent(sf::Event &event, Character *player, sf::RenderWindow &window)
 {
+    int weaponCount = sizeof(weaponInfos) / sizeof(WeaponInfo);
+
+    if (event.type == sf::Event::KeyPressed)
+    {
+        if (event.key.code == sf::Keyboard::V)
+        {
+            showList = !showList;
+            return;
+        }
+
+        if (showList)
+        {
+            for (int i = 0; i < weaponCount; ++i)
+            {
+                sf::Keyboard::Key keyNeeded = static_cast<sf::Keyboard::Key>(sf::Keyboard::Num1 + i);
+                if (event.key.code == keyNeeded)
+                {
+                    if (player->craft_weapon(static_cast<WeaponType>(i + 1)))
+                    {
+                        showNotificationText("Da che tao vu khi thanh cong!", sf::Color::Green);
+                        static Audio craftSound("assets/audio/collect.ogg");
+                        craftSound.setVolume(40.f);
+                        craftSound.playSound();
+                    }
+                    else
+                    {
+                        showNotificationText("Khong du tai nguyen de che tao vu khi!", sf::Color::Red);
+                        static Audio failSound("assets/audio/error.ogg");
+                        failSound.setVolume(40.f);
+                        failSound.playSound();
+                    }
+
+                    showList = false; // đóng menu sau khi mua
+                    return;
+                }
+            }
+        }
+    }
+
     if (event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Left)
     {
-        sf::Vector2f mousePos(event.mouseButton.x, event.mouseButton.y);
-
         if (cartButton.isClicked(window, event))
         {
             showList = !showList;
@@ -91,7 +128,6 @@ void WeaponCraftUI::handleEvent(sf::Event &event, Character *player, sf::RenderW
 
         if (showList)
         {
-            int weaponCount = sizeof(weaponInfos) / sizeof(WeaponInfo);
             for (int i = 0; i < weaponCount; ++i)
             {
                 RectangleButton &wb = weaponButtons[i];
@@ -104,20 +140,22 @@ void WeaponCraftUI::handleEvent(sf::Event &event, Character *player, sf::RenderW
                         craftSound.setVolume(40.f);
                         craftSound.playSound();
                     }
-
                     else
                     {
-                        static Audio notenoughmoney("assets/audio/error.ogg");
-                        notenoughmoney.setVolume(40.f);
-                        notenoughmoney.playSound();
                         showNotificationText("Khong du tai nguyen de che tao vu khi!", sf::Color::Red);
+                        static Audio failSound("assets/audio/error.ogg");
+                        failSound.setVolume(40.f);
+                        failSound.playSound();
                     }
+
+                    showList = false; 
+                    return;
                 }
-                showList = !showList;
             }
         }
     }
 }
+
 
 void WeaponCraftUI::drawRecipeText(sf::RenderWindow &window, RectangleButton &btn, Recipe &r, Bag &bag)
 {
@@ -128,7 +166,7 @@ void WeaponCraftUI::drawRecipeText(sf::RenderWindow &window, RectangleButton &bt
 
     sf::FloatRect b = btn.getBounds();
     float startX = b.left + b.width / 4 - 20.f;
-    float startY = b.top - 150.f;
+    float startY = b.top - 180.f;
 
     // vẽ từng loại nguyên liệu với màu đỏ nếu thiếu
     recipeText.setString("Go: " + std::to_string(r.wood));
@@ -136,29 +174,39 @@ void WeaponCraftUI::drawRecipeText(sf::RenderWindow &window, RectangleButton &bt
     recipeText.setPosition(startX, startY);
     window.draw(recipeText);
 
+    recipeText.setString("Cat: " + std::to_string(r.sand));
+    recipeText.setFillColor(bag.getSand() >= r.sand ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY + 20);
+    window.draw(recipeText);
+
+    recipeText.setString("Da: " + std::to_string(r.stone));
+    recipeText.setFillColor(bag.getStone() >= r.stone ? sf::Color::Green : sf::Color::Red);
+    recipeText.setPosition(startX, startY + 40);
+    window.draw(recipeText);
+
     recipeText.setString("Than: " + std::to_string(r.coal));
     recipeText.setFillColor(bag.getCoal() >= r.coal ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 20); // cách nhau 14 px
+    recipeText.setPosition(startX, startY + 60); // cách nhau 14 px
     window.draw(recipeText);
 
     recipeText.setString("Sat: " + std::to_string(r.iron));
     recipeText.setFillColor(bag.getIron() >= r.iron ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 40);
+    recipeText.setPosition(startX, startY + 80);
     window.draw(recipeText);
 
     recipeText.setString("Vang: " + std::to_string(r.gold));
     recipeText.setFillColor(bag.getGold() >= r.gold ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 60);
+    recipeText.setPosition(startX, startY + 100);
     window.draw(recipeText);
 
     recipeText.setString("KCuong: " + std::to_string(r.diamond));
     recipeText.setFillColor(bag.getDiamond() >= r.diamond ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 80);
+    recipeText.setPosition(startX, startY + 120);
     window.draw(recipeText);
 
     recipeText.setString("NgocLB: " + std::to_string(r.emerald));
     recipeText.setFillColor(bag.getEmerald() >= r.emerald ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 100);
+    recipeText.setPosition(startX, startY + 140);
     window.draw(recipeText);
 }
 
@@ -183,6 +231,8 @@ void WeaponCraftUI::render(sf::RenderWindow &window, Character *player)
             Recipe r = recipes[i + 1]; // bỏ qua BareHand, WeaponType bắt đầu từ 1
 
             bool canCraft = !(bag.getWood() < r.wood ||
+                              bag.getSand() < r.sand ||
+                              bag.getStone() < r.stone ||
                               bag.getCoal() < r.coal ||
                               bag.getIron() < r.iron ||
                               bag.getGold() < r.gold ||

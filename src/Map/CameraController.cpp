@@ -2,7 +2,7 @@
 #include <algorithm>
 
 CameraController::CameraController(const sf::Vector2f& windowSize, const sf::FloatRect& bounds)
-    : worldBounds(bounds), moveSpeed(300.f), zoomLevel(1.f)
+    : worldBounds(bounds), moveSpeed(300.f), zoomLevel(1.0f)
 {
     view.setSize(windowSize);
     view.setCenter(windowSize / 2.f); // ban đầu ở giữa cửa sổ
@@ -33,6 +33,18 @@ void CameraController::handleEvent(const sf::Event &event)
             factor = 1.f + zoomSpeed; // zoom out
 
         zoom(factor);
+    }
+
+    if (event.type == sf::Event::KeyPressed)
+    {
+        if (event.key.code == sf::Keyboard::F)
+        {
+            zoom(1.f + zoomSpeed);
+        }
+        else if (event.key.code == sf::Keyboard::G)
+        {
+            zoom(1.f - zoomSpeed);
+        }
     }
 }
 

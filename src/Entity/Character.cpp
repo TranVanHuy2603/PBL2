@@ -1,8 +1,4 @@
 #include "Character.h"
-#include "Entity.h"
-#include "Quadtree.h"
-#include "Rect.h"
-#include <SFML/Graphics.hpp>
 #include <cmath>
 
 struct WeaponInfo // thuoc tinh cua vu khi duoc che tao
@@ -16,22 +12,22 @@ struct WeaponInfo // thuoc tinh cua vu khi duoc che tao
 };
 
 WeaponInfo weaponInfos[(int)WeaponType::Count] = {
-    {"Tay",5 , 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.ogg"},          // HareHand
+    {"Tay", 5, 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.ogg"},              // HareHand
     {"Kiem go", 8, 240.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.ogg"}, // WoodenSword
-    {"Kiem sat", 15, 270.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.ogg"},   // IronSwood
-    {"Riu", 20, 190.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.ogg"},                 // Ax
-    {"Cung ten", 12, 270.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.ogg"},               // Bow
-    {"Sung", 25, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.ogg"}                // Gun
+    {"Kiem sat", 15, 270.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.ogg"},  // IronSwood
+    {"Riu", 20, 190.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.ogg"},                     // Ax
+    {"Cung ten", 12, 270.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.ogg"},              // Bow
+    {"Sung", 25, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.ogg"}                   // Gun
 };
 
-// theo thu tu la Wood, Coal, Iron, Gold, Diamond, Emerald
+// theo thu tu la Wood, stone, sand Coal, Iron, Gold, Diamond, Emerald
 Recipe recipes[(int)WeaponType::Count] = {
-    {0, 0, 0, 0, 0, 0}, // BareHand
-    {6, 4, 0, 0, 0, 0}, // WoodenSword
-    {3, 5, 6, 0, 0, 0}, // IronSwood
-    {6, 3, 7, 0, 0, 0}, // Ax
-    {6, 2, 4, 5, 0, 0}, // Bow
-    {5, 4, 4, 4, 3, 2}  // Gun
+    {0, 0, 0, 0, 0, 0, 0, 0}, // BareHand
+    {6, 4, 2, 2, 1, 0, 0, 0}, // WoodenSword
+    {3, 5, 3, 4, 6, 1, 0, 0}, // IronSwood
+    {6, 3, 5, 3, 7, 2, 1, 1}, // Ax
+    {6, 2, 3, 4, 4, 5, 3, 2}, // Bow
+    {9, 4, 5, 5, 6, 4, 6, 6}  // Gun
 };
 
 Character::Character() {}
@@ -40,11 +36,53 @@ Character::Character(int x, int y, int hp_max, int exp_max, int lives)
     : LivingEntity(x, y, hp_max), level(1), gold(0), exp(0), exp_max(exp_max), lives(lives)
 {
     type = "Character";
-    if (!upTexture.loadFromFile("assets/character/up.png") || !downTexture.loadFromFile("assets/character/down.png") ||
-        !leftTexture.loadFromFile("assets/character/left.png") || !rightTexture.loadFromFile("assets/character/right.png") ||
-        !texture.loadFromFile("assets/character/Character.png"))
-        cout << "error load character\n";
-    sprite.setTexture(upTexture);         // gan hinh anh nha vat cho sprite de ive ra cua so game
+    // Up
+    if (!up.loadFromFile("assets/character/up.png"))
+        std::cerr << "Failed to load up.png\n";
+
+    // Right
+    if (!right_cung.loadFromFile("assets/character/right_cung.png"))
+        std::cerr << "Failed to load right_cung.png\n";
+    if (!right_kiemgo.loadFromFile("assets/character/right_kiemgo.png"))
+        std::cerr << "Failed to load right_kiemgo.png\n";
+    if (!right_kiemsat.loadFromFile("assets/character/right_kiemsat.png"))
+        std::cerr << "Failed to load right_kiemsat.png\n";
+    if (!right_riu.loadFromFile("assets/character/right_riu.png"))
+        std::cerr << "Failed to load right_riu.png\n";
+    if (!right_sung.loadFromFile("assets/character/right_sung.png"))
+        std::cerr << "Failed to load right_sung.png\n";
+    if (!right_hand.loadFromFile("assets/character/right_hand.png"))
+        std::cerr << "Failed to load right_hand.png\n";
+
+    // Down
+    if (!down_cung.loadFromFile("assets/character/down_cung.png"))
+        std::cerr << "Failed to load down_cung.png\n";
+    if (!down_kiemgo.loadFromFile("assets/character/down_kiemgo.png"))
+        std::cerr << "Failed to load down_kiemgo.png\n";
+    if (!down_kiemsat.loadFromFile("assets/character/down_kiemsat.png"))
+        std::cerr << "Failed to load down_kiemsat.png\n";
+    if (!down_riu.loadFromFile("assets/character/down_riu.png"))
+        std::cerr << "Failed to load down_riu.png\n";
+    if (!down_sung.loadFromFile("assets/character/down_sung.png"))
+        std::cerr << "Failed to load down_sung.png\n";
+    if (!down_hand.loadFromFile("assets/character/down_hand.png"))
+        std::cerr << "Failed to load down_hand.png\n";
+
+    // Left
+    if (!left_cung.loadFromFile("assets/character/left_cung.png"))
+        std::cerr << "Failed to load left_cung.png\n";
+    if (!left_kiemgo.loadFromFile("assets/character/left_kiemgo.png"))
+        std::cerr << "Failed to load left_kiemgo.png\n";
+    if (!left_kiemsat.loadFromFile("assets/character/left_kiemsat.png"))
+        std::cerr << "Failed to load left_kiemsat.png\n";
+    if (!left_riu.loadFromFile("assets/character/left_riu.png"))
+        std::cerr << "Failed to load left_riu.png\n";
+    if (!left_sung.loadFromFile("assets/character/left_sung.png"))
+        std::cerr << "Failed to load left_sung.png\n";
+    if (!left_hand.loadFromFile("assets/character/left_hand.png"))
+        std::cerr << "Failed to load left_hand.png\n";
+
+    sprite.setTexture(down_hand);         // gan hinh anh nha vat cho sprite de ive ra cua so game
     sprite.setPosition(this->x, this->y); // set vi tri cua hinh anh la toa  do cua nhan vat
     sprite.setScale(0.8, 0.8);
     craft_weapon(WeaponType::BareHand);
@@ -126,7 +164,7 @@ void Character::levelUp() // tang level
         level++;
         exp = 0;
         hp_max += 50;
-        exp_max = exp_max + 100;
+        exp_max = exp_max + 120;
         hp = hp_max;
     }
 }
@@ -144,37 +182,124 @@ void Character::handleInput(double deltaTime)
 {
     sf::Vector2f move(0.f, 0.f);
     bool moving = false;
+    float speed = 140.f; // ← tốc độ nhân vật
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
     {
-        move.y -= 100.f * deltaTime;
-        sprite.setTexture(upTexture);
+        move.y -= speed * deltaTime;
+        sprite.setTexture(up);
         moving = true;
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
     {
-        move.y += 100.f * deltaTime;
-        sprite.setTexture(downTexture);
+        move.y += speed * deltaTime;
         moving = true;
+        WeaponType type = weapons[indexWeapon]->get_type();
+        switch (type)
+        {
+        case WeaponType::BareHand:
+            sprite.setTexture(down_hand);
+            break;
+        case WeaponType::WoodenSword:
+            sprite.setTexture(down_kiemgo);
+            break;
+        case WeaponType::IronSwood:
+            sprite.setTexture(down_kiemsat);
+            break;
+        case WeaponType::Ax:
+            sprite.setTexture(down_riu);
+            break;
+        case WeaponType::Bow:
+            sprite.setTexture(down_cung);
+            break;
+        case WeaponType::Gun:
+            sprite.setTexture(down_sung);
+            break;
+        }
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
     {
-        move.x -= 100.f * deltaTime;
-        sprite.setTexture(leftTexture);
+        move.x -= speed * deltaTime;
         moving = true;
+        WeaponType type = weapons[indexWeapon]->get_type();
+        switch (type)
+        {
+        case WeaponType::BareHand:
+            sprite.setTexture(left_hand);
+            break;
+        case WeaponType::WoodenSword:
+            sprite.setTexture(left_kiemgo);
+            break;
+        case WeaponType::IronSwood:
+            sprite.setTexture(left_kiemsat);
+            break;
+        case WeaponType::Ax:
+            sprite.setTexture(left_riu);
+            break;
+        case WeaponType::Bow:
+            sprite.setTexture(left_cung);
+            break;
+        case WeaponType::Gun:
+            sprite.setTexture(left_sung);
+            break;
+        }
     }
     else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
     {
-        move.x += 100.f * deltaTime;
-        sprite.setTexture(rightTexture);
+        move.x += speed * deltaTime;
         moving = true;
+        WeaponType type = weapons[indexWeapon]->get_type();
+        switch (type)
+        {
+        case WeaponType::BareHand:
+            sprite.setTexture(right_hand);
+            break;
+        case WeaponType::WoodenSword:
+            sprite.setTexture(right_kiemgo);
+            break;
+        case WeaponType::IronSwood:
+            sprite.setTexture(right_kiemsat);
+            break;
+        case WeaponType::Ax:
+            sprite.setTexture(right_riu);
+            break;
+        case WeaponType::Bow:
+            sprite.setTexture(right_cung);
+            break;
+        case WeaponType::Gun:
+            sprite.setTexture(right_sung);
+            break;
+        }
     }
 
     if (!moving)
-        sprite.setTexture(texture); // đứng yên
+    {
+        WeaponType type = weapons[indexWeapon]->get_type();
+        switch (type)
+        {
+        case WeaponType::BareHand:
+            sprite.setTexture(down_hand);
+            break;
+        case WeaponType::WoodenSword:
+            sprite.setTexture(down_kiemgo);
+            break;
+        case WeaponType::IronSwood:
+            sprite.setTexture(down_kiemsat);
+            break;
+        case WeaponType::Ax:
+            sprite.setTexture(down_riu);
+            break;
+        case WeaponType::Bow:
+            sprite.setTexture(down_cung);
+            break;
+        case WeaponType::Gun:
+            sprite.setTexture(down_sung);
+            break;
+        }
+    }
 
-    sprite.move(move);
+        sprite.move(move);
     x = sprite.getPosition().x;
     y = sprite.getPosition().y;
 }
@@ -217,12 +342,14 @@ bool Character::craft_weapon(WeaponType type)
     int index = static_cast<int>(type); // lay so nguyen tuong ung voi chi so cong thuc trong mang
     const Recipe &r = recipes[index];   // lay ra cong thuc
     // kiem tra du nguyen lieu khong
-    if (bag.getWood() < r.wood || bag.getCoal() < r.coal || bag.getIron() < r.iron || bag.getGold() < r.gold || bag.getDiamond() < r.diamond || bag.getEmerald() < r.emerald)
+    if (bag.getWood() < r.wood || bag.getSand() < r.sand || bag.getStone() < r.stone || bag.getCoal() < r.coal || bag.getIron() < r.iron || bag.getGold() < r.gold || bag.getDiamond() < r.diamond || bag.getEmerald() < r.emerald)
     {
         return false;
     }
     // tru nguyen lieu
     bag.decr_Wood(r.wood);
+    bag.decr_Sand(r.sand);
+    bag.decr_Stone(r.stone);
     bag.decr_Coal(r.coal);
     bag.decr_Iron(r.iron);
     bag.decr_Gold(r.gold);

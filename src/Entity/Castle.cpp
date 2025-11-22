@@ -41,6 +41,15 @@ Castle::Castle(int x, int y, int hp_max, int cost)
     // vi tri co dinh cua thanh mau tren man hinh
     hpBarBack.setPosition(x - 100.f, y - bounds.height - 10.f);
     hpBar.setPosition(x - 100.f, y - bounds.height - 10.f);
+
+    if (!font.loadFromFile("assets/font/font1.ttf"))
+        std::cout << "Loi tai font\n";
+
+    levelText.setFont(font);
+    levelText.setFillColor(sf::Color::White);
+    levelText.setCharacterSize(65);
+
+    healTimer = 0.f;
 }
 
 int Castle::get_level() const { return level; }
@@ -73,22 +82,33 @@ void Castle::level_up()
     {
         level++;
         cost += 50 * level;
-        hp += 50;
+        hp_max += 400 * level;
+        hp = hp_max;
         set_texture(castleTextures[level - 1]);
     }
 }
 
 void Castle::update(float deltatime)
 {
+    healTimer += deltatime;
+    if (healTimer >= 1.f) // mỗi 1 giây
+    {
+        hp += 2; // hồi 5 HP
+        if (hp > hp_max) hp = hp_max; // không vượt quá max
+        healTimer = 0.f;
+    }
     // Tính phần trăm HP
     float hpPercent = static_cast<float>(hp) / get_hp_max();
     float hpWidth = 350.f; // chiều rộng thanh HP
     hpBar.setSize(sf::Vector2f(hpWidth * hpPercent, 10.f));
 
     // đổi màu theo HP
-    if (hpPercent > 0.5f) hpBar.setFillColor(sf::Color::Green);
-    else if (hpPercent > 0.25f) hpBar.setFillColor(sf::Color::Yellow);
-    else hpBar.setFillColor(sf::Color::Red);
+    if (hpPercent > 0.5f)
+        hpBar.setFillColor(sf::Color::Green);
+    else if (hpPercent > 0.25f)
+        hpBar.setFillColor(sf::Color::Yellow);
+    else
+        hpBar.setFillColor(sf::Color::Red);
 
     // Vị trí lâu đài
     sf::Vector2f castlePos = sprite.getPosition();
@@ -97,6 +117,11 @@ void Castle::update(float deltatime)
     // **Cập nhật vị trí HP bar trên đỉnh lâu đài, căn giữa**
     hpBarBack.setPosition(castlePos.x - hpWidth / 2.f, castlePos.y - scaledHeight);
     hpBar.setPosition(castlePos.x - hpWidth / 2.f, castlePos.y - scaledHeight);
+
+    levelText.setString("Lv " + std::to_string(level) + "  HP: " + std::to_string(hp) + "/" + std::to_string(hp_max));
+    levelText.setPosition(
+        hpBarBack.getPosition().x - 60.f,
+        hpBarBack.getPosition().y - 5.f);
 }
 
 void Castle::render(sf::RenderWindow &window)
@@ -105,4 +130,5 @@ void Castle::render(sf::RenderWindow &window)
     window.draw(sprite);
     window.draw(hpBarBack);
     window.draw(hpBar);
+    window.draw(levelText);
 }

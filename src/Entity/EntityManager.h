@@ -3,8 +3,6 @@
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
 #include "Character.h"
-#include "Castle.h"
-#include "Quadtree.h"
 #include "Map.h"
 
 class EntityManager {

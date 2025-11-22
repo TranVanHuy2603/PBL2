@@ -118,11 +118,11 @@ void Quest::addTarget(int index, Character& player)
 void Quest::handleEvent(sf::Event &event, sf::RenderWindow &window)
 {
     // Mở / đóng bảng nhiệm vụ
-    if (questButton.isClicked(window, event))
+    if (questButton.isClicked(window, event) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::N))
         showMenu = !showMenu;
 
     // Đóng menu nếu nút exit được click
-    if (showMenu && exitButton.isClicked(window, event))
+    if (showMenu && exitButton.isClicked(window, event) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace))
         showMenu = false;
 }
 

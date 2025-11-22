@@ -36,7 +36,8 @@ EntityManager::~EntityManager()
 {
     for (auto *e : entities)
     {
-        delete e;
+        if (e != player && e != castle) // không xóa player và castle
+            delete e;
     }
     entities.clear();
 }
@@ -65,7 +66,6 @@ Vector<Entity *> &EntityManager::getEntities()
 
 Quadtree &EntityManager::getQuadtree()
 {
-    cout << "Tra ve quadtree de thuc hien query tan cong\n";
     return qt;
 }
 
@@ -131,7 +131,7 @@ void EntityManager::create_monster(int n, int hp, int damage, int damagerange)
                 }
             }
         }
-        Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, hp, damage, damagerange, 0.6, 10, 20);
+        Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, hp, damage, damagerange, 0.4, 10, 20);
         add(m);
     }
 }

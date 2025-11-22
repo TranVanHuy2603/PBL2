@@ -1,12 +1,10 @@
 #pragma once
-#include "LivingEntity.h"
 #include "GBFS.h"
 #include "Castle.h"
 #include "Audio.h"
 #include "Character.h"
 #include <sstream>
 #include <iostream>
-#include <SFML/Graphics.hpp>
 #include <random>
 
 using namespace std;

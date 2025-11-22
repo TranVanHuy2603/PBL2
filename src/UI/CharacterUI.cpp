@@ -8,34 +8,42 @@ CharacterUI::CharacterUI()
     if (!font.loadFromFile("assets/font/font2.ttf"))
         std::cerr << "Error loading font" << std::endl;
 
-    // Góc trái: thông tin tài nguyên
-    infoText.setFont(font);
-    infoText.setCharacterSize(18);
-    infoText.setFillColor(sf::Color::Red);
-    infoText.setOutlineColor(sf::Color::Black);
-    infoText.setOutlineThickness(1.f);
-    infoText.setPosition(10.f, 10.f);
+    // Tải icon nguyên liệu
+    std::string resourceFiles[8] = {
+        "assets/resource/wood.png",
+        "assets/resource/stone.png",
+        "assets/resource/sand.png",
+        "assets/resource/coal.png",
+        "assets/resource/iron.png",
+        "assets/resource/gold.png",
+        "assets/resource/diamond.png",
+        "assets/resource/emerald.png"
+    };
 
-    // Góc phải: Coin, EXP, Level
+    for (int i = 0; i < 8; i++)
+    {
+        if (!resourceTextures[i].loadFromFile(resourceFiles[i]))
+            std::cerr << "Error loading " << resourceFiles[i] << std::endl;
+        resourceIcons[i].setTexture(resourceTextures[i]);
+        resourceIcons[i].setScale(30.f / resourceTextures[i].getSize().x, 30.f / resourceTextures[i].getSize().y);
+    }
+
+    // Level + Coin + EXP
     topRightText.setFont(font);
     topRightText.setCharacterSize(18);
     topRightText.setFillColor(sf::Color::Red);
     topRightText.setOutlineColor(sf::Color::Black);
     topRightText.setOutlineThickness(1.f);
 
-    // Nền thanh HP
+    // Thanh HP
     hpBack.setSize(sf::Vector2f(400.f, 20.f));
     hpBack.setFillColor(sf::Color(50, 50, 50));
     hpBack.setOutlineThickness(2.f);
     hpBack.setOutlineColor(sf::Color::Black);
 
-    // Thanh HP còn
     hpBar.setFillColor(sf::Color::Green);
-
-    // Thanh HP đã mất
     hpLostBar.setFillColor(sf::Color(200, 200, 200));
 
-    // Chữ HP
     hpText.setFont(font);
     hpText.setCharacterSize(18);
     hpText.setFillColor(sf::Color::Black);
@@ -45,99 +53,122 @@ CharacterUI::CharacterUI()
     hp.setCharacterSize(18);
     hp.setFillColor(sf::Color::Black);
 
-    livesTexture.loadFromFile("assets/icon/lives.png");
+    // Lives
+    if (!livesTexture.loadFromFile("assets/icon/lives.png"))
+        std::cerr << "Error loading lives icon" << std::endl;
     livesIcon.setTexture(livesTexture);
-    livesIcon.setScale(0.065, 0.065);
+    livesIcon.setScale(0.065f, 0.065f);
 }
 
-void CharacterUI::update(const Character *player, const sf::RenderTarget &target)
+void CharacterUI::update(const Character* player, const sf::RenderTarget& target)
 {
-    // ==== Góc trái: tài nguyên ====
-    std::stringstream ss;
-    ss << "Go: " << player->get_bag().getWood()
-       << "    Da: " << player->get_bag().getStone()
-       << "    Cat: " << player->get_bag().getSand()
-       << "    Than: " << player->get_bag().getCoal()
-       << "    Sat: " << player->get_bag().getIron()
-       << "    Vang: " << player->get_bag().getGold()
-       << "    KCuong: " << player->get_bag().getDiamond()
-       << "    NgocLB: " << player->get_bag().getEmerald();
-    infoText.setString(ss.str());
-
-    // ==== Góc phải: Coin + EXP + Level ====
-    std::stringstream topSS;
-    topSS << "Level " << player->get_level()
-          << "\n\nCoin  " << player->get_gold()
-          << "\n\nEXP   " << player->get_exp() << " / " << player->get_exp_max();
-    topRightText.setString(topSS.str());
-
-    // Căn phải
     sf::Vector2u winSize = target.getSize();
-    sf::FloatRect bounds = topRightText.getLocalBounds();
-    topRightText.setPosition(winSize.x - bounds.width - 20.f, 10.f);
 
-    // === Thanh HP ===
+    // ==== Thanh nguyên liệu (xám) ở góc trên trái ====
+    float startX = 0.f, startY = 0.f;
+    float barHeight = 45.f;
+    float barWidth = winSize.x - 2 * startX;
+
+    resourceBar.setSize(sf::Vector2f(barWidth, barHeight));
+    resourceBar.setFillColor(sf::Color(80, 80, 80, 220));
+    resourceBar.setPosition(startX, startY);
+
+    // Cập nhật số lượng nguyên liệu
+    resourceAmounts[0] = player->get_bag().getWood();
+    resourceAmounts[1] = player->get_bag().getStone();
+    resourceAmounts[2] = player->get_bag().getSand();
+    resourceAmounts[3] = player->get_bag().getCoal();
+    resourceAmounts[4] = player->get_bag().getIron();
+    resourceAmounts[5] = player->get_bag().getGold();
+    resourceAmounts[6] = player->get_bag().getDiamond();
+    resourceAmounts[7] = player->get_bag().getEmerald();
+
+    // Icon và số lượng sát cạnh trên thanh
+    float iconSize = 30.f;
+    float spacing = 50.f; // sát nhau
+    for (int i = 0; i < 8; i++)
+    {
+        resourceIcons[i].setScale(iconSize / resourceTextures[i].getSize().x,
+                                  iconSize / resourceTextures[i].getSize().y);
+        resourceIcons[i].setPosition(startX + 5.f + i * (iconSize + spacing), startY + 5.f);
+    }
+
+    // ==== Level / Coin / EXP (trên cùng bên phải) ====
+    std::stringstream ss;
+    ss << "Level: " << player->get_level()
+       << "    Coin: " << player->get_gold()
+       << "    EXP: " << player->get_exp() << " / " << player->get_exp_max();
+    topRightText.setString(ss.str());
+    topRightText.setCharacterSize(17);
+    sf::FloatRect textBounds = topRightText.getLocalBounds();
+    topRightText.setPosition(winSize.x - textBounds.width - 15.f, 15.f); // căn góc trên phải
+
+    // ==== Thanh HP ở giữa phía dưới ====
     float hpPercent = static_cast<float>(player->get_hp()) / player->get_hp_max();
-    float barWidth = 400.f, barHeight = 20.f;
+    float hpBarWidth = 400.f, hpBarHeight = 25.f;
+    hpBack.setSize(sf::Vector2f(hpBarWidth, hpBarHeight));
+    hpBack.setPosition((winSize.x - hpBarWidth) / 2.f, winSize.y - hpBarHeight - 80.f);
 
-    // Căn giữa dưới
-    hpBack.setPosition((winSize.x - barWidth) / 2.f, winSize.y - barHeight - 80.f);
-
-    // HP còn
-    hpBar.setSize(sf::Vector2f(barWidth * hpPercent, barHeight));
+    hpBar.setSize(sf::Vector2f(hpBarWidth * hpPercent, hpBarHeight));
     hpBar.setPosition(hpBack.getPosition());
 
-    // Đổi màu theo HP
-    if (hpPercent > 0.5f)
-        hpBar.setFillColor(sf::Color::Green);
-    else if (hpPercent > 0.25f)
-        hpBar.setFillColor(sf::Color::Yellow);
-    else
-        hpBar.setFillColor(sf::Color::Red);
-
-    // HP đã mất
-    hpLostBar.setSize(sf::Vector2f(barWidth * (1.f - hpPercent), barHeight));
+    hpLostBar.setSize(sf::Vector2f(hpBarWidth * (1.f - hpPercent), hpBarHeight));
     hpLostBar.setPosition(hpBack.getPosition().x + hpBar.getSize().x, hpBack.getPosition().y);
 
-    // Chữ HP
+    if (hpPercent > 0.5f) hpBar.setFillColor(sf::Color::Green);
+    else if (hpPercent > 0.25f) hpBar.setFillColor(sf::Color::Yellow);
+    else hpBar.setFillColor(sf::Color::Red);
+
+    // HP text
     std::stringstream hpSS;
     hpSS << player->get_hp() << " / " << player->get_hp_max();
     hpText.setString(hpSS.str());
-    sf::FloatRect textBounds = hpText.getLocalBounds();
+    textBounds = hpText.getLocalBounds();
     hpText.setOrigin(textBounds.left + textBounds.width / 2.f,
                      textBounds.top + textBounds.height / 2.f);
-    hpText.setPosition(
-        hpBack.getPosition().x + barWidth / 2.f,
-        hpBack.getPosition().y + barHeight / 2.f - 1.f);
+    hpText.setPosition(hpBack.getPosition().x + hpBarWidth / 2.f,
+                       hpBack.getPosition().y + hpBarHeight / 2.f);
 
-    sf::Vector2f hpPos = hpBack.getPosition();
-    // Căn giữa theo chiều cao thanh
-    hp.setPosition(hpPos.x - 40.f, hpPos.y - barHeight + 20);
+    hp.setPosition(hpBack.getPosition().x - 40.f, hpBack.getPosition().y + 0.f);
 }
 
-void CharacterUI::render(sf::RenderTarget &target, Character *player)
+
+
+void CharacterUI::render(sf::RenderTarget& target, Character* player)
 {
-    target.draw(infoText);     // Góc trái
-    target.draw(topRightText); // Góc phải
+    // ==== Thanh nguyên liệu + icon + số lượng ====
+    target.draw(resourceBar);
+    for (int i = 0; i < 8; i++)
+    {
+        target.draw(resourceIcons[i]);
+        sf::Text amountText;
+        amountText.setFont(font);
+        amountText.setCharacterSize(16);
+        amountText.setFillColor(sf::Color::White);
+        amountText.setString(std::to_string(resourceAmounts[i]));
+        amountText.setPosition(resourceIcons[i].getPosition().x + 5.f, resourceIcons[i].getPosition().y + 20.f);
+        target.draw(amountText);
+    }
+
+    // ==== Level + Coin + EXP ====
+    target.draw(topRightText);
+
+    // ==== Thanh HP ====
     target.draw(hpBack);
     target.draw(hpLostBar);
     target.draw(hpBar);
     target.draw(hpText);
     target.draw(hp);
 
-    sf::Vector2f hpPos = hpBack.getPosition(); // Góc trái thanh HP
+    // ==== Lives ====
+    sf::Vector2f hpPos = hpBack.getPosition();
     float barWidth = hpBack.getSize().x;
-    float barHeight = hpBack.getSize().y;
-
-    float iconSpacing = 30.f; 
-    float iconSize = 0.05f;  
-
-    float startX = hpPos.x + barWidth + 30.f;
-    float startY = hpBack.getPosition().y + (hpBack.getSize().y - 30) / 2.f;
+    float iconSpacing = 30.f;
 
     for (int i = 0; i < player->get_lives(); i++)
     {
-        livesIcon.setPosition(startX + i * (livesIcon.getGlobalBounds().width * iconSize + iconSpacing), startY);
+        livesIcon.setPosition(hpPos.x + barWidth + 30.f + i * (livesIcon.getGlobalBounds().width * 0.065 + iconSpacing),
+                              hpPos.y + (hpBack.getSize().y - 30) / 2.f);
         target.draw(livesIcon);
     }
 }

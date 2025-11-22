@@ -1,5 +1,4 @@
 #include "LivingEntity.h"
-#include "Entity.h"
 
 LivingEntity::LivingEntity() {}
 

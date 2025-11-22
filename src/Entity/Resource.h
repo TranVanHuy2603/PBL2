@@ -1,7 +1,6 @@
 #pragma once
 #include "Entity.h"
 #include "Audio.h"
-#include <SFML/Graphics.hpp>
 #include <string>
 
 using namespace std;

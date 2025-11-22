@@ -9,6 +9,10 @@ WeaponSelectUI::WeaponSelectUI(sf::RenderWindow &window, Character *player)
     this->player = player;
     showNotification = false;
 
+    // Chọn vũ khí đầu tiên mặc định
+    if(player && player->get_weapons().get_size() > 0 && player->get_indexWeapon() < 0)
+        player->switch_weapon(0);
+
     initButtons(window);
 }
 
@@ -31,30 +35,27 @@ void WeaponSelectUI::initButtons(sf::RenderWindow &window)
             buttonWidth, buttonHeight,
             &font,
             weapons[i]->get_name(),
-            sf::Color(100,100,100),
-            sf::Color(150,150,150),
-            sf::Color(160,160,160),
+            sf::Color(100, 100, 100),  // normal
+            sf::Color(150, 150, 150),  // hover
+            sf::Color::Yellow,          // selected
             12
         );
-        cout << "Tao button moi cho sung\n";
-        // ==== CĂN GIỮA ICON TRONG NÚT ====
-        sf::FloatRect btnBounds  = btn.getBounds();
 
-        // Set text dưới icon
+        // Text dưới icon
+        sf::FloatRect btnBounds = btn.getBounds();
         btn.setTextPosition(
             btnBounds.left + btnBounds.width / 2.f,
-            btnBounds.top  + btnBounds.height - 15.f
+            btnBounds.top + btnBounds.height - 15.f
         );
+        btn.setTextColor(sf::Color::Green);
 
         buttons.push_back(btn);
     }
 }
 
-
 void WeaponSelectUI::handleEvent(sf::Event &event, sf::RenderWindow &window)
 {
-    if (!player)
-        return;
+    if (!player) return;
 
     if (event.type == sf::Event::MouseButtonPressed &&
         event.mouseButton.button == sf::Mouse::Left)
@@ -66,45 +67,67 @@ void WeaponSelectUI::handleEvent(sf::Event &event, sf::RenderWindow &window)
                 player->switch_weapon((int)i); // đổi vũ khí
                 showNotificationText("Da chon vu khi", sf::Color::Green);
 
-                // đổi màu nút ngay lập tức
-                for (size_t j = 0; j < buttons.size(); ++j)
-                    buttons[j].setFillColor(j == i ? sf::Color(200, 200, 0) : sf::Color(100, 100, 100));
-
                 static Audio selectSound("assets/audio/select.ogg");
                 selectSound.setVolume(40.f);
                 selectSound.playSound();
             }
         }
     }
+
+    if (event.type == sf::Event::KeyPressed &&
+        event.key.code == sf::Keyboard::C)
+    {
+        auto &weapons = player->get_weapons();
+        int index = player->get_indexWeapon();
+        index++;
+        if (index >= weapons.get_size()) index = 0;
+        player->switch_weapon(index);
+
+        char msg[128];
+        sprintf(msg, "Da doi vu khi thanh %s", weapons[index]->get_name().c_str());
+        showNotificationText(msg, sf::Color::Green);
+
+        static Audio selectSound("assets/audio/select.ogg");
+        selectSound.setVolume(40.f);
+        selectSound.playSound();
+    }
 }
 
-// Cập nhật nút nếu số lượng vũ khí thay đổi
+// Cập nhật nếu số lượng vũ khí thay đổi
 void WeaponSelectUI::update(sf::RenderWindow &window)
 {
-    if (!player)
-        return;
+    if (!player) return;
 
     auto &weapons = player->get_weapons();
-
-    // Nếu số lượng vũ khí thay đổi, tạo lại nút
     if (weapons.get_size() != buttons.size())
         initButtons(window);
-}
 
-// Render
-void WeaponSelectUI::render(sf::RenderWindow &window)
-{
-    auto &weapons = player->get_weapons();
-    int index = player->get_indexWeapon();
-    for (int i = 0; i < weapons.get_size(); ++i)
-    {
-        if (i == index) buttons[i].setFillColor(sf::Color::Green);
-        buttons[i].setIcon(weapons[i]->get_path());
-        buttons[i].setIconScale(0.25f, 0.25f);
-    }
+    // Cập nhật hover màu nút (nhưng không ghi đè nút được chọn)
     for (size_t i = 0; i < buttons.size(); ++i)
     {
-        buttons[i].update(window);
+        // Chỉ hover nếu không phải nút được chọn
+        if ((int)i != player->get_indexWeapon())
+            buttons[i].update(window);
+    }
+}
+
+void WeaponSelectUI::render(sf::RenderWindow &window)
+{
+    int index = player->get_indexWeapon();
+    auto &weapons = player->get_weapons();
+
+    for (size_t i = 0; i < buttons.size(); ++i)
+    {
+        // Đặt màu nút: vàng nếu chọn, bình thường nếu không
+        if ((int)i == index)
+            buttons[i].setFillColor(sf::Color::Yellow);
+        else
+            buttons[i].setFillColor(sf::Color(100, 100, 100));
+
+        // Icon
+        buttons[i].setIcon(weapons[i]->get_path());
+        buttons[i].setIconScale(0.25f, 0.25f);
+
         buttons[i].render(window);
     }
 
@@ -121,7 +144,8 @@ void WeaponSelectUI::render(sf::RenderWindow &window)
             notificationText.setStyle(sf::Text::Bold);
             notificationText.setPosition(
                 (size.x - bounds.width) / 2.f,
-                (size.y - bounds.height) / 2.f);
+                (size.y - bounds.height) / 2.f - 200.f
+            );
             window.draw(notificationText);
         }
         else

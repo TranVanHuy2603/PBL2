@@ -44,38 +44,54 @@ UpgradeCastleUI::UpgradeCastleUI()
 void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *castle, sf::RenderWindow &window)
 {
     // Bấm nút mở menu
-    if (houseButton.isClicked(window, event))
+    if (houseButton.isClicked(window, event) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::B))
         showMenu = !showMenu;
 
     if (!showMenu)
         return;
 
     // --- Nút Upgrade ---
-    if (upgradeButton.isClicked(window, event))
+    if (upgradeButton.isClicked(window, event) 
+        || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
+        || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::LAlt))
     {
         int cost = castle->get_cost();
 
-        if (player->get_gold() >= cost)
+        if (castle->get_level() < 5)
         {
-            static Audio upgradeSound("assets/audio/collect.ogg");
-            upgradeSound.playSound();
-            player->decr_gold(cost);
-            castle->level_up();
-            showNotificationText("Da nang cap nha thanh cong", sf::Color::Green);
+            if (player->get_gold() >= cost)
+            {
+                // Nâng cấp thành công
+                static Audio upgradeSound("assets/audio/collect.ogg");
+                upgradeSound.playSound();
+                player->decr_gold(cost);
+                castle->level_up();
+                showNotificationText("Da nang cap nha thanh cong", sf::Color::Green);
+            }
+            else
+            {
+                // Không đủ vàng
+                static Audio failSound("assets/audio/error.ogg");
+                failSound.playSound();
+                showNotificationText("Khong du vang de nang cap nha", sf::Color::Red);
+            }
         }
         else
         {
+            // Đã đạt level tối đa
             static Audio failSound("assets/audio/error.ogg");
             failSound.playSound();
-            showNotificationText("Khong du vang de nang cap nha", sf::Color::Red);
+            showNotificationText("Nha thanh da dat cap toi da", sf::Color::Yellow);
         }
-        showMenu = !showMenu;
-    }
 
+        // Dù nâng cấp thành công hay thất bại, menu tắt sau click
+        showMenu = false;
+    }
     // --- Nút Cancel ---
-    if (cancelButton.isClicked(window, event))
+    if (cancelButton.isClicked(window, event) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::BackSpace))
         showMenu = false;
 }
+
 void UpgradeCastleUI::render(sf::RenderWindow &window, Castle *castle)
 {
     // Vẽ nút mở menu

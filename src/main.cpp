@@ -38,7 +38,7 @@ int main()
     sf::Text levelMessage;
     levelMessage.setFont(font);
     levelMessage.setCharacterSize(40);
-    levelMessage.setFillColor(sf::Color::Blue);
+    levelMessage.setFillColor(sf::Color::Green);
     levelMessage.setStyle(sf::Text::Bold);
     levelMessage.setPosition(1920 / 4.f - 300, 100); // căn giữa màn hình
 
@@ -54,11 +54,11 @@ int main()
     winaudio.setVolume(60.f);
 
     // ===== Window =====
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "PBL2 24.NH15B");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "FOTRESS OF SURVIVAL");
     window.setFramerateLimit(60);
 
     // ===== UI =====
-    Menu menu(window.getSize().x, window.getSize().y, "PBL2 GAME", "Bat dau", "Thoat"),
+    Menu menu(window.getSize().x, window.getSize().y, "FOTRESS OF SURVIVAL", "Bat dau", "Thoat"),
         over(window.getSize().x, window.getSize().y, "GAME OVER", "Choi lai", "Thoat"),
         win(window.getSize().x, window.getSize().y, "YOU WIN", "Choi lai", "Thoat");
 
@@ -88,8 +88,8 @@ int main()
     manager.set_castle(castle);
     manager.add(castle);
 
-    manager.create_monster(60, 50, 5, 80);
-    manager.create_resource(300);
+    manager.create_monster(60, 50, 10, 80);
+    manager.create_resource(200);
     map.setGrid(manager.getEntities(), grid, cellSize);
 
     // ===== Game state =====
@@ -146,7 +146,7 @@ int main()
             }
             case GameState::Playing:
             {
-                if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter ||
+                if (event.type == sf::Event::KeyPressed && (event.key.code == sf::Keyboard::Space ) ||
                     event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
                     player->attack(manager.getQuadtree(), task);
 
@@ -202,34 +202,45 @@ int main()
             manager.update(dt, grid, cellSize, map, manager);
 
             static int resetDone = 0;
-            if (resetDone == 0 && (castle->get_level() >= 2 || player->get_level() >= 4))
+            if (resetDone == 0 && (player->get_level() >= 3))
             {
-                levelMessage.setString("Level reached! Resources & Monsters reset!");
+                levelMessage.setString("Level moi! Tai nguyen & Quai vat da reset!");
                 messageClock.restart();
                 showMessage = true;
-                resetResourcesAndMonsters(manager, map, grid, cellSize, 60, 8, 85);
+                resetResourcesAndMonsters(manager, map, grid, cellSize, 70, 15, 100);
                 resetDone++;
             }
-            else if (resetDone == 1 && (castle->get_level() >= 3 || player->get_level() >= 6))
+            else if (resetDone == 1 && (player->get_level() >= 5))
             {
-                levelMessage.setString("Level reached! Resources & Monsters reset!");
+                levelMessage.setString("Level moi! Tai nguyen & Quai vat da reset!");
                 messageClock.restart();
                 showMessage = true;
-                resetResourcesAndMonsters(manager, map, grid, cellSize, 70, 10, 90);
+                resetResourcesAndMonsters(manager, map, grid, cellSize, 70, 20, 150);
                 resetDone++;
             }
-            else if (resetDone == 2 && (castle->get_level() >= 4 || player->get_level() >= 8))
+            else if (resetDone == 2 && (player->get_level() >= 7))
             {
-                levelMessage.setString("Level reached! Resources & Monsters reset!");
+                levelMessage.setString("Level moi! Tai nguyen & Quai vat da reset!");
                 messageClock.restart();
                 showMessage = true;
-                resetResourcesAndMonsters(manager, map, grid, cellSize, 80, 12, 95);
+                resetResourcesAndMonsters(manager, map, grid, cellSize, 80, 25, 250);
+                resetDone++;
+            }
+
+            else if (resetDone == 3 && (player->get_level() >= 9))
+            {
+                levelMessage.setString("Level moi! Tai nguyen & Quai vat da reset!");
+                messageClock.restart();
+                showMessage = true;
+                resetResourcesAndMonsters(manager, map, grid, cellSize, 80, 30, 350);
                 resetDone++;
             }
 
             // Check game over
             if (!player->get_status() || !castle->get_status())
             {
+                if (!castle->get_status()) cout << "Nha bi danh bai\n";
+                else cout << "Nguoi choi bi danh bai\n";
                 state = GameState::GameOver;
                 playMusicForState(state);
                 break;
@@ -263,7 +274,7 @@ int main()
             if (showMessage)
             {
                 window.draw(levelMessage);
-                if (messageClock.getElapsedTime().asSeconds() > 3.f)
+                if (messageClock.getElapsedTime().asSeconds() > 5.f)
                     showMessage = false;
             }
             break;
@@ -296,7 +307,7 @@ void resetGame(EntityManager &manager, Character *&player, Castle *&castle, Map 
     manager.set_castle(castle);
     manager.add(castle);
 
-    manager.create_monster(100, 50, 5, 80);
+    manager.create_monster(100, 50, 10, 80);
     manager.create_resource(300);
 
     map.setGrid(manager.getEntities(), grid, cellSize);
@@ -314,6 +325,6 @@ void resetResourcesAndMonsters(EntityManager &manager, Map &map,
     }
 
     manager.create_monster(60, hp, damage, damagerange);
-    manager.create_resource(300);
+    manager.create_resource(150);
     map.setGrid(manager.getEntities(), grid, cellSize);
 }

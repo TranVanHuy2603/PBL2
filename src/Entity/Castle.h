@@ -10,9 +10,13 @@ private:
     int level;
     int cost;
     sf::Texture texture;
+    sf::Font font;
+    sf::Text levelText;
 
     sf::RectangleShape hpBarBack; 
     sf::RectangleShape hpBar;
+
+    float healTimer;
 
 public:
     Castle();
