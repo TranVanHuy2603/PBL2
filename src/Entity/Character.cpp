@@ -16,12 +16,12 @@ struct WeaponInfo // thuoc tinh cua vu khi duoc che tao
 };
 
 WeaponInfo weaponInfos[(int)WeaponType::Count] = {
-    {"Tay",5 , 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.mp3"},          // HareHand
-    {"Kiem go", 8, 240.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.mp3"}, // WoodenSword
-    {"Kiem sat", 15, 270.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.mp3"},   // IronSwood
-    {"Riu", 20, 190.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.mp3"},                 // Ax
-    {"Cung ten", 12, 270.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.mp3"},               // Bow
-    {"Sung", 25, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.mp3"}                // Gun
+    {"Tay",5 , 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.ogg"},          // HareHand
+    {"Kiem go", 8, 240.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.ogg"}, // WoodenSword
+    {"Kiem sat", 15, 270.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.ogg"},   // IronSwood
+    {"Riu", 20, 190.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.ogg"},                 // Ax
+    {"Cung ten", 12, 270.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.ogg"},               // Bow
+    {"Sung", 25, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.ogg"}                // Gun
 };
 
 // theo thu tu la Wood, Coal, Iron, Gold, Diamond, Emerald
@@ -126,7 +126,7 @@ void Character::levelUp() // tang level
         level++;
         exp = 0;
         hp_max += 50;
-        exp_max += 50;
+        exp_max = exp_max + 100;
         hp = hp_max;
     }
 }
@@ -207,6 +207,13 @@ void Character::switch_weapon(int index) // doi vu khi
 
 bool Character::craft_weapon(WeaponType type)
 {
+    for (int i = 0; i < weapons.get_size(); i++)
+    {
+        if (type == weapons[i]->get_type())
+        {
+            return true;
+        }
+    }
     int index = static_cast<int>(type); // lay so nguyen tuong ung voi chi so cong thuc trong mang
     const Recipe &r = recipes[index];   // lay ra cong thuc
     // kiem tra du nguyen lieu khong
@@ -243,7 +250,7 @@ void Character::take_damage(int value)
             lives--;
             hp = hp_max;
             cout << "Tru mot mang\n";
-            static Audio diesound("assets/audio/die.mp3");
+            static Audio diesound("assets/audio/die.ogg");
             diesound.setVolume(30);
             diesound.playSound();
         }

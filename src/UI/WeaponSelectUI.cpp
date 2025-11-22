@@ -36,6 +36,7 @@ void WeaponSelectUI::initButtons(sf::RenderWindow &window)
             sf::Color(160,160,160),
             12
         );
+        cout << "Tao button moi cho sung\n";
         // ==== CĂN GIỮA ICON TRONG NÚT ====
         sf::FloatRect btnBounds  = btn.getBounds();
 
@@ -69,7 +70,7 @@ void WeaponSelectUI::handleEvent(sf::Event &event, sf::RenderWindow &window)
                 for (size_t j = 0; j < buttons.size(); ++j)
                     buttons[j].setFillColor(j == i ? sf::Color(200, 200, 0) : sf::Color(100, 100, 100));
 
-                static Audio selectSound("assets/audio/select.mp3");
+                static Audio selectSound("assets/audio/select.ogg");
                 selectSound.setVolume(40.f);
                 selectSound.playSound();
             }
@@ -88,21 +89,16 @@ void WeaponSelectUI::update(sf::RenderWindow &window)
     // Nếu số lượng vũ khí thay đổi, tạo lại nút
     if (weapons.get_size() != buttons.size())
         initButtons(window);
-
-    // highlight nút hiện tại
-    int current = player->get_indexWeapon();
-    for (size_t i = 0; i < buttons.size(); ++i)
-    {
-        buttons[i].setFillColor(i == current ? sf::Color(200, 200, 0) : sf::Color(100, 100, 100));
-    }
 }
 
 // Render
 void WeaponSelectUI::render(sf::RenderWindow &window)
 {
     auto &weapons = player->get_weapons();
+    int index = player->get_indexWeapon();
     for (int i = 0; i < weapons.get_size(); ++i)
     {
+        if (i == index) buttons[i].setFillColor(sf::Color::Green);
         buttons[i].setIcon(weapons[i]->get_path());
         buttons[i].setIconScale(0.25f, 0.25f);
     }

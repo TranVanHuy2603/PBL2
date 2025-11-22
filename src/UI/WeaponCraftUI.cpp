@@ -5,14 +5,14 @@
 static const WeaponInfo weaponInfos[] = {
     {"Wooden Sword", "assets/weapon/woodensword.png"},
     {"Iron Sword", "assets/weapon/ironsword.png"},
-    {"Axe", "assets/weapon/axe.png"},
+    {"Axe", "assets/weapon/ax.png"},
     {"Bow", "assets/weapon/bow.png"},
     {"Gun", "assets/weapon/gun.png"},
 };
 
 WeaponCraftUI::WeaponCraftUI(sf::RenderWindow &window) : showList(false)
 {
-    if (!font.loadFromFile("assets/font/font2.ttf"))
+    if (!font.loadFromFile("assets/font/font1.ttf"))
         std::cerr << "Loi tai font!\n";
 
     cartButton = CircleButton(35.f);
@@ -23,7 +23,7 @@ WeaponCraftUI::WeaponCraftUI(sf::RenderWindow &window) : showList(false)
     cartButton.setTexture("assets/icon/cart.png");
 
     craftTitleText.setFont(font);
-    craftTitleText.setCharacterSize(35);
+    craftTitleText.setCharacterSize(100);
     craftTitleText.setStyle(sf::Text::Bold);
     craftTitleText.setString("CHE TAO VU KHI");
     craftTitleText.setFillColor(sf::Color::White);
@@ -60,7 +60,7 @@ void WeaponCraftUI::initWeaponButtons(sf::RenderWindow &window)
             sf::Color(100, 100, 100),
             sf::Color(150, 150, 150),
             sf::Color(160, 160, 160),
-            12);
+            30);
 
         // Icon
         btn.setIcon(weaponInfos[i].iconPath.c_str());
@@ -100,14 +100,14 @@ void WeaponCraftUI::handleEvent(sf::Event &event, Character *player, sf::RenderW
                     if (player->craft_weapon(static_cast<WeaponType>(i + 1)))
                     {
                         showNotificationText("Da che tao vu khi thanh cong!", sf::Color::Green);
-                        static Audio craftSound("assets/audio/collect.mp3");
+                        static Audio craftSound("assets/audio/collect.ogg");
                         craftSound.setVolume(40.f);
                         craftSound.playSound();
                     }
 
                     else
                     {
-                        static Audio notenoughmoney("assets/audio/error.mp3");
+                        static Audio notenoughmoney("assets/audio/error.ogg");
                         notenoughmoney.setVolume(40.f);
                         notenoughmoney.playSound();
                         showNotificationText("Khong du tai nguyen de che tao vu khi!", sf::Color::Red);
@@ -123,12 +123,12 @@ void WeaponCraftUI::drawRecipeText(sf::RenderWindow &window, RectangleButton &bt
 {
     sf::Text recipeText;
     recipeText.setFont(font);
-    recipeText.setCharacterSize(12); // chỉnh size lớn hơn
+    recipeText.setCharacterSize(35); // chỉnh size lớn hơn
     recipeText.setStyle(sf::Text::Bold);
 
     sf::FloatRect b = btn.getBounds();
-    float startX = b.left + b.width / 4;
-    float startY = b.top - 40.f;
+    float startX = b.left + b.width / 4 - 20.f;
+    float startY = b.top - 150.f;
 
     // vẽ từng loại nguyên liệu với màu đỏ nếu thiếu
     recipeText.setString("Go: " + std::to_string(r.wood));
@@ -138,27 +138,27 @@ void WeaponCraftUI::drawRecipeText(sf::RenderWindow &window, RectangleButton &bt
 
     recipeText.setString("Than: " + std::to_string(r.coal));
     recipeText.setFillColor(bag.getCoal() >= r.coal ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 14); // cách nhau 14 px
+    recipeText.setPosition(startX, startY + 20); // cách nhau 14 px
     window.draw(recipeText);
 
     recipeText.setString("Sat: " + std::to_string(r.iron));
     recipeText.setFillColor(bag.getIron() >= r.iron ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 28);
+    recipeText.setPosition(startX, startY + 40);
     window.draw(recipeText);
 
     recipeText.setString("Vang: " + std::to_string(r.gold));
     recipeText.setFillColor(bag.getGold() >= r.gold ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 42);
+    recipeText.setPosition(startX, startY + 60);
     window.draw(recipeText);
 
     recipeText.setString("KCuong: " + std::to_string(r.diamond));
     recipeText.setFillColor(bag.getDiamond() >= r.diamond ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 56);
+    recipeText.setPosition(startX, startY + 80);
     window.draw(recipeText);
 
     recipeText.setString("NgocLB: " + std::to_string(r.emerald));
     recipeText.setFillColor(bag.getEmerald() >= r.emerald ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 70);
+    recipeText.setPosition(startX, startY + 100);
     window.draw(recipeText);
 }
 
@@ -168,7 +168,7 @@ void WeaponCraftUI::render(sf::RenderWindow &window, Character *player)
 
     sf::Vector2u winSize = window.getSize();
     sf::FloatRect textBounds = craftTitleText.getLocalBounds();
-    craftTitleText.setPosition((winSize.x - textBounds.width) / 2.f - textBounds.top, (winSize.y - textBounds.height) / 2.f - textBounds.top);
+    craftTitleText.setPosition((winSize.x - textBounds.width) / 2.f - textBounds.top, 200.f);
 
     if (showList)
     {
@@ -209,7 +209,7 @@ void WeaponCraftUI::render(sf::RenderWindow &window, Character *player)
             sf::Vector2u size = window.getSize();
             sf::FloatRect textBounds = notificationText.getLocalBounds();
             notificationText.setFont(font);
-            notificationText.setCharacterSize(35);
+            notificationText.setCharacterSize(80);
             notificationText.setStyle(sf::Text::Bold);
             notificationText.setPosition(
                 (size.x - textBounds.width) / 2.f,

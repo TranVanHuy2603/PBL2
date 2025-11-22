@@ -57,7 +57,7 @@ void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *c
 
         if (player->get_gold() >= cost)
         {
-            static Audio upgradeSound("assets/audio/collect.mp3");
+            static Audio upgradeSound("assets/audio/collect.ogg");
             upgradeSound.playSound();
             player->decr_gold(cost);
             castle->level_up();
@@ -65,7 +65,7 @@ void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *c
         }
         else
         {
-            static Audio failSound("assets/audio/error.mp3");
+            static Audio failSound("assets/audio/error.ogg");
             failSound.playSound();
             showNotificationText("Khong du vang de nang cap nha", sf::Color::Red);
         }

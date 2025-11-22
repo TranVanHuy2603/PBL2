@@ -30,10 +30,10 @@ int main()
     sf::Font font;
     font.loadFromFile("assets/font/font2.ttf");
 
-    Audio gameloopaudio("assets/audio/loop.mp3"),
-        menuaudio("assets/audio/menu.mp3"),
-        gameoveraudio("assets/audio/over.mp3"),
-        winaudio("assets/audio/win.mp3");
+    Audio gameloopaudio("assets/audio/loop.ogg"),
+        menuaudio("assets/audio/menu.ogg"),
+        gameoveraudio("assets/audio/over.ogg"),
+        winaudio("assets/audio/win.ogg");
 
     sf::Text levelMessage;
     levelMessage.setFont(font);
@@ -236,7 +236,7 @@ int main()
             }
 
             // Check win condition
-            if (castle->get_level() >= 5 || player->get_level() >= 10)
+            if (castle->get_level() >= 5 && player->get_level() >= 10 && player->get_weapons().get_size() == 6)
             {
                 state = GameState::Win;
                 playMusicForState(state);

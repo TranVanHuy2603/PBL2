@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Weapons::Weapons(WeaponType type, const String name, const String path, int damage, double damage_range, double attack_speed, const String &texture, const String &sound)
+Weapons::Weapons(WeaponType type, const String name, const String path, int damage, double damage_range, double attack_speed, const String &texture, const String &soundPath)
     : type(type), name(name), path(path), damage(damage), damage_range(damage_range), attack_speed(attack_speed)
 {
     this->texture.loadFromFile(path.c_str()); // load texture tu file hinh anh
@@ -16,7 +16,7 @@ Weapons::Weapons(WeaponType type, const String name, const String path, int dama
 
     this->attackCooldown = 1 / attack_speed; // thoi gian giua cac lan danh
 
-    this->sound.loadSound(sound.c_str());
+    if (!sound.loadSound(soundPath.c_str())) cout << "Loi khi tai am thanh vu khi vi sai duong dan\n";
 
     attackCircle.setRadius(damage_range);
     attackCircle.setFillColor(sf::Color::Transparent); // trong suốt
@@ -31,8 +31,8 @@ double Weapons::get_attack_speed() { return attack_speed; }
 
 void Weapons::attack(Quadtree &qt, Character *nv, Quest &quest)
 {
-    static Audio collectSound("assets/audio/collect.mp3");
-    static Audio levelupSound("assets/audio/levelup.mp3");
+    static Audio collectSound("assets/audio/collect.ogg");
+    static Audio levelupSound("assets/audio/levelup.ogg");
 
     sf::FloatRect bounds = nv->get_sprite().getGlobalBounds();
     sf::Vector2f center(bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f);
@@ -81,7 +81,7 @@ void Weapons::attack(Quadtree &qt, Character *nv, Quest &quest)
             {
                 quest.addTarget(2, *nv);
                 quest.addTarget(3, *nv);
-                static Audio deathSound("assets/audio/monster_die.mp3");
+                static Audio deathSound("assets/audio/monster_die.ogg");
                 deathSound.playSound();
                 cout << "Quai chet\n";
                 nv->incr_gold(m->get_gold()); // tang vang

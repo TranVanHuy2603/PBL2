@@ -5,12 +5,12 @@
 CharacterUI::CharacterUI()
 {
     // Tải font chữ
-    if (!font.loadFromFile("assets/font/font1.ttf"))
+    if (!font.loadFromFile("assets/font/font2.ttf"))
         std::cerr << "Error loading font" << std::endl;
 
     // Góc trái: thông tin tài nguyên
     infoText.setFont(font);
-    infoText.setCharacterSize(40);
+    infoText.setCharacterSize(18);
     infoText.setFillColor(sf::Color::Red);
     infoText.setOutlineColor(sf::Color::Black);
     infoText.setOutlineThickness(1.f);
@@ -18,7 +18,7 @@ CharacterUI::CharacterUI()
 
     // Góc phải: Coin, EXP, Level
     topRightText.setFont(font);
-    topRightText.setCharacterSize(40);
+    topRightText.setCharacterSize(18);
     topRightText.setFillColor(sf::Color::Red);
     topRightText.setOutlineColor(sf::Color::Black);
     topRightText.setOutlineThickness(1.f);
@@ -37,12 +37,12 @@ CharacterUI::CharacterUI()
 
     // Chữ HP
     hpText.setFont(font);
-    hpText.setCharacterSize(25);
+    hpText.setCharacterSize(18);
     hpText.setFillColor(sf::Color::Black);
 
     hp.setFont(font);
     hp.setString("HP");
-    hp.setCharacterSize(40);
+    hp.setCharacterSize(18);
     hp.setFillColor(sf::Color::Black);
 
     livesTexture.loadFromFile("assets/icon/lives.png");
@@ -67,8 +67,8 @@ void CharacterUI::update(const Character *player, const sf::RenderTarget &target
     // ==== Góc phải: Coin + EXP + Level ====
     std::stringstream topSS;
     topSS << "Level " << player->get_level()
-          << "\nCoin  " << player->get_gold()
-          << "\nEXP   " << player->get_exp() << " / " << player->get_exp_max();
+          << "\n\nCoin  " << player->get_gold()
+          << "\n\nEXP   " << player->get_exp() << " / " << player->get_exp_max();
     topRightText.setString(topSS.str());
 
     // Căn phải
@@ -112,7 +112,7 @@ void CharacterUI::update(const Character *player, const sf::RenderTarget &target
 
     sf::Vector2f hpPos = hpBack.getPosition();
     // Căn giữa theo chiều cao thanh
-    hp.setPosition(hpPos.x - 40.f, hpPos.y - barHeight);
+    hp.setPosition(hpPos.x - 40.f, hpPos.y - barHeight + 20);
 }
 
 void CharacterUI::render(sf::RenderTarget &target, Character *player)

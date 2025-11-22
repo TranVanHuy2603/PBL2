@@ -72,7 +72,7 @@ void Castle::level_up()
     if (level < 5)
     {
         level++;
-        cost += 50;
+        cost += 50 * level;
         hp += 50;
         set_texture(castleTextures[level - 1]);
     }
