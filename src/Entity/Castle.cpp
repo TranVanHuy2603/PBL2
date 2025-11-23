@@ -52,6 +52,8 @@ Castle::Castle(int x, int y, int hp_max, int cost)
     healTimer = 0.f;
 }
 
+Castle::~Castle() {}
+
 int Castle::get_level() const { return level; }
 int Castle::get_cost() const { return cost; }
 int Castle::get_hp() const { return hp; }

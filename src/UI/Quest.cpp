@@ -19,7 +19,7 @@ Quest::Quest()
     questButton = CircleButton(35.f);
     questButton.setPosition(50.f, 780.f);
     questButton.setColor(sf::Color(100, 149, 237));
-    questButton.setOutline(sf::Color::Black, 3.f);
+    questButton.setOutline(sf::Color::Black, 4.f);
     questButton.setIconScale(0.3f, 0.3f);
     questButton.setTexture("assets/icon/quest.png");
 
@@ -161,6 +161,9 @@ void Quest::showNotificationText(const std::string &text, sf::Color color)
 {
     notificationText.setString(text);
     notificationText.setFillColor(color);
+    notificationText.setOutlineThickness(2.f);
+    notificationText.setOutlineColor(sf::Color::Black);
+    notificationText.setStyle(sf::Text::Bold);
     showNotification = true;
     notificationClock.restart();
 }

@@ -12,12 +12,12 @@ struct WeaponInfo // thuoc tinh cua vu khi duoc che tao
 };
 
 WeaponInfo weaponInfos[(int)WeaponType::Count] = {
-    {"Tay", 5, 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.ogg"},              // HareHand
-    {"Kiem go", 8, 240.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.ogg"}, // WoodenSword
+    {"Tay", 7, 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.ogg"},              // HareHand
+    {"Kiem go", 10, 240.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.ogg"}, // WoodenSword
     {"Kiem sat", 15, 270.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.ogg"},  // IronSwood
-    {"Riu", 20, 190.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.ogg"},                     // Ax
-    {"Cung ten", 12, 270.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.ogg"},              // Bow
-    {"Sung", 25, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.ogg"}                   // Gun
+    {"Riu", 50, 190.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.ogg"},                     // Ax
+    {"Cung ten", 20, 270.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.ogg"},              // Bow
+    {"Sung", 30, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.ogg"}                   // Gun
 };
 
 // theo thu tu la Wood, stone, sand Coal, Iron, Gold, Diamond, Emerald
@@ -93,6 +93,7 @@ Character::~Character()
     for (auto *w : weapons)
     {
         delete w;
+        w = nullptr;
     }
     weapons.clear();
 }

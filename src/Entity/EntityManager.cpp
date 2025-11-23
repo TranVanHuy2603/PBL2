@@ -38,6 +38,7 @@ EntityManager::~EntityManager()
     {
         if (e != player && e != castle) // không xóa player và castle
             delete e;
+            e = nullptr;
     }
     entities.clear();
 }
@@ -53,6 +54,7 @@ void EntityManager::remove(Entity *e)
     qt.remove(e);
     entities.remove(e);
     delete e;
+    e = nullptr;
 }
 
 Character *EntityManager::getPlayer() { return player; }

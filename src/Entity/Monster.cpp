@@ -10,8 +10,9 @@ Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
                  double attack_speed, int gold, int exp)
     : LivingEntity(x, y, hp_max), damage(damage), damage_range(damage_range),
       attack_speed(attack_speed), gold(gold), exp(exp)
-{;
-    attackcooldown = 0.f; 
+{
+    ;
+    attackcooldown = 0.f;
     type = "Monster";
     if (!texture.loadFromFile("assets/monster/Monster.png"))
         cout << "Error load Monster\n";
@@ -24,7 +25,13 @@ Monster::Monster(int x, int y, int hp_max, int damage, double damage_range,
     hpBack.setFillColor(sf::Color(100, 100, 100));
     hpBar.setSize(hpBarSize);
     hpBar.setFillColor(sf::Color::Red);
+
+    moveDir = {0.f, 0.f};
+    moveTimer = static_cast<float>(rand() % 100) / 50.f + 0.5f; // 0.5 - 2.5 giây
+    speed = 100.f + rand() % 50;                                // tốc độ 100-150
 }
+
+Monster::~Monster() {}
 
 int Monster::get_gold() const { return gold; }
 int Monster::get_exp() const { return exp; }
@@ -92,9 +99,7 @@ void Monster::update(float deltaTime, Castle *castle, Character *player,
     if (!status)
         return;
 
-    // 1️⃣ Xác định mục tiêu gần nhất
-    int target;
-    sf::Vector2f targetPos;
+    // Xác định mục tiêu gần nhất
     sf::Vector2f mpos = sprite.getPosition();
     sf::Vector2f cpos = castle->get_sprite().getPosition();
     sf::Vector2f ppos = player->get_sprite().getPosition();
@@ -102,130 +107,113 @@ void Monster::update(float deltaTime, Castle *castle, Character *player,
     float d_castle = std::hypot(mpos.x - cpos.x, mpos.y - cpos.y);
     float d_player = std::hypot(mpos.x - ppos.x, mpos.y - ppos.y);
 
-    if (d_castle < d_player)
+    sf::Vector2f targetPos = (d_castle < d_player ? cpos : ppos);
+    bool targetCastle = (d_castle < d_player);
+
+    float dist = std::hypot(mpos.x - targetPos.x, mpos.y - targetPos.y);
+
+    // Giảm cooldown
+    if (attackcooldown > 0.f)
+        attackcooldown -= deltaTime;
+
+    bool inRange = (dist <= damage_range);
+
+    if (inRange)
     {
-        target = 0;
-        targetPos = cpos;
+        if (attackcooldown <= 0.f)
+        {
+            if (targetCastle)
+                attack(castle, deltaTime);
+            else
+                attack(player, deltaTime);
+        }
     }
     else
     {
-        target = 1;
-        targetPos = ppos;
-    }
-
-    // 2️⃣ Kiểm tra trong phạm vi tấn công
-    float dist = std::hypot(mpos.x - targetPos.x, mpos.y - targetPos.y);
-
-    if (attackcooldown > 0.f)
-        attackcooldown -= deltaTime;
-        
-    if (dist <= damage_range)
-    {
-        if (target == 0) 
+        updateRandomMovement(deltaTime);
         {
-            attack(castle, deltaTime);
         }
-        else 
-        {
-            attack(player, deltaTime);
-        }
+        // Cập nhật thanh HP
+        float hpPercent = get_hp() / (float)get_hp_max();
+        hpBar.setSize(sf::Vector2f(hpBarSize.x * hpPercent, hpBarSize.y));
+
+        sf::FloatRect bounds = sprite.getGlobalBounds();
+        hpBack.setPosition(bounds.left + bounds.width / 2.f - hpBarSize.x / 2.f,
+                           bounds.top - hpBarSize.y - 5.f);
+        hpBar.setPosition(hpBack.getPosition());
     }
-
-    updateRandomMovement(deltaTime);
-
-    // 4️⃣ Tìm đường đi bằng GBFS
-    // int startCol = static_cast<int>(std::floor(x / cellSize));
-    // int startRow = static_cast<int>(std::floor(y / cellSize));
-    // startCol = std::max(0, std::min(startCol, grid[0].get_size() - 1));
-    // startRow = std::max(0, std::min(startRow, grid.get_size() - 1));
-    // int goalCol = std::clamp(static_cast<int>(targetPos.x / cellSize), 0, grid[0].get_size() - 1);
-    // int goalRow = std::clamp(static_cast<int>(targetPos.y / cellSize), 0, grid.get_size() - 1);
-
-    // // std::cout << "Monster grid: " << startCol << "," << startRow
-    // //           << "  Target grid: " << goalCol << "," << goalRow << "\n";
-
-    // ASNode *startNode = &grid[startRow][startCol];
-    // ASNode *goalNode = &grid[goalRow][goalCol];
-
-    // // 4️⃣ Chỉ tính đường đi mới khi path cũ hết hoặc mục tiêu thay đổi
-    // if (pathPositions.empty() || currentTarget >= pathPositions.get_size())
-    // {
-    //     Vector<ASNode *> newpath = GBFS(grid, startNode, goalNode);
-    //     if (!newpath.empty())
-    //     {
-    //         pathPositions.clear();
-    //         for (ASNode *node : newpath)
-    //         {
-    //             pathPositions.push_back(sf::Vector2f(node->get_x() * cellSize, node->get_y() * cellSize));
-    //         }
-    //         currentTarget = 0;
-    //     }
-    // }
-
-    // // 5️⃣ Di chuyển theo đường đi
-    // movePath(pathPositions, deltaTime);
-
-    float hpPercent = static_cast<float>(get_hp()) / get_hp_max();
-    hpBar.setSize(sf::Vector2f(hpBarSize.x * hpPercent, hpBarSize.y));
-
-    // Căn giữa đầu quái
-    sf::FloatRect bounds = sprite.getGlobalBounds();
-    hpBack.setPosition(bounds.left + bounds.width / 2.f - hpBarSize.x / 2.f,
-                       bounds.top - hpBarSize.y - 5.f); // 5 px cách đầu sprite
-    hpBar.setPosition(hpBack.getPosition());
 }
 
 void Monster::updateRandomMovement(float deltaTime)
 {
-    static std::default_random_engine engine(static_cast<unsigned long>(time(nullptr)));
-    static std::uniform_int_distribution<int> dirDist(0, 7); // 8 hướng
-
-    // Chọn trạng thái đi/dừng khi hết thời gian
-    if (randomMoveDuration <= 0.f)
+    // Khi hết thời gian đi → chọn hướng mới
+    if (moveTimer <= 0.f)
     {
-        if (isMoving)
+        int k = rand() % 8; // 8 hướng
+        switch (k)
         {
-            isMoving = false;
-            randomMoveDuration = 5.f; // dừng 5 giây
+        case 0:
+            moveDir = {0.f, -1.f};
+            break; // lên
+        case 1:
+            moveDir = {0.f, 1.f};
+            break; // xuống
+        case 2:
+            moveDir = {-1.f, 0.f};
+            break; // trái
+        case 3:
+            moveDir = {1.f, 0.f};
+            break; // phải
+        case 4:
+            moveDir = {-1.f, -1.f};
+            break; // lên trái
+        case 5:
+            moveDir = {1.f, -1.f};
+            break; // lên phải
+        case 6:
+            moveDir = {-1.f, 1.f};
+            break; // xuống trái
+        case 7:
+            moveDir = {1.f, 1.f};
+            break; // xuống phải
         }
-        else
-        {
-            isMoving = true;
-            randomDir = dirDist(engine);
-            // Cập nhật hướng moveDir dựa trên randomDir
-            switch (randomDir)
-            {
-            case 0: moveDir = {0.f, -1.f}; break;
-            case 1: moveDir = {0.f, 1.f}; break;
-            case 2: moveDir = {-1.f, 0.f}; break;
-            case 3: moveDir = {1.f, 0.f}; break;
-            case 4: moveDir = {-1.f, -1.f}; break;
-            case 5: moveDir = {1.f, -1.f}; break;
-            case 6: moveDir = {-1.f, 1.f}; break;
-            case 7: moveDir = {1.f, 1.f}; break;
-            }
-            float len = std::sqrt(moveDir.x*moveDir.x + moveDir.y*moveDir.y);
-            if (len != 0.f) moveDir /= len;
-            randomMoveDuration = 2.f; // đi 2 giây
-        }
+
+        // Chuẩn hóa vector
+        float len = std::sqrt(moveDir.x * moveDir.x + moveDir.y * moveDir.y);
+        if (len != 0.f)
+            moveDir /= len;
+
+        // Random thời gian đi cho hướng này
+        moveTimer = 0.5f + static_cast<float>(rand() % 100) / 50.f; // 0.5 - 2.5 giây
     }
 
-    // Nếu đang di chuyển
-    if (isMoving)
+    // Cập nhật vị trí
+    x += moveDir.x * speed * deltaTime;
+    y += moveDir.y * speed * deltaTime;
+
+    // Giới hạn bản đồ 6500 x 3500
+    if (x < 0.f)
     {
-        float moveSpeed = 50.f;
-        x += moveDir.x * moveSpeed * deltaTime;
-        y += moveDir.y * moveSpeed * deltaTime;
-
-        // Kiểm tra biên và đảo hướng
-        if (x < minX)  { x = minX;  moveDir.x *= -1; }
-        if (x > maxX)  { x = maxX;  moveDir.x *= -1; }
-        if (y < minY)  { y = minY;  moveDir.y *= -1; }
-        if (y > maxY)  { y = maxY;  moveDir.y *= -1; }
-
-        sprite.setPosition(x, y);
+        x = 0.f;
+        moveDir.x = -moveDir.x;
+    }
+    if (x > 6500.f)
+    {
+        x = 6500.f;
+        moveDir.x = -moveDir.x;
+    }
+    if (y < 0.f)
+    {
+        y = 0.f;
+        moveDir.y = -moveDir.y;
+    }
+    if (y > 3500.f)
+    {
+        y = 3500.f;
+        moveDir.y = -moveDir.y;
     }
 
-    randomMoveDuration -= deltaTime;
+    sprite.setPosition(x, y);
+
+    moveTimer -= deltaTime;
 }
-

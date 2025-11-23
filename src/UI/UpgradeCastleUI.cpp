@@ -4,38 +4,46 @@
 
 UpgradeCastleUI::UpgradeCastleUI()
 {
-    if (!font.loadFromFile("assets/font/font2.ttf"))
+    if (!font.loadFromFile("assets/font/font1.ttf"))
         std::cout << "Font load failed!\n";
 
     // --- Nút hình tròn mở UI ---
     houseButton = CircleButton(35.f);
     houseButton.setPosition(50.f, 880.f);
     houseButton.setColor(sf::Color(120, 200, 120));
-    houseButton.setOutline(sf::Color::Black, 3.f);
+    houseButton.setOutline(sf::Color::Black, 4.f);
     houseButton.setIconScale(0.2f, 0.2f);
     houseButton.setTexture("assets/icon/house.png");
 
     // --- Nút Upgrade ---
-    const String nc = "Nang cap", h = "Huy";
-    upgradeButton = RectangleButton(0.f, 0.f, 250.f, 60.f, &font, nc,
-                                    sf::Color(120, 200, 120), sf::Color(150, 250, 150));
+    const String nc = "Nang Cap", h = "Huy";
+    upgradeButton = RectangleButton(0.f, 0.f, 300.f, 60.f, &font, nc,
+                    sf::Color(120, 200, 120), sf::Color(150, 250, 150), sf::Color(150, 250, 150), 90);
     upgradeButton.setTextColor(sf::Color::White);
+    upgradeButton.setOutline(sf::Color::Black, 3.f);
 
     // --- Nút Cancel ---
     cancelButton = RectangleButton(0.f, 0.f, 250.f, 60.f, &font, h,
-                                   sf::Color(220, 120, 120), sf::Color(250, 150, 150));
+                    sf::Color(220, 120, 120), sf::Color(250, 150, 150), sf::Color(150, 250, 150), 90);
     cancelButton.setTextColor(sf::Color::White);
+    cancelButton.setOutline(sf::Color::Black, 3.f);
 
     // --- Text chi phí ---
     costText.setFont(font);
-    costText.setCharacterSize(35);
+    costText.setCharacterSize(100);
     costText.setFillColor(sf::Color::White);
-    costText.setPosition(1600.f, 300.f);
+    costText.setPosition(1600.f, 250.f);
+    costText.setOutlineColor(sf::Color::Black);
+    costText.setOutlineThickness(3.f);
+    costText.setStyle(sf::Text::Bold);
 
     // Notification
     notificationText.setFont(font);
-    notificationText.setCharacterSize(32);
+    notificationText.setCharacterSize(50);
     notificationText.setPosition(1600.f, 520.f);
+    notificationText.setOutlineThickness(3.f);
+    notificationText.setOutlineColor(sf::Color::Black);
+    notificationText.setStyle(sf::Text::Bold);
 
     showMenu = false;
     showNotification = false;
@@ -125,11 +133,11 @@ void UpgradeCastleUI::render(sf::RenderWindow &window, Castle *castle)
 
     // Chi phí nâng cấp
     int cost = castle->get_cost();
-    costText.setString("NANG CAP NHA\n\nChi phi: " + std::to_string(cost));
+    costText.setString("NANG CAP NHA\nChi Phi: " + std::to_string(cost));
     sf::FloatRect costBounds = costText.getLocalBounds();
     costText.setOrigin(costBounds.left + costBounds.width / 2.f,
                        costBounds.top + costBounds.height / 2.f);
-    costText.setPosition(centerX, centerY - 120.f);
+    costText.setPosition(centerX, centerY - 200.f);
 
     // Vẽ các nút và text
     window.draw(costText);
@@ -141,6 +149,10 @@ void UpgradeCastleUI::showNotificationText(const String &text, sf::Color color)
 {
     notificationText.setString(text.c_str());
     notificationText.setFillColor(color);
+    notificationText.setOutlineThickness(3.f);
+    notificationText.setOutlineColor(sf::Color::Black);
+    notificationText.setStyle(sf::Text::Bold);
+    notificationText.setCharacterSize(80);
     showNotification = true;
     notificationClock.restart();
 }

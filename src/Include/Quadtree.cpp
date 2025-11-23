@@ -7,10 +7,10 @@ Quadtree::Quadtree(Rect _area, double _capacity)
 
 Quadtree::~Quadtree()
 {
-    delete NW;
-    delete NE;
-    delete SW;
-    delete SE;
+    delete NW; NW = nullptr;
+    delete NE; NE = nullptr;
+    delete SW; SW = nullptr;
+    delete SE; SE = nullptr;
 }
 
 void Quadtree::subdivide()

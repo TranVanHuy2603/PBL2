@@ -60,7 +60,7 @@ void Weapons::attack(Quadtree &qt, Character *nv, Quest &quest)
 
     sound.playSound();
 
-    Rect range(center.x, center.y, damage_range + 50, damage_range + 100);
+    Rect range(center.x, center.y, damage_range * 2 + 30, damage_range * 2 + 30);
     Vector<Entity *> found;
     qt.query(range, found);
 

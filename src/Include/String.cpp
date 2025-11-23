@@ -55,6 +55,7 @@ String::String(const String &other) // Ham dung copy
 String::~String()
 {
     delete[] data;
+    data = nullptr;
 }
 
 // ==== Operator overloading ====
@@ -64,6 +65,7 @@ String &String::operator=(const String &other) // Gan chuoi
     {
         length = other.length;
         delete[] data;
+        data = nullptr;
         data = new char[length + 1];
         String::strcpy(this->data, other.data);
     }
@@ -161,6 +163,7 @@ String String::substr(llu position, llu n) const // Cat chuoi -> chuoi con
 
     String sub(buffer);
     delete[] buffer;
+    buffer = nullptr;
     return sub;
 }
 llu String::find(const String &str, llu position) const // Tim chuoi con

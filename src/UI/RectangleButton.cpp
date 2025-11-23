@@ -23,6 +23,9 @@ RectangleButton::RectangleButton(float x, float y, float width, float height,
     text.setString(str.c_str());
     text.setCharacterSize(size);
     text.setFillColor(sf::Color::White);
+    text.setStyle(sf::Text::Bold);
+    text.setOutlineColor(sf::Color::Black);
+    text.setOutlineThickness(2.f);
 
     // Căn giữa text
     sf::FloatRect tb = text.getLocalBounds();

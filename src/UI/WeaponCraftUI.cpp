@@ -3,11 +3,11 @@
 
 // du lieu vu khi (bo qua BareHand)
 static const WeaponInfo weaponInfos[] = {
-    {"Wooden Sword", "assets/weapon/woodensword.png"},
-    {"Iron Sword", "assets/weapon/ironsword.png"},
-    {"Axe", "assets/weapon/ax.png"},
-    {"Bow", "assets/weapon/bow.png"},
-    {"Gun", "assets/weapon/gun.png"},
+    {"KIEM GO", "assets/weapon/woodensword.png"},
+    {"KIEM SAT", "assets/weapon/ironsword.png"},
+    {"RIU", "assets/weapon/ax.png"},
+    {"CUNG TEN", "assets/weapon/bow.png"},
+    {"SUNG", "assets/weapon/gun.png"},
 };
 
 WeaponCraftUI::WeaponCraftUI(sf::RenderWindow &window) : showList(false)
@@ -18,7 +18,7 @@ WeaponCraftUI::WeaponCraftUI(sf::RenderWindow &window) : showList(false)
     cartButton = CircleButton(35.f);
     cartButton.setPosition(50.f, 980.f);
     cartButton.setColor(sf::Color(220, 120, 120));
-    cartButton.setOutline(sf::Color::Black, 3.f);
+    cartButton.setOutline(sf::Color::Black, 4.f);
     cartButton.setIconScale(0.14f, 0.14f);
     cartButton.setTexture("assets/icon/cart.png");
 
@@ -26,6 +26,9 @@ WeaponCraftUI::WeaponCraftUI(sf::RenderWindow &window) : showList(false)
     craftTitleText.setCharacterSize(100);
     craftTitleText.setStyle(sf::Text::Bold);
     craftTitleText.setString("CHE TAO VU KHI");
+    craftTitleText.setOutlineThickness(3.0f);
+    craftTitleText.setOutlineColor(sf::Color::Black);
+    craftTitleText.setOutlineColor(sf::Color::Black);
     craftTitleText.setFillColor(sf::Color::White);
 
     initWeaponButtons(window);
@@ -43,7 +46,7 @@ void WeaponCraftUI::initWeaponButtons(sf::RenderWindow &window)
     sf::Vector2u winSize = window.getSize();
 
     // Lấy vị trí startX để căn giữa theo chiều ngang
-    float startX = (winSize.x - totalWidth) / 2.f;
+    float startX = (winSize.x - totalWidth) / 2.f + 20;
     float startY = 700.f; // giữ vị trí y ở dưới, có thể tinh chỉnh
 
     for (int i = 0; i < weaponCount; ++i)
@@ -68,7 +71,7 @@ void WeaponCraftUI::initWeaponButtons(sf::RenderWindow &window)
 
         // Text dưới button
         // btn.setString(weaponInfos[i].name.c_str());
-        btn.setTextColor(sf::Color::Black);
+        btn.setTextColor(sf::Color::Yellow);
 
         // Căn giữa text dưới button
         sf::FloatRect b = btn.getBounds();
@@ -161,52 +164,54 @@ void WeaponCraftUI::drawRecipeText(sf::RenderWindow &window, RectangleButton &bt
 {
     sf::Text recipeText;
     recipeText.setFont(font);
-    recipeText.setCharacterSize(35); // chỉnh size lớn hơn
+    recipeText.setCharacterSize(30); // chỉnh size lớn hơn
     recipeText.setStyle(sf::Text::Bold);
+    recipeText.setOutlineThickness(2.f);
+    recipeText.setOutlineColor(sf::Color::Black);
 
     sf::FloatRect b = btn.getBounds();
     float startX = b.left + b.width / 4 - 20.f;
-    float startY = b.top - 180.f;
+    float startY = b.top - 200.f;
 
     // vẽ từng loại nguyên liệu với màu đỏ nếu thiếu
-    recipeText.setString("Go: " + std::to_string(r.wood));
-    recipeText.setFillColor(bag.getWood() >= r.wood ? sf::Color::Green : sf::Color::Red);
+    recipeText.setString("GO......" + std::to_string(r.wood));
+    recipeText.setFillColor(bag.getWood() >= r.wood ? sf::Color::Green : sf::Color::White);
     recipeText.setPosition(startX, startY);
     window.draw(recipeText);
 
-    recipeText.setString("Cat: " + std::to_string(r.sand));
-    recipeText.setFillColor(bag.getSand() >= r.sand ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 20);
+    recipeText.setString("CAT....." + std::to_string(r.sand));
+    recipeText.setFillColor(bag.getSand() >= r.sand ? sf::Color::Green : sf::Color::White);
+    recipeText.setPosition(startX, startY + 25);
     window.draw(recipeText);
 
-    recipeText.setString("Da: " + std::to_string(r.stone));
-    recipeText.setFillColor(bag.getStone() >= r.stone ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 40);
+    recipeText.setString("DA......" + std::to_string(r.stone));
+    recipeText.setFillColor(bag.getStone() >= r.stone ? sf::Color::Green : sf::Color::White);
+    recipeText.setPosition(startX, startY + 50);
     window.draw(recipeText);
 
-    recipeText.setString("Than: " + std::to_string(r.coal));
-    recipeText.setFillColor(bag.getCoal() >= r.coal ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 60); // cách nhau 14 px
+    recipeText.setString("THAN...." + std::to_string(r.coal));
+    recipeText.setFillColor(bag.getCoal() >= r.coal ? sf::Color::Green : sf::Color::White);
+    recipeText.setPosition(startX, startY + 75); // cách nhau 14 px
     window.draw(recipeText);
 
-    recipeText.setString("Sat: " + std::to_string(r.iron));
-    recipeText.setFillColor(bag.getIron() >= r.iron ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 80);
-    window.draw(recipeText);
-
-    recipeText.setString("Vang: " + std::to_string(r.gold));
-    recipeText.setFillColor(bag.getGold() >= r.gold ? sf::Color::Green : sf::Color::Red);
+    recipeText.setString("SAT....." + std::to_string(r.iron));
+    recipeText.setFillColor(bag.getIron() >= r.iron ? sf::Color::Green : sf::Color::White);
     recipeText.setPosition(startX, startY + 100);
     window.draw(recipeText);
 
-    recipeText.setString("KCuong: " + std::to_string(r.diamond));
-    recipeText.setFillColor(bag.getDiamond() >= r.diamond ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 120);
+    recipeText.setString("VANG...." + std::to_string(r.gold));
+    recipeText.setFillColor(bag.getGold() >= r.gold ? sf::Color::Green : sf::Color::White);
+    recipeText.setPosition(startX, startY + 125);
     window.draw(recipeText);
 
-    recipeText.setString("NgocLB: " + std::to_string(r.emerald));
-    recipeText.setFillColor(bag.getEmerald() >= r.emerald ? sf::Color::Green : sf::Color::Red);
-    recipeText.setPosition(startX, startY + 140);
+    recipeText.setString("KCUONG.." + std::to_string(r.diamond));
+    recipeText.setFillColor(bag.getDiamond() >= r.diamond ? sf::Color::Green : sf::Color::White);
+    recipeText.setPosition(startX, startY + 150);
+    window.draw(recipeText);
+
+    recipeText.setString("NGOCLB.." + std::to_string(r.emerald));
+    recipeText.setFillColor(bag.getEmerald() >= r.emerald ? sf::Color::Green : sf::Color::White);
+    recipeText.setPosition(startX, startY + 175);
     window.draw(recipeText);
 }
 
@@ -216,7 +221,7 @@ void WeaponCraftUI::render(sf::RenderWindow &window, Character *player)
 
     sf::Vector2u winSize = window.getSize();
     sf::FloatRect textBounds = craftTitleText.getLocalBounds();
-    craftTitleText.setPosition((winSize.x - textBounds.width) / 2.f - textBounds.top, 200.f);
+    craftTitleText.setPosition((winSize.x - textBounds.width) / 2.f, 200.f);
 
     if (showList)
     {
@@ -277,6 +282,10 @@ void WeaponCraftUI::showNotificationText(const std::string &text, sf::Color colo
 {
     notificationText.setString(text);
     notificationText.setFillColor(color);
+    notificationText.setOutlineThickness(3.f);
+    notificationText.setOutlineColor(sf::Color::Black);
+    notificationText.setStyle(sf::Text::Bold);
+    notificationText.setCharacterSize(80);
     showNotification = true;
     notificationClock.restart();
 }

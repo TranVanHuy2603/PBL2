@@ -28,7 +28,7 @@ int main()
 {
 
     sf::Font font;
-    font.loadFromFile("assets/font/font2.ttf");
+    font.loadFromFile("assets/font/font1.ttf");
 
     Audio gameloopaudio("assets/audio/loop.ogg"),
         menuaudio("assets/audio/menu.ogg"),
@@ -37,7 +37,7 @@ int main()
 
     sf::Text levelMessage;
     levelMessage.setFont(font);
-    levelMessage.setCharacterSize(40);
+    levelMessage.setCharacterSize(80);
     levelMessage.setFillColor(sf::Color::Green);
     levelMessage.setStyle(sf::Text::Bold);
     levelMessage.setPosition(1920 / 4.f - 300, 100); // căn giữa màn hình
@@ -58,9 +58,9 @@ int main()
     window.setFramerateLimit(60);
 
     // ===== UI =====
-    Menu menu(window.getSize().x, window.getSize().y, "FOTRESS OF SURVIVAL", "Bat dau", "Thoat"),
-        over(window.getSize().x, window.getSize().y, "GAME OVER", "Choi lai", "Thoat"),
-        win(window.getSize().x, window.getSize().y, "YOU WIN", "Choi lai", "Thoat");
+    Menu menu(window.getSize().x, window.getSize().y, "FOTRESS OF SURVIVAL", "PLAY", "EXIT"),
+        over(window.getSize().x, window.getSize().y, "GAME OVER", "PLAY AGAIN", "EXIT"),
+        win(window.getSize().x, window.getSize().y, "YOU WIN", "PLAY AGAIN", "EXIT");
 
     CharacterUI ui;
     WeaponCraftUI craftUI(window);

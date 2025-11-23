@@ -9,7 +9,7 @@ CharacterUI::CharacterUI()
         std::cerr << "Error loading font" << std::endl;
 
     // Tải icon nguyên liệu
-    std::string resourceFiles[8] = {
+    String resourceFiles[8] = {
         "assets/resource/wood.png",
         "assets/resource/stone.png",
         "assets/resource/sand.png",
@@ -22,7 +22,7 @@ CharacterUI::CharacterUI()
 
     for (int i = 0; i < 8; i++)
     {
-        if (!resourceTextures[i].loadFromFile(resourceFiles[i]))
+        if (!resourceTextures[i].loadFromFile(resourceFiles[i].c_str()))
             std::cerr << "Error loading " << resourceFiles[i] << std::endl;
         resourceIcons[i].setTexture(resourceTextures[i]);
         resourceIcons[i].setScale(30.f / resourceTextures[i].getSize().x, 30.f / resourceTextures[i].getSize().y);
@@ -31,9 +31,10 @@ CharacterUI::CharacterUI()
     // Level + Coin + EXP
     topRightText.setFont(font);
     topRightText.setCharacterSize(18);
-    topRightText.setFillColor(sf::Color::Red);
+    topRightText.setFillColor(sf::Color::White);
     topRightText.setOutlineColor(sf::Color::Black);
-    topRightText.setOutlineThickness(1.f);
+    topRightText.setOutlineThickness(2.f);
+    topRightText.setStyle(sf::Text::Bold);
 
     // Thanh HP
     hpBack.setSize(sf::Vector2f(400.f, 20.f));
@@ -46,12 +47,15 @@ CharacterUI::CharacterUI()
 
     hpText.setFont(font);
     hpText.setCharacterSize(18);
-    hpText.setFillColor(sf::Color::Black);
+    hpText.setFillColor(sf::Color::White);
 
     hp.setFont(font);
     hp.setString("HP");
     hp.setCharacterSize(18);
-    hp.setFillColor(sf::Color::Black);
+    hp.setFillColor(sf::Color::White);
+    hp.setOutlineColor(sf::Color::Black);
+    hp.setOutlineThickness(2.f);
+    hp.setStyle(sf::Text::Bold);
 
     // Lives
     if (!livesTexture.loadFromFile("assets/icon/lives.png"))
@@ -123,13 +127,16 @@ void CharacterUI::update(const Character* player, const sf::RenderTarget& target
     std::stringstream hpSS;
     hpSS << player->get_hp() << " / " << player->get_hp_max();
     hpText.setString(hpSS.str());
+    hpText.setOutlineColor(sf::Color::Black);
+    hpText.setStyle(sf::Text::Bold);
+    hpText.setOutlineThickness(2.f);
     textBounds = hpText.getLocalBounds();
     hpText.setOrigin(textBounds.left + textBounds.width / 2.f,
                      textBounds.top + textBounds.height / 2.f);
     hpText.setPosition(hpBack.getPosition().x + hpBarWidth / 2.f,
                        hpBack.getPosition().y + hpBarHeight / 2.f);
 
-    hp.setPosition(hpBack.getPosition().x - 40.f, hpBack.getPosition().y + 0.f);
+    hp.setPosition(hpBack.getPosition().x - 50.f, hpBack.getPosition().y + 5.f);
 }
 
 
@@ -144,9 +151,12 @@ void CharacterUI::render(sf::RenderTarget& target, Character* player)
         sf::Text amountText;
         amountText.setFont(font);
         amountText.setCharacterSize(16);
+        amountText.setStyle(sf::Text::Bold);
+        amountText.setOutlineThickness(2.f);
+        amountText.setOutlineColor(sf::Color::Black);
         amountText.setFillColor(sf::Color::White);
         amountText.setString(std::to_string(resourceAmounts[i]));
-        amountText.setPosition(resourceIcons[i].getPosition().x + 5.f, resourceIcons[i].getPosition().y + 20.f);
+        amountText.setPosition(resourceIcons[i].getPosition().x + 20.f, resourceIcons[i].getPosition().y + 20.f);
         target.draw(amountText);
     }
 

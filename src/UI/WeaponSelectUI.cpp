@@ -3,7 +3,7 @@
 
 WeaponSelectUI::WeaponSelectUI(sf::RenderWindow &window, Character *player)
 {
-    if (!font.loadFromFile("assets/font/font2.ttf"))
+    if (!font.loadFromFile("assets/font/font1.ttf"))
         std::cerr << "Failed to load font!\n";
 
     this->player = player;
@@ -23,7 +23,7 @@ void WeaponSelectUI::initButtons(sf::RenderWindow &window)
     if (!player) return;
 
     auto &weapons = player->get_weapons();
-    float x = window.getSize().x - buttonWidth - margin;
+    float x = window.getSize().x - buttonWidth - margin - 20.f;
     float yStart = window.getSize().y - buttonHeight - margin - 60;
 
     for (int i = 0; i < weapons.get_size(); ++i)
@@ -38,7 +38,7 @@ void WeaponSelectUI::initButtons(sf::RenderWindow &window)
             sf::Color(100, 100, 100),  // normal
             sf::Color(150, 150, 150),  // hover
             sf::Color::Yellow,          // selected
-            12
+            30
         );
 
         // Text dưới icon
@@ -48,6 +48,7 @@ void WeaponSelectUI::initButtons(sf::RenderWindow &window)
             btnBounds.top + btnBounds.height - 15.f
         );
         btn.setTextColor(sf::Color::Green);
+        btn.setOutline(sf::Color::Black, 2.f);
 
         buttons.push_back(btn);
     }
@@ -140,7 +141,6 @@ void WeaponSelectUI::render(sf::RenderWindow &window)
             sf::Vector2u size = window.getSize();
             sf::FloatRect bounds = notificationText.getLocalBounds();
             notificationText.setFont(font);
-            notificationText.setCharacterSize(24);
             notificationText.setStyle(sf::Text::Bold);
             notificationText.setPosition(
                 (size.x - bounds.width) / 2.f,
@@ -159,6 +159,10 @@ void WeaponSelectUI::showNotificationText(const std::string &text, sf::Color col
 {
     notificationText.setString(text);
     notificationText.setFillColor(color);
+    notificationText.setOutlineThickness(3.f);
+    notificationText.setOutlineColor(sf::Color::Black);
+    notificationText.setStyle(sf::Text::Bold);
+    notificationText.setCharacterSize(80);
     showNotification = true;
     notificationClock.restart();
 }

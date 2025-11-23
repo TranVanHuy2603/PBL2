@@ -18,29 +18,35 @@ class Monster : public LivingEntity
 private:
     int gold;
     int exp;
-    int damage;           // sat thuong co the gay ra
-    double damage_range;  // ban kinh gay sat thuong
-    double attack_speed;  // toc do gay sat thuong
-    float attackcooldown; // thoi gian sau moi cu danh
+    int damage;
+    double damage_range;
+    double attack_speed;
+    float attackcooldown;
     sf::Texture texture;
 
-    Vector<sf::Vector2f> pathPositions; // đường đi thực tế
+    Vector<sf::Vector2f> pathPositions;
     int currentTarget = 0;
 
-    sf::RectangleShape hpBack; // Nền
-    sf::RectangleShape hpBar;  // HP còn
-    sf::Vector2f hpBarSize;    // Kích thước đầy đủ của thanh HP
+    sf::RectangleShape hpBack;
+    sf::RectangleShape hpBar;
+    sf::Vector2f hpBarSize;
+
+    // --- biến di chuyển random / zig-zag ---
+    sf::Vector2f moveDir; // hướng di chuyển hiện tại
+    float moveTimer;      // thời gian còn lại đi theo hướng hiện tại
+    float speed;          // tốc độ quái
 
     int randomDir = 0;
     float randomMoveDuration = 0.f;
     bool isMoving = true;
-    sf::Vector2f moveDir;            // hướng di chuyển hiện tại
+
     float minX = 0.f, maxX = 6500.f; // biên map theo X
-    float minY = 0.f, maxY = 3500.f;
+    float minY = 0.f, maxY = 3500.f; // biên map theo Y
 
 public:
     Monster();
     Monster(int, int, int, int, double, double, int, int);
+    ~Monster();
     int get_gold() const;
     int get_exp() const;
 

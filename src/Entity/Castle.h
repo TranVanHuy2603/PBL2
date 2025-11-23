@@ -21,6 +21,7 @@ private:
 public:
     Castle();
     Castle(int, int, int, int);
+    ~Castle();
     int get_level() const;
     int get_cost() const;
     int get_hp() const;
