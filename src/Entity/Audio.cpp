@@ -9,6 +9,8 @@ Audio::Audio(const String &filename) {
     sound.setBuffer(buffer);
 }
 
+Audio::~Audio() {}
+
 bool Audio::loadSound(const std::string &filename) {
     if (!buffer.loadFromFile(filename)) {
         return false;

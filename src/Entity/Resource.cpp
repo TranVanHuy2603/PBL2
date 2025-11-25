@@ -10,6 +10,8 @@ Resource::Resource(int x, int y, ResourceType type, const string &filename, int 
     status = true;
 }
 
+Resource::~Resource() {}
+
 ResourceType Resource::get_type() const { return resourcetype; }
 void Resource::set_status(bool value) { status = value; }
 sf::Sprite& Resource::get_sprite() { return sprite; }

@@ -111,6 +111,12 @@ void RectangleButton::setOutline(const sf::Color& col, float thickness)
     shape.setOutlineThickness(thickness);
 }
 
+void RectangleButton::setTextOutline(const sf::Color& col, float thickness)
+{
+    text.setOutlineColor(col);
+    text.setOutlineThickness(thickness);
+}
+
 void RectangleButton::setTextColor(const sf::Color& color)
 {
     text.setFillColor(color);

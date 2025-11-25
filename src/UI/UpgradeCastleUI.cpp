@@ -21,12 +21,14 @@ UpgradeCastleUI::UpgradeCastleUI()
                     sf::Color(120, 200, 120), sf::Color(150, 250, 150), sf::Color(150, 250, 150), 90);
     upgradeButton.setTextColor(sf::Color::White);
     upgradeButton.setOutline(sf::Color::Black, 3.f);
+    upgradeButton.setTextOutline(sf::Color::Black, 3.f);
 
     // --- Nút Cancel ---
     cancelButton = RectangleButton(0.f, 0.f, 250.f, 60.f, &font, h,
                     sf::Color(220, 120, 120), sf::Color(250, 150, 150), sf::Color(150, 250, 150), 90);
     cancelButton.setTextColor(sf::Color::White);
     cancelButton.setOutline(sf::Color::Black, 3.f);
+    cancelButton.setTextOutline(sf::Color::Black, 3.f);
 
     // --- Text chi phí ---
     costText.setFont(font);

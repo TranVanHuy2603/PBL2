@@ -51,46 +51,46 @@ void Map::draw(sf::RenderWindow &window, const sf::View &view)
     window.setView(oldView);
 }
 
-void Map::setGrid(Vector<Entity *> &entity, Vector<Vector<ASNode>> &grid, double cellSize)
-{
+// void Map::setGrid(Vector<Entity *> &entity, Vector<Vector<ASNode>> &grid, double cellSize)
+// {
 
-    for (auto *ent : entity)
-    {
-        Monster *monster = dynamic_cast<Monster *>(ent);
-        if (monster)
-        { // chỉ những đối tượng Monster
-            int mx = static_cast<int>(monster->get_x() / cellSize);
-            int my = static_cast<int>(monster->get_y() / cellSize);
-            if (mx >= 0 && mx < grid[0].get_size() &&
-                my >= 0 && my < grid.get_size())
-            {
-                grid[my][mx].set_walkable(false);
-            }
-        }
-    }
-}
+//     for (auto *ent : entity)
+//     {
+//         Monster *monster = dynamic_cast<Monster *>(ent);
+//         if (monster)
+//         { // chỉ những đối tượng Monster
+//             int mx = static_cast<int>(monster->get_x() / cellSize);
+//             int my = static_cast<int>(monster->get_y() / cellSize);
+//             if (mx >= 0 && mx < grid[0].get_size() &&
+//                 my >= 0 && my < grid.get_size())
+//             {
+//                 grid[my][mx].set_walkable(false);
+//             }
+//         }
+//     }
+// }
 
-void Map::updateGrid(Vector<Entity*>& entities, Vector<Vector<ASNode>>& grid, double cellSize)
-{
-    int rows = grid.get_size();
-    if (rows == 0) return;
-    int cols = grid[0].get_size();
+// void Map::updateGrid(Vector<Entity*>& entities, Vector<Vector<ASNode>>& grid, double cellSize)
+// {
+//     int rows = grid.get_size();
+//     if (rows == 0) return;
+//     int cols = grid[0].get_size();
 
-    // 1️⃣ Reset grid (tất cả walkable = true)
-    for (int y = 0; y < rows; ++y)
-        for (int x = 0; x < cols; ++x)
-            grid[y][x].set_walkable(true); // hoặc giữ vật cản cố định nếu cần
+//     // 1️⃣ Reset grid (tất cả walkable = true)
+//     for (int y = 0; y < rows; ++y)
+//         for (int x = 0; x < cols; ++x)
+//             grid[y][x].set_walkable(true); // hoặc giữ vật cản cố định nếu cần
 
-    // 2️⃣ Đặt lại các ô có quái
-    for (auto* ent : entities) {
-        Monster* monster = dynamic_cast<Monster*>(ent);
-        if (!monster) continue;
+//     // 2️⃣ Đặt lại các ô có quái
+//     for (auto* ent : entities) {
+//         Monster* monster = dynamic_cast<Monster*>(ent);
+//         if (!monster) continue;
 
-        int mx = static_cast<int>(monster->get_x() / cellSize);
-        int my = static_cast<int>(monster->get_y() / cellSize);
+//         int mx = static_cast<int>(monster->get_x() / cellSize);
+//         int my = static_cast<int>(monster->get_y() / cellSize);
 
-        // Kiểm tra ranh giới grid
-        if (mx >= 0 && mx < cols && my >= 0 && my < rows)
-            grid[my][mx].set_walkable(false);
-    }
-}
+//         // Kiểm tra ranh giới grid
+//         if (mx >= 0 && mx < cols && my >= 0 && my < rows)
+//             grid[my][mx].set_walkable(false);
+//     }
+// }

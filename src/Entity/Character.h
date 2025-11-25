@@ -42,6 +42,9 @@ private:
     sf::Texture down_cung, down_kiemgo, down_kiemsat, down_riu, down_sung, down_hand;
     sf::Texture left_cung, left_kiemgo, left_kiemsat, left_riu, left_sung, left_hand;
 
+    bool isDying = false;
+    float dyingTimer = 0.f;
+
 public:
     Character();
     Character(int, int, int, int, int);

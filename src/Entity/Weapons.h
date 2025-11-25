@@ -40,6 +40,7 @@ protected:
 
 public:
     Weapons(WeaponType,const String, const String, int, double, double, const String&, const String&);
+    ~Weapons();
     int get_damage();
     double get_damage_range();
     double get_attack_speed();

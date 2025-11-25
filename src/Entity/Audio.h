@@ -12,6 +12,7 @@ private:
 public:
     Audio();
     Audio(const String&);
+    ~Audio();
     bool loadSound(const std::string &filename);
     void playSound();
     void stopSound();

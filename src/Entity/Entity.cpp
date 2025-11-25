@@ -4,9 +4,12 @@ Entity::Entity() {}
 Entity::Entity(int _x, int _y)
     : x(_x), y(_y) {};
 
+Entity::~Entity() {}
 int Entity::get_x() const { return x; }
 int Entity::get_y() const { return y; }
 string Entity::get_type() const { return type; }
+bool Entity::get_status() const { return status; }
+
 void Entity::set_position(int newx, int newy)
 {
        x = newx;

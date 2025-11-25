@@ -75,19 +75,19 @@ Quadtree &EntityManager::getQuadtree()
 void EntityManager::set_player(Character *value) { player = value; }
 void EntityManager::set_castle(Castle *value) { castle = value; }
 
-void EntityManager::update(float dt, Vector<Vector<ASNode>> &grid, double cellSize, Map &map, EntityManager &manager)
+void EntityManager::update(float dt, /*Vector<Vector<ASNode>> &grid, double cellSize,*/ Map &map, EntityManager &manager)
 {
     Castle *castle = getCastle();
     Character *player = getPlayer();
 
-    map.updateGrid(manager.getEntities(), grid, cellSize);
+    // map.updateGrid(manager.getEntities(), grid, cellSize);
 
     for (auto *e : entities) // duyet tat ca vat the
     {
         if (Monster *m = dynamic_cast<Monster *>(e))
         {
             // quai tim duong tan cong bang A*
-            m->update(dt, castle, player, &qt, grid, cellSize);
+            m->update(dt, castle, player, &qt /*grid, cellSize*/);
         }
     }
     castle->update(dt);
@@ -133,7 +133,7 @@ void EntityManager::create_monster(int n, int hp, int damage, int damagerange)
                 }
             }
         }
-        Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, hp, damage, damagerange, 0.4, 10, 20);
+        Monster *m = new Monster(tempSprite.getPosition().x, tempSprite.getPosition().y, hp, damage, damagerange, 0.5, 10, 20);
         add(m);
     }
 }

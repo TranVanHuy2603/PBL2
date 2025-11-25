@@ -30,6 +30,7 @@ private:
 
 public:
     Resource(int, int, ResourceType, const string &, int, int, float);
+    ~Resource();
     ResourceType get_type() const;
     int get_quantity() const;
     sf::Sprite &get_sprite();

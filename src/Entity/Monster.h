@@ -24,7 +24,6 @@ private:
     float attackcooldown;
     sf::Texture texture;
 
-    Vector<sf::Vector2f> pathPositions;
     int currentTarget = 0;
 
     sf::RectangleShape hpBack;
@@ -40,6 +39,9 @@ private:
     float randomMoveDuration = 0.f;
     bool isMoving = true;
 
+    sf::CircleShape attackCircle;
+    float attackCircleTimer = 0.f;
+
     float minX = 0.f, maxX = 6500.f; // biên map theo X
     float minY = 0.f, maxY = 3500.f; // biên map theo Y
 
@@ -51,8 +53,7 @@ public:
     int get_exp() const;
 
     void draw(sf::RenderWindow &) override;
-    void movePath(const Vector<sf::Vector2f> &, float);
     void attack(LivingEntity *, float);
-    void update(float, Castle *, Character *, Quadtree *, Vector<Vector<ASNode>> &, double);
+    void update(float, Castle *, Character *, Quadtree * /*Vector<Vector<ASNode>> &, double*/);
     void updateRandomMovement(float deltaTime);
 };

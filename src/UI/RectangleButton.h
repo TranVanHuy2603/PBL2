@@ -40,6 +40,7 @@ public:
     void setString(const String& str);
     void setFillColor(const sf::Color& col);
     void setOutline(const sf::Color& col, float thickness);
+    void setTextOutline(const sf::Color& col, float thickness);
     void setTextColor(const sf::Color& color);
     void setFont(sf::Font* f);
     bool setIcon(const String& path); // load từ file

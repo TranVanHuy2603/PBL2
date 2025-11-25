@@ -37,6 +37,7 @@ Menu::Menu(float width, float height, String text0, String text1, String text2)
     );
     btn1.setTextColor(sf::Color::White);
     btn1.setOutline(sf::Color::Black, 6.f);
+    btn1.setTextOutline(sf::Color::Black, 3.f);
 
     btn2 = RectangleButton(
         width / 2 - 175, height / 2 + 85,
@@ -48,6 +49,7 @@ Menu::Menu(float width, float height, String text0, String text1, String text2)
         100);
     btn2.setTextColor(sf::Color::White);
     btn2.setOutline(sf::Color::Black, 6.f);
+    btn2.setTextOutline(sf::Color::Black, 3.f);
 }
 
 void Menu::render(sf::RenderWindow &window)

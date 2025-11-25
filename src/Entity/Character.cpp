@@ -12,12 +12,12 @@ struct WeaponInfo // thuoc tinh cua vu khi duoc che tao
 };
 
 WeaponInfo weaponInfos[(int)WeaponType::Count] = {
-    {"Tay", 7, 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.ogg"},              // HareHand
-    {"Kiem go", 10, 240.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.ogg"}, // WoodenSword
+    {"Tay", 10, 190.0, 2.3, "assets/weapon/barehand.png", "assets/audio/handsound.ogg"},              // HareHand
+    {"Kiem go", 12, 250.0, 2.5, "assets/weapon/woodensword.png", "assets/audio/wodenswordsound.ogg"}, // WoodenSword
     {"Kiem sat", 15, 270.0, 2.3, "assets/weapon/ironsword.png", "assets/audio/ironswordsound.ogg"},  // IronSwood
     {"Riu", 50, 190.0, 1.9, "assets/weapon/ax.png", "assets/audio/axsound.ogg"},                     // Ax
-    {"Cung ten", 20, 270.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.ogg"},              // Bow
-    {"Sung", 30, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.ogg"}                   // Gun
+    {"Cung ten", 25, 330.0, 2.0, "assets/weapon/bow.png", "assets/audio/bowsound.ogg"},              // Bow
+    {"Sung", 35, 440.0, 2.0, "assets/weapon/gun.png", "assets/audio/gunsound.ogg"}                   // Gun
 };
 
 // theo thu tu la Wood, stone, sand Coal, Iron, Gold, Diamond, Emerald
@@ -27,7 +27,7 @@ Recipe recipes[(int)WeaponType::Count] = {
     {3, 5, 3, 4, 6, 1, 0, 0}, // IronSwood
     {6, 3, 5, 3, 7, 2, 1, 1}, // Ax
     {6, 2, 3, 4, 4, 5, 3, 2}, // Bow
-    {9, 4, 5, 5, 6, 4, 6, 6}  // Gun
+    {20, 9, 7, 9, 8, 5, 7, 7}  // Gun
 };
 
 Character::Character() {}

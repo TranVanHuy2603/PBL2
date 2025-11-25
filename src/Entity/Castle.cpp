@@ -84,7 +84,7 @@ void Castle::level_up()
     {
         level++;
         cost += 50 * level;
-        hp_max += 400 * level;
+        hp_max += 100 * level;
         hp = hp_max;
         set_texture(castleTextures[level - 1]);
     }
@@ -93,7 +93,7 @@ void Castle::level_up()
 void Castle::update(float deltatime)
 {
     healTimer += deltatime;
-    if (healTimer >= 1.f) // mỗi 1 giây
+    if (healTimer >= 2.f) // mỗi 1 giây
     {
         hp += 2; // hồi 5 HP
         if (hp > hp_max) hp = hp_max; // không vượt quá max

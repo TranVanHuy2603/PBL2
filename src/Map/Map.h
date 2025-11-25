@@ -14,6 +14,6 @@ public:
     Map(float, float);
     bool loadFromFile(float, float);
     void draw(sf::RenderWindow &window, const sf::View &view);
-    void setGrid(Vector<Entity*>& entity, Vector<Vector<ASNode>>&, double);
-    void updateGrid(Vector<Entity*>& entities, Vector<Vector<ASNode>>& grid, double);
+    // void setGrid(Vector<Entity*>& entity, Vector<Vector<ASNode>>&, double);
+    // void updateGrid(Vector<Entity*>& entities, Vector<Vector<ASNode>>& grid, double);
 };

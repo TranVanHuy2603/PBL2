@@ -33,11 +33,11 @@ Weapons::Weapons(WeaponType type, const String name, const String path, int dama
     if (!sound.loadSound(soundPath.c_str())) cout << "Loi khi tai am thanh vu khi vi sai duong dan\n";
 
     attackCircle.setRadius(damage_range);
-    attackCircle.setFillColor(sf::Color::Transparent); // trong suốt
-    attackCircle.setOutlineColor(sf::Color::Red);      // viền đỏ
-    attackCircle.setOutlineThickness(2.5f);
+    attackCircle.setFillColor(sf::Color(255, 255, 0, 50)); // trong suốt
     attackCircle.setOrigin(damage_range, damage_range); // gốc là tâm
 }
+
+Weapons::~Weapons() {}
 
 int Weapons::get_damage() { return damage; }
 double Weapons::get_damage_range() { return damage_range; }
