@@ -2,6 +2,7 @@
 #include "Quadtree.h"
 #include "String.h"
 #include "Audio.h"
+#include "Priorityqueue.h"
 #include <SFML/Graphics.hpp>
 
 class Character;
@@ -17,13 +18,12 @@ enum WeaponType
     Gun, //sung
     Count
 };
-
 class Weapons //vu khi
 {
 protected:
     WeaponType type; //loai vu khi
-    String name;
-    String path;
+    String name; // ten vu khi
+    String path;//duong dan den file hinh anh
     int damage; //sat thuong
     double damage_range; //tam danh
     double attack_speed; //toc do danh

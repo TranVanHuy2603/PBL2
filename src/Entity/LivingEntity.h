@@ -1,6 +1,5 @@
 #pragma once
 #include "Entity.h"
-
 class LivingEntity : public Entity
 {
 protected:
@@ -19,3 +18,4 @@ public:
 
     virtual void take_damage(int);
 };
+

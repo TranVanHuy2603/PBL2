@@ -1,8 +1,10 @@
 #include "EntityManager.h"
-#include "Monster.h"
-#include "Castle.h"
 #include "Character.h"
-#include <iostream>
+#include "Castle.h"
+#include "Monster.h"
+#include "Resource.h"
+#include "Map.h"
+#include <SFML/Graphics.hpp>
 
 using namespace std;
 
@@ -26,7 +28,6 @@ ResourceInfo resourceInfos[] = {
     {ResourceType::Diamond, 0.09f, "assets/resource/diamond.png", 20, 30, 0.5},
     {ResourceType::Emerald, 0.09f, "assets/resource/emerald.png", 25, 35, 0.3}};
 
-
 EntityManager::EntityManager(const Rect &area, double cap)
     : qt(area, cap)
 {
@@ -38,7 +39,7 @@ EntityManager::~EntityManager()
     {
         if (e != player && e != castle) // không xóa player và castle
             delete e;
-            e = nullptr;
+        e = nullptr;
     }
     entities.clear();
 }
@@ -51,6 +52,8 @@ void EntityManager::add(Entity *e)
 
 void EntityManager::remove(Entity *e)
 {
+    if (!e)
+        return;
     qt.remove(e);
     entities.remove(e);
     delete e;
@@ -71,27 +74,41 @@ Quadtree &EntityManager::getQuadtree()
     return qt;
 }
 
-
 void EntityManager::set_player(Character *value) { player = value; }
 void EntityManager::set_castle(Castle *value) { castle = value; }
 
-void EntityManager::update(float dt, /*Vector<Vector<ASNode>> &grid, double cellSize,*/ Map &map, EntityManager &manager)
+void EntityManager::update(float dt, Map &map, EntityManager &manager)
 {
     Castle *castle = getCastle();
     Character *player = getPlayer();
 
-    // map.updateGrid(manager.getEntities(), grid, cellSize);
+    // --- Xóa các entity đã chết ---
+    for (int i = entities.get_size() - 1; i >= 0; --i)
+    {
+        Entity *e = entities[i];
+        if (!e->get_status() && e != player && e != castle) // giữ player và castle
+        {
+            qt.remove(e);      // xóa khỏi quadtree
+            delete e;          // giải phóng bộ nhớ
+            entities.erase(i); // xóa khỏi vector
+        }
+    }
 
-    for (auto *e : entities) // duyet tat ca vat the
+    for (Entity *e : entities)
     {
         if (Monster *m = dynamic_cast<Monster *>(e))
         {
-            // quai tim duong tan cong bang A*
-            m->update(dt, castle, player, &qt /*grid, cellSize*/);
+            m->update(dt, castle, player, &qt);
         }
     }
-    castle->update(dt);
-    player->update(dt);
+
+    // --- Cập nhật player và castle ---
+    if (castle)
+        castle->update(dt);
+    if (player)
+        player->update(dt);
+
+    // --- Cập nhật lại vị trí entities trong quadtree ---
     updateQuadtree();
 }
 
@@ -161,7 +178,6 @@ void EntityManager::create_resource(int n)
         bool check = false;
         ResourceInfo info = choose();
 
-
         while (!check)
         {
             float x = rand() % 6500 - 50 + 25;
@@ -205,11 +221,9 @@ void EntityManager::updateQuadtree()
     for (auto *e : entities)
     {
         if (!e->get_status())
-            continue; // bỏ qua nếu entity không còn hoạt động
+        {
+            continue;
+        } // bỏ qua nếu entity không còn hoạt động
         qt.insert(e); // insert lại theo vị trí mới
     }
 }
-
-
-
-

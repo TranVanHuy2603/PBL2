@@ -18,14 +18,14 @@ UpgradeCastleUI::UpgradeCastleUI()
     // --- Nút Upgrade ---
     const String nc = "Nang Cap", h = "Huy";
     upgradeButton = RectangleButton(0.f, 0.f, 300.f, 60.f, &font, nc,
-                    sf::Color(120, 200, 120), sf::Color(150, 250, 150), sf::Color(150, 250, 150), 90);
+                                    sf::Color(120, 200, 120), sf::Color(150, 250, 150), sf::Color(150, 250, 150), 90);
     upgradeButton.setTextColor(sf::Color::White);
     upgradeButton.setOutline(sf::Color::Black, 3.f);
     upgradeButton.setTextOutline(sf::Color::Black, 3.f);
 
     // --- Nút Cancel ---
     cancelButton = RectangleButton(0.f, 0.f, 250.f, 60.f, &font, h,
-                    sf::Color(220, 120, 120), sf::Color(250, 150, 150), sf::Color(150, 250, 150), 90);
+                                   sf::Color(220, 120, 120), sf::Color(250, 150, 150), sf::Color(150, 250, 150), 90);
     cancelButton.setTextColor(sf::Color::White);
     cancelButton.setOutline(sf::Color::Black, 3.f);
     cancelButton.setTextOutline(sf::Color::Black, 3.f);
@@ -61,9 +61,7 @@ void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *c
         return;
 
     // --- Nút Upgrade ---
-    if (upgradeButton.isClicked(window, event) 
-        || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter)
-        || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::LAlt))
+    if (upgradeButton.isClicked(window, event) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::LAlt))
     {
         int cost = castle->get_cost();
 
@@ -88,6 +86,11 @@ void UpgradeCastleUI::handleEvent(sf::Event &event, Character *player, Castle *c
         }
         else
         {
+            if (player->get_gold() >= cost)
+            {
+                player->decr_gold(cost);
+                castle->set_hp(castle->get_hp_max());
+            }
             // Đã đạt level tối đa
             static Audio failSound("assets/audio/error.ogg");
             failSound.playSound();

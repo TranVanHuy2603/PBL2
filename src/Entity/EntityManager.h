@@ -1,10 +1,13 @@
 #pragma once
 #include "Vector.h"
-#include <SFML/Graphics.hpp>
-#include "Entity.h"
-#include "Character.h"
-#include "Map.h"
+#include "Quadtree.h"
 
+// Forward declarations
+class Character;
+class Castle;
+struct Rect;
+class Entity;
+class Map;
 class EntityManager {
 private:
     Vector<Entity*> entities; //tat ca cac vat the

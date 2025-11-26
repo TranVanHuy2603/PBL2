@@ -2,7 +2,6 @@
 #include "Entity.h"
 #include "Audio.h"
 #include <string>
-
 using namespace std;
 
 enum class ResourceType
@@ -23,7 +22,7 @@ class Resource : public Entity
 private:
     ResourceType resourcetype; // loai tai nguyen
     sf::Texture texture;
-    bool status;
+    // bool status;
     int gold;
     int exp;
     int hp;
@@ -31,6 +30,7 @@ private:
 public:
     Resource(int, int, ResourceType, const string &, int, int, float);
     ~Resource();
+
     ResourceType get_type() const;
     int get_quantity() const;
     sf::Sprite &get_sprite();
@@ -40,6 +40,5 @@ public:
 
     void set_status(bool);
     void draw(sf::RenderWindow&) override;
-
     void take_damage();
 };

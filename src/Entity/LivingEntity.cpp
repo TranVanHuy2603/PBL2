@@ -6,7 +6,6 @@ LivingEntity::LivingEntity(int x, int y, int hp_max)
     : Entity(x, y), hp(hp_max), hp_max(hp_max)
 {
     this->status = true;
-    this->walkable = false;
 }
 
 LivingEntity::~LivingEntity() {}

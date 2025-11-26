@@ -1,18 +1,15 @@
 #pragma once
-#include "GBFS.h"
 #include "Castle.h"
 #include "Audio.h"
 #include "Character.h"
 #include <sstream>
 #include <iostream>
 #include <random>
-
 using namespace std;
 
 class Character;
 class Castle;
 class Quadtree;
-
 class Monster : public LivingEntity
 {
 private:
@@ -23,18 +20,14 @@ private:
     double attack_speed;
     float attackcooldown;
     sf::Texture texture;
-
-    int currentTarget = 0;
-
+    //thanh mau
     sf::RectangleShape hpBack;
     sf::RectangleShape hpBar;
     sf::Vector2f hpBarSize;
-
-    // --- biến di chuyển random / zig-zag ---
+    //biến di chuyển random 
     sf::Vector2f moveDir; // hướng di chuyển hiện tại
     float moveTimer;      // thời gian còn lại đi theo hướng hiện tại
     float speed;          // tốc độ quái
-
     int randomDir = 0;
     float randomMoveDuration = 0.f;
     bool isMoving = true;

@@ -86,30 +86,27 @@ void Quadtree::query(Rect r, Vector<Entity*> &found) // chuc nang tim tat ca cac
     }
 }
 
-bool Quadtree::remove(Entity *e)
+bool Quadtree::remove(Entity* e)
 {
-    if (!area.contains(e))
-        return false;
-    auto it = find(entities.begin(), entities.end(), e);
+    auto it = std::find(entities.begin(), entities.end(), e);
     if (it != entities.end())
     {
         entities.erase(it);
+        cout << "Entity removed from Quadtree node\n";
         return true;
     }
-
     if (divided)
     {
-        if (SW->remove(e))
-            return true;
-        if (SE->remove(e))
-            return true;
-        if (NW->remove(e))
-            return true;
-        if (NE->remove(e))
-            return true;
+        bool removed = false;
+        removed |= NW->remove(e);
+        removed |= NE->remove(e);
+        removed |= SW->remove(e);
+        removed |= SE->remove(e);
+        return removed;
     }
     return false;
 }
+
 
 bool Quadtree::update(Entity *e, double newx, double newy)
 {

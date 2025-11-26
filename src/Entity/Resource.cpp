@@ -13,7 +13,6 @@ Resource::Resource(int x, int y, ResourceType type, const string &filename, int 
 Resource::~Resource() {}
 
 ResourceType Resource::get_type() const { return resourcetype; }
-void Resource::set_status(bool value) { status = value; }
 sf::Sprite& Resource::get_sprite() { return sprite; }
 bool Resource::get_status() const { return status; }
 
@@ -32,10 +31,12 @@ void Resource::take_damage()
 {
     if (status && hp > 0)
     {
+        cout << "Tai nguyen takedamage "<< "\n";
         hp--;
         if (hp <= 0) 
         {
-            set_status(false);
+            status = false;
+            cout << "Da thu thap xong tai nguyen "<< "\n";
         }
     }
 }

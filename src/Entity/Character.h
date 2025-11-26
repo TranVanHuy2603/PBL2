@@ -1,5 +1,6 @@
 #pragma once
 #include "LivingEntity.h"
+#include "EntityManager.h"
 #include "Monster.h"
 #include "Quadtree.h"
 #include "Weapons.h"
@@ -8,7 +9,6 @@
 #include "String.h"
 #include "Quest.h"
 #include <sstream>
-// dung trong ham craft_weapon()
 struct Recipe // cong thuc che che tao vu khi
 {
     int wood;
@@ -20,11 +20,8 @@ struct Recipe // cong thuc che che tao vu khi
     int diamond;
     int emerald;
 };
-
 extern Recipe recipes[];
-
 class Castle;
-
 class Character : public LivingEntity
 {
 private:
@@ -76,11 +73,8 @@ public:
     void level_up_castle(Castle *);
 
     void handleInput(double); // di chuyen bang tay
-
     void update(float); // di chuyen
-
     void attack(Quadtree &, Quest &task); // tan cong.....tham so dau vao la mot vecto cac Monster
-
     void add_weapon(Weapons *);
     void switch_weapon(int index);
     bool craft_weapon(WeaponType);

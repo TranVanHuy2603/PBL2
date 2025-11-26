@@ -18,7 +18,7 @@ struct CompareDistance
 {
     bool operator()(const TargetPriority& a, const TargetPriority& b) const
     {
-        return a.distance < b.distance;
+        return a.distance > b.distance;
     }
 };
 
@@ -74,6 +74,9 @@ void Weapons::attack(Quadtree &qt, Character *nv, Quest &quest)
     Priorityqueue<TargetPriority, CompareDistance> pq;
     for (auto e : found)
     {
+        if (!e->get_status())
+        continue;
+        
         sf::FloatRect eBound = e->get_sprite().getGlobalBounds();
         sf::Vector2f entityCenter(eBound.left + eBound.width / 2.f, eBound.top + eBound.height / 2.f);
 
@@ -92,6 +95,8 @@ void Weapons::attack(Quadtree &qt, Character *nv, Quest &quest)
         TargetPriority tp = pq.top();
         pq.pop();
         Entity* e = tp.entity;
+
+        if (!e->get_status()) continue;
 
         if (Monster *m = dynamic_cast<Monster *>(e))
         {
@@ -120,9 +125,11 @@ void Weapons::attack(Quadtree &qt, Character *nv, Quest &quest)
         }
         else if (Resource *r = dynamic_cast<Resource *>(e))
         {
+            // if (!r->get_status()) continue;
             r->take_damage();
             if (!r->get_status())
             {
+                cout << "Da thu thap tai nguyen\n";
                 collectSound.playSound();
                 nv->incr_gold(r->get_gold());
                 nv->incr_exp(r->get_exp());
